@@ -14,8 +14,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/shared/config/firebase';
-import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
-import type { SavedLayout } from '@/features/grid-layout';
+import type { ActivityDefinition, ActivityRecord, SavedLayout } from '@/shared/types';
 import type { StorageService } from './types';
 import { StorageError } from './types';
 import { mapFirestoreDocument } from './firestoreUtils';

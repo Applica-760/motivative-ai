@@ -22,3 +22,9 @@ export type {
 } from './chart';
 
 export { ChartType as ChartTypeEnum } from './chart';
+
+// Grid types
+export type {
+  GridPosition,
+  SavedLayout,
+} from './grid';

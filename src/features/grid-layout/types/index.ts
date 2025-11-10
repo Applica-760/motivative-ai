@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { GridPosition, SavedLayout } from '@/shared/types';
 
 /**
  * グリッドアイテムのサイズ定義
@@ -10,17 +11,10 @@ import type { ReactNode } from 'react';
 export type GridItemSize = 'small-square' | 'small-rectangle' | 'medium' | 'large';
 
 /**
- * グリッドアイテムの位置情報
- * n×4グリッド（モバイルはn×2）での明示的な配置を管理
+ * グリッドアイテムの位置情報とレイアウト保存の型
+ * shared層から再エクスポート（storage層との共有のため）
  */
-export interface GridPosition {
-  /** 列位置（1-4 デスクトップ、1-2 モバイル） */
-  column: number;
-  /** 行位置（1-n） */
-  row: number;
-  /** 列のスパン数（1=正方形、2=長方形） */
-  columnSpan: 1 | 2;
-}
+export type { GridPosition, SavedLayout };
 
 /**
  * グリッドアイテムの設定
@@ -84,11 +78,4 @@ export const GRID_COLUMNS = {
 export interface CellSize {
   width: number;
   height: number;
-}
-
-/**
- * 保存されたレイアウト情報
- */
-export interface SavedLayout {
-  positions: Record<string, GridPosition>;
 }

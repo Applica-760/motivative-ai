@@ -4,11 +4,12 @@ import { createGraphGridItems, type ActivityData } from '@/features/graph';
 
 /**
  * ダッシュボードのグリッドアイテム設定を生成する
+ * Feature-Sliced Design: app/compositions
  * 
  * 各featureが提供するgridConfig関数を統合し、
  * ダッシュボード全体のレイアウトを構築する。
  * 
- * Feature-Sliced Design: homeはオーケストレーターとして機能し、
+ * app層がオーケストレーターとして機能し、
  * 各featureの独立性を保ちながら統合する。
  * 
  * @param activities - アクティビティデータの配列

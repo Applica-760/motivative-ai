@@ -1,5 +1,4 @@
-import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
-import type { SavedLayout } from '@/features/grid-layout';
+import type { ActivityDefinition, ActivityRecord, SavedLayout } from '@/shared/types';
 
 /**
  * ストレージサービスの抽象インターフェース

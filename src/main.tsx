@@ -4,10 +4,9 @@ import ReactDOM from 'react-dom/client';
 import '@mantine/core/styles.css';
 import '@mantine/charts/styles.css';
 
-import { MantineProvider, createTheme } from '@mantine/core';
-import { AuthProvider } from '@/features/auth';
+import { createTheme } from '@mantine/core';
+import { AppProviders } from '@/app/providers';
 import { MockAuthService, FirebaseAuthService } from '@/features/auth/api';
-import { StorageProviderWithAuth } from '@/shared/services/storage';
 import { shouldUseFirebase, logFirebaseConfig } from '@/shared/config/firebase';
 import App from './App.tsx';
 // (index.css など他のCSSインポート)
@@ -31,12 +30,8 @@ console.log(
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <MantineProvider theme={theme} defaultColorScheme="dark">
-      <AuthProvider service={authService}>
-        <StorageProviderWithAuth>
-          <App />
-        </StorageProviderWithAuth>
-      </AuthProvider>
-    </MantineProvider>
+    <AppProviders authService={authService} theme={theme}>
+      <App />
+    </AppProviders>
   </React.StrictMode>,
 );

@@ -1,12 +1,14 @@
 import { HomePage } from './features/home/ui';
-import { ActivityProvider } from '@/features/activity';
 
+/**
+ * App
+ * 
+ * アプリケーションのメインコンポーネント。
+ * Providerの設定はapp/providersで行われているため、
+ * ここでは画面コンポーネントの表示のみを担当。
+ */
 function App() {
-  return (
-    <ActivityProvider>
-      <HomePage />
-    </ActivityProvider>
-  );
+  return <HomePage />;
 }
 
 export default App;

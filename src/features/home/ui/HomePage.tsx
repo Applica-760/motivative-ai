@@ -1,12 +1,26 @@
 import { AppShell, Burger, Container, Title, Box } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { useState } from 'react';
+import { DashboardComposition } from '@/app/compositions';
 import { LeftSidebar } from './LeftSidebar';
 import { MainContent } from './MainContent';
 import { RightSidebar } from './RightSidebar';
 import { MobileSidebar } from './MobileSidebar';
 import { AddRecordModal } from '@/features/activity/ui/modals';
 
+/**
+ * HomePage
+ * Feature-Sliced Design: features/home/ui
+ * 
+ * ダッシュボード画面のレイアウトを担当。
+ * 
+ * 責務:
+ * - 3カラムレイアウトの構築
+ * - モバイル対応（サイドバーの折りたたみ）
+ * - モーダルの表示管理
+ * 
+ * データ取得と統合はapp/compositionsが担当。
+ */
 export function HomePage() {
   const [leftOpened, { toggle: toggleLeft }] = useDisclosure();
   const [rightOpened, { toggle: toggleRight }] = useDisclosure();
@@ -74,7 +88,9 @@ export function HomePage() {
             )}
             
             <Box>
-              <MainContent onChartClick={handleChartClick} />
+              <DashboardComposition onChartClick={handleChartClick}>
+                {(gridItems) => <MainContent gridItems={gridItems} />}
+              </DashboardComposition>
             </Box>
             
             {!isMobile && (

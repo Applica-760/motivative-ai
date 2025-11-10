@@ -1,40 +1,27 @@
-import { Center, Loader, Text } from '@mantine/core';
 import { DraggableGrid } from '@/features/grid-layout';
-import { useHomeData } from '../model';
-import { createDashboardGridItems } from '../config/dashboardConfig';
+import type { GridItemConfig } from '@/features/grid-layout';
 
+/**
+ * MainContentのProps
+ */
 interface MainContentProps {
-  onChartClick?: (activityId: string) => void;
+  /** 表示するグリッドアイテム */
+  gridItems: GridItemConfig[];
 }
 
-export function MainContent({ onChartClick }: MainContentProps) {
-  const { data, isLoading, error } = useHomeData();
-
-  if (isLoading) {
-    return (
-      <Center h="400px">
-        <Loader size="lg" />
-      </Center>
-    );
-  }
-
-  if (error) {
-    return (
-      <Center h="400px">
-        <Text c="red">データの取得に失敗しました: {error.message}</Text>
-      </Center>
-    );
-  }
-
-  if (!data) {
-    return (
-      <Center h="400px">
-        <Text>データがありません</Text>
-      </Center>
-    );
-  }
-
-  const gridItems = createDashboardGridItems(data.activities, onChartClick);
-
-  return <DraggableGrid items={gridItems} key={`grid-${data.activities.length}`} />;
+/**
+ * MainContent
+ * Feature-Sliced Design: features/home/ui
+ * 
+ * ダッシュボードのメインコンテンツ表示を担当。
+ * データ取得とFeature統合はapp層のCompositionが担当し、
+ * このコンポーネントは純粋なUI表示のみを行う。
+ * 
+ * @example
+ * ```tsx
+ * <MainContent gridItems={gridItems} />
+ * ```
+ */
+export function MainContent({ gridItems }: MainContentProps) {
+  return <DraggableGrid items={gridItems} key={`grid-${gridItems.length}`} />;
 }
