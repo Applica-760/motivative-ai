@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, type ReactNode } from 'react';
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 import { useStorage } from '@/shared/services/storage';
-import { ActivityRepositoryImpl } from '../api/repositories/ActivityRepositoryImpl';
-import { RecordRepositoryImpl } from '../api/repositories/RecordRepositoryImpl';
-import { defaultActivities } from '../config/defaultActivities';
-import { defaultRecords } from '../config/defaultRecords';
+import { ActivityRepositoryImpl } from '@/features/activity-definition/api/repositories';
+import { RecordRepositoryImpl } from '@/features/activity-record/api/repositories';
+import { defaultActivities } from '@/features/activity-definition/config';
+import { defaultRecords } from '@/features/activity-record/config';
 
 interface ActivityContextValue {
   activities: ActivityDefinition[];

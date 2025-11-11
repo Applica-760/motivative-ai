@@ -8,3 +8,5 @@ export type { QuickActionButtonProps, ActionGradient } from './QuickActionButton
 
 export { ChartCard } from './ChartCard';
 export type { ChartCardProps } from './ChartCard';
+
+export { FormActions } from './FormActions';

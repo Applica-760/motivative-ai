@@ -2,11 +2,13 @@
  * Activity Repositories
  * Feature-Sliced Design: features/activity/api/repositories
  * 
- * データアクセス層とビジネスロジックを提供
+ * 各サブfeatureのリポジトリを再エクスポート
  */
 
-export type { ActivityRepository } from './types';
-export type { RecordRepository } from './RecordRepository.interface';
+// activity-definition repositories
+export type { ActivityRepository } from '@/features/activity-definition/api/repositories';
+export { ActivityRepositoryImpl } from '@/features/activity-definition/api/repositories';
 
-export { ActivityRepositoryImpl } from './ActivityRepositoryImpl';
-export { RecordRepositoryImpl } from './RecordRepositoryImpl';
+// activity-record repositories
+export type { RecordRepository } from '@/features/activity-record/api/repositories';
+export { RecordRepositoryImpl } from '@/features/activity-record/api/repositories';

@@ -6,7 +6,7 @@ import { LeftSidebar } from './LeftSidebar';
 import { MainContent } from './MainContent';
 import { RightSidebar } from './RightSidebar';
 import { MobileSidebar } from './MobileSidebar';
-import { AddRecordModal } from '@/features/activity/ui/modals';
+import { AddRecordModal } from '@/features/activity-record/ui/modals';
 
 /**
  * HomePage

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Center, Loader } from '@mantine/core';
 import type { GridItemConfig } from '@/features/grid-layout';
 import { useActivityContext } from '@/features/activity';
-import { convertActivityRecordsToChartData } from '@/features/activity/model/activityToChartAdapter';
+import { convertActivityRecordsToChartData } from '@/features/activity-analytics';
 import type { ActivityData } from '@/features/graph';
 import { ChartTypeEnum } from '@/shared/types';
 import { createDashboardGridItems } from './dashboardConfig';

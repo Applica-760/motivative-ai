@@ -2,7 +2,7 @@ import { Paper, Stack, Text, Loader, Box } from '@mantine/core';
 import { useState } from 'react';
 import { ActivityButton } from '@/shared/ui';
 import { useActivities } from '@/features/activity/hooks';
-import { EditActivityModal } from '@/features/activity/ui/modals';
+import { EditActivityModal } from '@/features/activity-definition/ui/modals';
 import { AuthUserButton } from '@/features/auth';
 import type { ActivityDefinition } from '@/shared/types';
 

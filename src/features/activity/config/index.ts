@@ -1,10 +1,13 @@
 /**
  * Activity Config
+ * 
+ * 各サブfeatureのconfigを再エクスポート
  */
 export * from './constants';
-export * from './formConstants';
-export * from './recordFormConstants';
-export * from './modalStyles';
 export { createActivityActionGridItems } from './gridConfig';
-export { defaultActivities } from './defaultActivities';
-export { defaultRecords } from './defaultRecords';
+
+// activity-definition config
+export * from '@/features/activity-definition/config';
+
+// activity-record config
+export * from '@/features/activity-record/config';

@@ -1,10 +1,15 @@
 /**
  * Activity Model
+ * 
+ * 各サブfeatureのmodelを再エクスポート
  */
-export * from './activityUtils';
-export * from './activityToChartAdapter';
-export * from './formTypes';
-export * from './validation';
-export * from './recordFormTypes';
-export * from './recordValidation';
 export { ActivityProvider, useActivityContext } from './ActivityContext';
+
+// activity-definition model
+export * from '@/features/activity-definition/model';
+
+// activity-record model
+export * from '@/features/activity-record/model';
+
+// activity-analytics model
+export * from '@/features/activity-analytics/model';

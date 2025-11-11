@@ -1,7 +1,7 @@
 import type { GridItemConfig } from '@/features/grid-layout';
 import { colors, gridItemShadows } from '@/shared/config';
-import { AddRecordButton, CreateActivityButton } from '../ui/buttons';
-import { ACTIVITY_PRIMARY_ACTIONS } from './constants';
+import { AddRecordButton } from '@/features/activity-record';
+import { CreateActivityButton } from '@/features/activity-definition';
 
 /**
  * アクティビティ関連のグリッドアイテムを生成
@@ -17,7 +17,7 @@ import { ACTIVITY_PRIMARY_ACTIONS } from './constants';
 export function createActivityActionGridItems(): GridItemConfig[] {
   return [
     {
-      id: ACTIVITY_PRIMARY_ACTIONS.ADD_RECORD,
+      id: 'add-activity-record',
       order: 0,
       size: 'small-square',
       position: { column: 1, row: 1, columnSpan: 1 },
@@ -27,7 +27,7 @@ export function createActivityActionGridItems(): GridItemConfig[] {
       clickable: true,
     },
     {
-      id: ACTIVITY_PRIMARY_ACTIONS.CREATE,
+      id: 'create-activity',
       order: 1,
       size: 'small-square',
       position: { column: 2, row: 1, columnSpan: 1 },
