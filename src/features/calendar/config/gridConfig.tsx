@@ -8,6 +8,7 @@ import { ActivityCalendarWidget } from '../ui';
  * Feature-Sliced Design: 各featureが自身のグリッド設定を管理
  * 
  * Boolean型のアクティビティに対してカレンダービューを提供する
+ * 各カレンダーは2×1（縦長）の長方形として配置
  * 
  * @param activities - 表示するアクティビティの配列
  * @param startOrder - グリッドアイテムの開始順序（他のウィジェットとの調整用）
@@ -23,18 +24,20 @@ export function createCalendarGridItems(
     (activity) => activity.valueType === 'boolean' && !activity.isArchived
   );
 
-  // 各カレンダーを1×1の正方形として配置
+  // 各カレンダーを2×1の縦長長方形として配置
   return booleanActivities.map((activity, index) => {
     // 3行目以降に配置（1行目: アクションボタン、2行目以降: グラフ）
-    // 2列配置で自動的に並べる
-    const row = Math.floor(index / 2) + 3;
-    const column = (index % 2) * 2 + 1; // 1 or 3
+    // 2列配置で自動的に並べる（各カレンダーが2行分の高さを占有）
+    const columnIndex = index % 2; // 0 or 1
+    const rowOffset = Math.floor(index / 2) * 2; // 0, 2, 4, 6...
+    const row = 3 + rowOffset;
+    const column = columnIndex * 2 + 1; // 1 or 3
 
     return {
       id: `${activity.id}-calendar`,
       order: startOrder + index,
-      size: 'small-square' as const,
-      position: { column, row, columnSpan: 1 },
+      size: 'small-vertical' as const,
+      position: { column, row, columnSpan: 1, rowSpan: 2 },
       content: (
         <ActivityCalendarWidget
           activity={activity}

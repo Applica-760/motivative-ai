@@ -1,8 +1,11 @@
 import { Box } from '@mantine/core';
 import { ActivityCalendar } from './ActivityCalendar';
-import type { ActivityCalendarProps } from '../model';
+import type { ActivityDefinition } from '@/shared/types';
 
-interface ActivityCalendarWidgetProps extends ActivityCalendarProps {
+interface ActivityCalendarWidgetProps {
+  /** 表示するアクティビティ */
+  activity: ActivityDefinition;
+  /** クリックハンドラー（オプション） */
   onClick?: () => void;
 }
 
@@ -12,7 +15,7 @@ interface ActivityCalendarWidgetProps extends ActivityCalendarProps {
  * 
  * クリック可能な場合は、適切なスタイルとアクセシビリティ属性を追加
  */
-export function ActivityCalendarWidget({ onClick, ...calendarProps }: ActivityCalendarWidgetProps) {
+export function ActivityCalendarWidget({ activity, onClick }: ActivityCalendarWidgetProps) {
   const isClickable = !!onClick;
 
   return (
@@ -41,9 +44,9 @@ export function ActivityCalendarWidget({ onClick, ...calendarProps }: ActivityCa
           onClick();
         }
       }}
-      aria-label={isClickable ? `${calendarProps.activity.title}の記録を追加` : undefined}
+      aria-label={isClickable ? `${activity.title}のカレンダーを表示` : undefined}
     >
-      <ActivityCalendar {...calendarProps} />
+      <ActivityCalendar activity={activity} />
     </Box>
   );
 }

@@ -57,3 +57,70 @@ export function getDaysInMonth(date: Date): Date[] {
   
   return days;
 }
+
+/**
+ * 指定した日付の週の開始日（日曜日）を取得
+ */
+export function getStartOfWeek(date: Date): Date {
+  const result = new Date(date);
+  const day = result.getDay(); // 0 (日曜) - 6 (土曜)
+  result.setDate(result.getDate() - day);
+  result.setHours(0, 0, 0, 0);
+  return result;
+}
+
+/**
+ * 指定した日付の週の終了日（土曜日）を取得
+ */
+export function getEndOfWeek(date: Date): Date {
+  const result = new Date(date);
+  const day = result.getDay();
+  result.setDate(result.getDate() + (6 - day));
+  result.setHours(23, 59, 59, 999);
+  return result;
+}
+
+/**
+ * 今週と先週の2週間分の日付を取得（日曜始まり）
+ */
+export function getTwoWeeksDates(baseDate: Date = new Date()): Date[][] {
+  // 今週の開始日（日曜）
+  const thisWeekStart = getStartOfWeek(baseDate);
+  
+  // 先週の開始日（日曜）
+  const lastWeekStart = new Date(thisWeekStart);
+  lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+  
+  // 先週の7日間
+  const lastWeek: Date[] = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(lastWeekStart);
+    date.setDate(date.getDate() + i);
+    lastWeek.push(date);
+  }
+  
+  // 今週の7日間
+  const thisWeek: Date[] = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(thisWeekStart);
+    date.setDate(date.getDate() + i);
+    thisWeek.push(date);
+  }
+  
+  return [lastWeek, thisWeek];
+}
+
+/**
+ * 日付を "M/D" 形式でフォーマット
+ */
+export function formatMonthDay(date: Date): string {
+  return `${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+/**
+ * 曜日を取得（日本語短縮形）
+ */
+export function getWeekdayShort(date: Date): string {
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+  return weekdays[date.getDay()];
+}

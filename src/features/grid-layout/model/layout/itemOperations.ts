@@ -46,6 +46,10 @@ export function swapItemsInList(
  * 初期アイテムとの同期
  * 新しいアイテムが追加された場合や削除された場合に対応
  * 
+ * 既存アイテムの位置（column, row）は保持しつつ、
+ * サイズ（columnSpan, rowSpan）は常にinitialItemsから取得する。
+ * これにより、サイズの変更が正しく反映される。
+ * 
  * @param currentItems - 現在のアイテム
  * @param initialItems - 初期アイテム
  * @returns 同期されたアイテム、変更がない場合はnull
@@ -56,17 +60,44 @@ export function syncInitialItems(
 ): GridItemConfig[] | null {
   const currentIds = new Set(currentItems.map(item => item.id));
 
+  // アイテムの追加・削除をチェック
+  const itemsChanged = 
+    currentItems.length !== initialItems.length ||
+    !initialItems.every(item => currentIds.has(item.id));
+
+  // サイズ変更をチェック（columnSpan, rowSpanの変更）
+  const sizeChanged = initialItems.some(initialItem => {
+    const currentItem = currentItems.find(item => item.id === initialItem.id);
+    if (!currentItem) return false;
+    
+    return (
+      currentItem.position.columnSpan !== initialItem.position.columnSpan ||
+      currentItem.position.rowSpan !== initialItem.position.rowSpan
+    );
+  });
+
   // 変更がない場合はnullを返す（再レンダリング防止）
-  if (
-    currentItems.length === initialItems.length &&
-    initialItems.every(item => currentIds.has(item.id))
-  ) {
+  if (!itemsChanged && !sizeChanged) {
     return null;
   }
 
-  // 既存アイテムは位置を保持、新しいアイテムは初期位置を使用
+  // 既存アイテムは位置（column, row）を保持、サイズ（columnSpan, rowSpan）はinitialから取得
+  // 新しいアイテムは初期位置を使用
   return initialItems.map(initialItem => {
     const existingItem = currentItems.find(item => item.id === initialItem.id);
-    return existingItem || initialItem;
+    
+    if (existingItem) {
+      return {
+        ...initialItem,
+        position: {
+          column: existingItem.position.column,
+          row: existingItem.position.row,
+          columnSpan: initialItem.position.columnSpan,
+          rowSpan: initialItem.position.rowSpan,
+        },
+      };
+    }
+    
+    return initialItem;
   });
 }

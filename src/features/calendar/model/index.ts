@@ -6,4 +6,9 @@ export {
   getFirstDayOfMonth,
   getLastDayOfMonth,
   getDaysInMonth,
+  getStartOfWeek,
+  getEndOfWeek,
+  getTwoWeeksDates,
+  formatMonthDay,
+  getWeekdayShort,
 } from './calendarUtils';

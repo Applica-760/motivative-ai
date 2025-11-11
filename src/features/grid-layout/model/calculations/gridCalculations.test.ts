@@ -4,9 +4,9 @@ import {
   calculateNewPosition,
   calculateContainerHeight,
   calculateItemPosition,
-  calculateOverlayWidth,
+  calculateOverlaySize,
 } from './gridCalculations';
-import type { GridPosition, GridItemConfig } from '../types';
+import type { GridPosition, GridItemConfig } from '../../types';
 
 describe('gridCalculations', () => {
   describe('calculateCellSize', () => {
@@ -340,28 +340,39 @@ describe('gridCalculations', () => {
     });
   });
 
-  describe('calculateOverlayWidth', () => {
+  describe('calculateOverlaySize', () => {
     const cellWidth = 200;
+    const cellHeight = 200;
     const gap = 24;
 
-    it('columnSpan=1の幅を計算する', () => {
-      const result = calculateOverlayWidth(1, cellWidth, gap);
-      expect(result).toBe(200);
+    it('columnSpan=1, rowSpan=1のサイズを計算する', () => {
+      const result = calculateOverlaySize(1, 1, cellWidth, cellHeight, gap);
+      expect(result.width).toBe(200);
+      expect(result.height).toBe(200);
     });
 
-    it('columnSpan=2の幅を計算する', () => {
-      const result = calculateOverlayWidth(2, cellWidth, gap);
-      expect(result).toBe(424); // 200 * 2 + 24 * 1
+    it('columnSpan=2, rowSpan=1のサイズを計算する', () => {
+      const result = calculateOverlaySize(2, 1, cellWidth, cellHeight, gap);
+      expect(result.width).toBe(424); // 200 * 2 + 24 * 1
+      expect(result.height).toBe(200);
     });
 
-    it('columnSpan=3の幅を計算する', () => {
-      const result = calculateOverlayWidth(3, cellWidth, gap);
-      expect(result).toBe(648); // 200 * 3 + 24 * 2
+    it('columnSpan=1, rowSpan=2のサイズを計算する（縦長）', () => {
+      const result = calculateOverlaySize(1, 2, cellWidth, cellHeight, gap);
+      expect(result.width).toBe(200);
+      expect(result.height).toBe(424); // 200 * 2 + 24 * 1
+    });
+
+    it('columnSpan=2, rowSpan=2のサイズを計算する', () => {
+      const result = calculateOverlaySize(2, 2, cellWidth, cellHeight, gap);
+      expect(result.width).toBe(424);
+      expect(result.height).toBe(424);
     });
 
     it('デフォルトのギャップ値を使用する', () => {
-      const result = calculateOverlayWidth(2, cellWidth);
-      expect(result).toBe(424);
+      const result = calculateOverlaySize(2, 1, cellWidth, cellHeight);
+      expect(result.width).toBe(424);
+      expect(result.height).toBe(200);
     });
   });
 });

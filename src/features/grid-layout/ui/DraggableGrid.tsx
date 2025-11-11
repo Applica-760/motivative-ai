@@ -16,7 +16,7 @@ import {
   calculateNewPosition,
   calculateContainerHeight,
   calculateItemPosition,
-  calculateOverlayWidth,
+  calculateOverlaySize,
 } from '../model/calculations';
 
 interface DraggableGridProps {
@@ -96,6 +96,7 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
                 left: `${position.left}px`,
                 top: `${position.top}px`,
                 width: `${position.width}px`,
+                height: `${position.height}px`,
               }}
             >
               <DraggableGridItem item={item} />
@@ -108,8 +109,18 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
         {activeItem && cellSize.width > 0 ? (
           <Box
             style={{
-              width: `${calculateOverlayWidth(activeItem.position.columnSpan, cellSize.width)}px`,
-              aspectRatio: `${activeItem.position.columnSpan} / 1`,
+              width: `${calculateOverlaySize(
+                activeItem.position.columnSpan,
+                activeItem.position.rowSpan || 1,
+                cellSize.width,
+                cellSize.height
+              ).width}px`,
+              height: `${calculateOverlaySize(
+                activeItem.position.columnSpan,
+                activeItem.position.rowSpan || 1,
+                cellSize.width,
+                cellSize.height
+              ).height}px`,
               opacity: GRID_CONFIG.DRAG_OVERLAY_OPACITY,
             }}
           >
