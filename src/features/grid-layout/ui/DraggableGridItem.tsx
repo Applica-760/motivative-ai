@@ -51,7 +51,7 @@ export function DraggableGridItem({ item }: DraggableGridItemProps) {
       <Paper
         shadow={shadowStyles.shadow}
         radius="md"
-        p="lg"
+        p="xs"
         withBorder
         style={{
           cursor: (item.clickable ?? Boolean(item.onClick)) ? 'pointer' : 'default',
