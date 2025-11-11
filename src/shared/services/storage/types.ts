@@ -1,4 +1,5 @@
 import type { ActivityDefinition, ActivityRecord, SavedLayout } from '@/shared/types';
+import type { UserProfile, UpdateProfileData } from '@/features/account';
 
 /**
  * ストレージサービスの抽象インターフェース
@@ -123,6 +124,43 @@ export interface StorageService {
    * @throws StorageError 保存に失敗した場合
    */
   saveGridLayout(layout: SavedLayout): Promise<void>;
+  
+  // ==================== Profile ====================
+  
+  /**
+   * ユーザープロフィールを取得
+   * @param userId - ユーザーID
+   * @returns プロフィール情報、存在しない場合はnull
+   * @throws StorageError 読み込みに失敗した場合
+   */
+  getProfile(userId: string): Promise<UserProfile | null>;
+  
+  /**
+   * ユーザープロフィールを作成
+   * @param userId - ユーザーID
+   * @param profileData - プロフィール情報
+   * @throws StorageError 作成に失敗した場合
+   */
+  createProfile(
+    userId: string,
+    profileData: Omit<UserProfile, 'userId' | 'createdAt' | 'updatedAt'>
+  ): Promise<void>;
+  
+  /**
+   * ユーザープロフィールを更新
+   * @param userId - ユーザーID
+   * @param updates - 更新する内容（部分的な更新が可能）
+   * @throws StorageError 更新に失敗した場合、または該当プロフィールが存在しない場合
+   */
+  updateProfile(userId: string, updates: UpdateProfileData): Promise<void>;
+  
+  /**
+   * プロフィールが存在するかチェック
+   * @param userId - ユーザーID
+   * @returns プロフィールが存在すればtrue
+   * @throws StorageError チェックに失敗した場合
+   */
+  profileExists(userId: string): Promise<boolean>;
 }
 
 /**

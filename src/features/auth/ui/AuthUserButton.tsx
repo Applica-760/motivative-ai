@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { UnstyledButton, Group, Avatar, Text, Box, Menu } from '@mantine/core';
-import { IconUser, IconLogout, IconChevronRight, IconSettings } from '@tabler/icons-react';
+import { useState, useMemo } from 'react';
+import { UnstyledButton, Group, Avatar, Text, Box } from '@mantine/core';
+import { IconUser, IconChevronRight } from '@tabler/icons-react';
 import { useAuth } from '../model/AuthContext';
 import { AuthModal } from './AuthModal';
-import { ProfileModal } from '@/features/account';
+import { ProfileModal, useProfile, getAvatarIcon } from '@/features/account';
 
 /**
  * AuthUserButton
@@ -17,37 +17,52 @@ import { ProfileModal } from '@/features/account';
  * ```
  */
 export function AuthUserButton() {
-  const { user, isAuthenticated, signOut } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const { profile } = useProfile();
   const [authModalOpened, setAuthModalOpened] = useState(false);
   const [profileModalOpened, setProfileModalOpened] = useState(false);
   
   /**
    * ユーザー名を取得
-   * 優先順位: displayName > email > "ゲスト"
+   * 優先順位: profile.displayName > user.displayName > email > "ゲスト"
    */
   const getUserName = (): string => {
     if (!user) return 'ゲスト';
+    // プロフィール情報があればそちらを優先
+    if (profile?.displayName) return profile.displayName;
     return user.displayName || user.email || 'ゲスト';
   };
+  
+  /**
+   * アバターアイコンコンポーネントを取得
+   */
+  const AvatarIconComponent = useMemo(() => {
+    if (profile?.avatarIcon) {
+      return getAvatarIcon(profile.avatarIcon);
+    }
+    return IconUser;
+  }, [profile?.avatarIcon]);
+  
+  /**
+   * アバターの色を取得
+   */
+  const avatarColor = useMemo((): string => {
+    if (profile?.iconColor) {
+      return profile.iconColor;
+    }
+    return 'teal';
+  }, [profile?.iconColor]);
   
   /**
    * ボタンクリック時の処理
    */
   const handleClick = () => {
     if (!isAuthenticated) {
-      // 未ログイン時はモーダルを開く
+      // 未ログイン時はログインモーダルを開く
       setAuthModalOpened(true);
-    }
-  };
-  
-  /**
-   * ログアウト処理
-   */
-  const handleLogout = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Logout failed:', error);
+    } else {
+      // ログイン済みの場合はプロフィールモーダルを開く
+      setProfileModalOpened(true);
     }
   };
   
@@ -55,61 +70,41 @@ export function AuthUserButton() {
   if (isAuthenticated) {
     return (
       <>
-        <Menu shadow="md" width={200} position="right-end">
-          <Menu.Target>
-            <UnstyledButton
-              style={{
-                display: 'block',
-                width: '100%',
-                padding: '12px',
-                borderRadius: '8px',
-                transition: 'background-color 0.2s',
-              }}
-              styles={{
-                root: {
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  },
-                },
-              }}
+        <UnstyledButton
+          onClick={handleClick}
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: '12px',
+            borderRadius: '8px',
+            transition: 'background-color 0.2s',
+          }}
+          styles={{
+            root: {
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              },
+            },
+          }}
+        >
+          <Group gap="sm">
+            <Avatar 
+              radius="xl" 
+              size="md"
+              style={{ backgroundColor: avatarColor }}
             >
-              <Group gap="sm">
-                <Avatar color="teal" radius="xl" size="md">
-                  <IconUser size={20} />
-                </Avatar>
-                
-                <Box style={{ flex: 1, minWidth: 0 }}>
-                  <Text size="sm" fw={500} truncate>
-                    {getUserName()}
-                  </Text>
-                  {user?.email && user.displayName && (
-                    <Text size="xs" c="dimmed" truncate>
-                      {user.email}
-                    </Text>
-                  )}
-                </Box>
-                
-                <IconChevronRight size={16} opacity={0.5} />
-              </Group>
-            </UnstyledButton>
-          </Menu.Target>
-          
-          <Menu.Dropdown>
-            <Menu.Item
-              leftSection={<IconSettings size={16} />}
-              onClick={() => setProfileModalOpened(true)}
-            >
-              プロフィール設定
-            </Menu.Item>
-            <Menu.Item
-              leftSection={<IconLogout size={16} />}
-              color="red"
-              onClick={handleLogout}
-            >
-              ログアウト
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+              <AvatarIconComponent size={20} />
+            </Avatar>
+            
+            <Box style={{ flex: 1, minWidth: 0 }}>
+              <Text size="sm" fw={500} truncate>
+                {getUserName()}
+              </Text>
+            </Box>
+            
+            <IconChevronRight size={16} opacity={0.5} />
+          </Group>
+        </UnstyledButton>
         
         {/* プロフィールモーダル */}
         <ProfileModal

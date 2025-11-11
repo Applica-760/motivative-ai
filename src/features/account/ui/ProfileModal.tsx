@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { Button, Divider, Stack } from '@mantine/core';
+import { IconLogout } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { StyledModal } from '@/shared/ui/StyledModal';
+import { useAuth } from '@/features/auth';
 import { useProfile } from '../model/ProfileContext';
 import { ProfileForm } from './ProfileForm';
 import type { UpdateProfileData } from '../model/types';
@@ -21,17 +24,40 @@ interface ProfileModalProps {
  */
 export function ProfileModal({ opened, onClose }: ProfileModalProps) {
   const { profile, updateProfile, createProfile } = useProfile();
+  const { signOut } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
+  
+  /**
+   * ログアウト処理
+   */
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      onClose();
+      notifications.show({
+        title: 'ログアウト',
+        message: 'ログアウトしました',
+        color: 'blue',
+      });
+    } catch (error) {
+      console.error('[ProfileModal] Logout failed:', error);
+      notifications.show({
+        title: 'エラー',
+        message: 'ログアウトに失敗しました',
+        color: 'red',
+      });
+    }
+  };
   
   /**
    * 保存処理
    */
   const handleSave = async (data: UpdateProfileData) => {
+    setIsSaving(true);
+    
     try {
-      setIsSaving(true);
-      
+      // 既存プロフィールがあれば更新、なければ作成
       if (profile) {
-        // 既存プロフィールを更新
         await updateProfile(data);
         notifications.show({
           title: '保存完了',
@@ -39,14 +65,7 @@ export function ProfileModal({ opened, onClose }: ProfileModalProps) {
           color: 'green',
         });
       } else {
-        // 新規プロフィールを作成
-        await createProfile(
-          data.displayName || '',
-          data.gender || '未設定',
-          data.iconColor || '#228be6',
-          data.avatarIcon || 'IconUser',
-          data.aiMessage || ''
-        );
+        await createProfile(data);
         notifications.show({
           title: '作成完了',
           message: 'プロフィールを作成しました',
@@ -74,16 +93,30 @@ export function ProfileModal({ opened, onClose }: ProfileModalProps) {
       title={profile ? 'プロフィール設定' : 'プロフィールを作成'}
       size="lg"
     >
-      <ProfileForm
-        initialDisplayName={profile?.displayName}
-        initialGender={profile?.gender}
-        initialIconColor={profile?.iconColor}
-        initialAvatarIcon={profile?.avatarIcon}
-        initialAiMessage={profile?.aiMessage}
-        onSave={handleSave}
-        onCancel={onClose}
-        isSaving={isSaving}
-      />
+      <Stack gap="md">
+        <ProfileForm
+          initialDisplayName={profile?.displayName}
+          initialGender={profile?.gender}
+          initialIconColor={profile?.iconColor}
+          initialAvatarIcon={profile?.avatarIcon}
+          initialAiMessage={profile?.aiMessage}
+          onSave={handleSave}
+          onCancel={onClose}
+          isSaving={isSaving}
+        />
+        
+        <Divider />
+        
+        <Button
+          variant="subtle"
+          color="red"
+          leftSection={<IconLogout size={16} />}
+          onClick={handleLogout}
+          fullWidth
+        >
+          ログアウト
+        </Button>
+      </Stack>
     </StyledModal>
   );
 }

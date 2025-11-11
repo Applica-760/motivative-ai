@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Stack,
   TextInput,
@@ -14,17 +14,33 @@ import {
   Avatar,
 } from '@mantine/core';
 import type { Gender, UpdateProfileData } from '../model/types';
-import { AVATAR_ICONS, DEFAULT_COLORS, getAvatarIcon } from '../config';
+import { AVATAR_ICONS, DEFAULT_COLORS, getAvatarIcon, GENDER_OPTIONS, VALIDATION_RULES } from '../config';
 
-/**
- * 性別の選択肢
- */
-const GENDER_OPTIONS: { value: Gender; label: string }[] = [
-  { value: '未設定', label: '未設定' },
-  { value: '男性', label: '男性' },
-  { value: '女性', label: '女性' },
-  { value: 'その他', label: 'その他' },
-];
+// スタイル定数
+const STYLES = {
+  preview: {
+    textAlign: 'center' as const,
+    paddingTop: '1rem',
+  },
+  avatarContainer: {
+    margin: '0 auto',
+  },
+  colorButton: (isSelected: boolean) => ({
+    width: 40,
+    height: 40,
+    borderRadius: '8px',
+    border: isSelected ? '3px solid white' : '2px solid rgba(255, 255, 255, 0.2)',
+    transition: 'all 0.2s',
+    cursor: 'pointer',
+  }),
+  iconButton: (isSelected: boolean) => ({
+    padding: '0.75rem',
+    borderRadius: '8px',
+    border: isSelected ? '2px solid' : '2px solid transparent',
+    backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+    transition: 'all 0.2s',
+  }),
+} as const;
 
 interface ProfileFormProps {
   /** 初期値: ユーザー名 */
@@ -68,14 +84,8 @@ export function ProfileForm({
   const [aiMessage, setAiMessage] = useState(initialAiMessage);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
-  // 初期値が変更されたらフォームを更新
-  useEffect(() => {
-    setDisplayName(initialDisplayName);
-    setGender(initialGender);
-    setIconColor(initialIconColor);
-    setAvatarIcon(initialAvatarIcon);
-    setAiMessage(initialAiMessage);
-  }, [initialDisplayName, initialGender, initialIconColor, initialAvatarIcon, initialAiMessage]);
+  // 選択中のアイコンコンポーネント
+  const SelectedIconComponent = useMemo(() => getAvatarIcon(avatarIcon), [avatarIcon]);
   
   /**
    * バリデーション
@@ -85,12 +95,12 @@ export function ProfileForm({
     
     if (!displayName.trim()) {
       newErrors.displayName = 'ユーザー名を入力してください';
-    } else if (displayName.length > 50) {
-      newErrors.displayName = 'ユーザー名は50文字以内で入力してください';
+    } else if (displayName.length > VALIDATION_RULES.DISPLAY_NAME_MAX_LENGTH) {
+      newErrors.displayName = `ユーザー名は${VALIDATION_RULES.DISPLAY_NAME_MAX_LENGTH}文字以内で入力してください`;
     }
     
-    if (aiMessage.length > 500) {
-      newErrors.aiMessage = 'AIメッセージは500文字以内で入力してください';
+    if (aiMessage.length > VALIDATION_RULES.AI_MESSAGE_MAX_LENGTH) {
+      newErrors.aiMessage = `AIメッセージは${VALIDATION_RULES.AI_MESSAGE_MAX_LENGTH}文字以内で入力してください`;
     }
     
     setErrors(newErrors);
@@ -101,9 +111,7 @@ export function ProfileForm({
    * 保存処理
    */
   const handleSave = async () => {
-    if (!validate()) {
-      return;
-    }
+    if (!validate()) return;
     
     try {
       await onSave({
@@ -118,17 +126,14 @@ export function ProfileForm({
     }
   };
   
-  // 選択中のアイコンコンポーネントを取得
-  const SelectedIconComponent = getAvatarIcon(avatarIcon);
-  
   return (
     <Stack gap="md">
       {/* プレビュー */}
-      <Box style={{ textAlign: 'center', paddingTop: '1rem' }}>
+      <Box style={STYLES.preview}>
         <Avatar
           size={80}
           radius="xl"
-          style={{ margin: '0 auto', backgroundColor: iconColor }}
+          style={{ ...STYLES.avatarContainer, backgroundColor: iconColor }}
         >
           <SelectedIconComponent size={40} />
         </Avatar>
@@ -145,7 +150,7 @@ export function ProfileForm({
         value={displayName}
         onChange={(e) => setDisplayName(e.currentTarget.value)}
         error={errors.displayName}
-        maxLength={50}
+        maxLength={VALIDATION_RULES.DISPLAY_NAME_MAX_LENGTH}
       />
       
       {/* 性別 */}
@@ -154,19 +159,48 @@ export function ProfileForm({
         placeholder="性別を選択"
         data={GENDER_OPTIONS}
         value={gender}
-        onChange={(value) => setGender(value as Gender)}
+        onChange={(value) => value && setGender(value as Gender)}
         allowDeselect={false}
       />
       
       {/* アイコン色 */}
-      <ColorInput
-        label="アイコンの色"
-        placeholder="色を選択"
-        value={iconColor}
-        onChange={setIconColor}
-        swatches={DEFAULT_COLORS}
-        format="hex"
-      />
+      <Box>
+        <Text size="sm" fw={500} mb="xs">
+          アイコンの色
+        </Text>
+        <Group gap="xs">
+          {DEFAULT_COLORS.map((color) => (
+            <UnstyledButton
+              key={color}
+              onClick={() => setIconColor(color)}
+              style={{
+                ...STYLES.colorButton(iconColor === color),
+                backgroundColor: color,
+              }}
+              styles={{
+                root: {
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                  },
+                },
+              }}
+            />
+          ))}
+        </Group>
+        <ColorInput
+          placeholder="カスタムカラーを入力 (例: #ff6b6b)"
+          value={iconColor}
+          onChange={setIconColor}
+          format="hex"
+          mt="xs"
+          size="xs"
+          styles={{
+            input: {
+              fontSize: '0.75rem',
+            },
+          }}
+        />
+      </Box>
       
       {/* アバター選択 */}
       <Box>
@@ -183,11 +217,8 @@ export function ProfileForm({
                 key={icon.name}
                 onClick={() => setAvatarIcon(icon.name)}
                 style={{
-                  padding: '0.75rem',
-                  borderRadius: '8px',
-                  border: isSelected ? `2px solid ${iconColor}` : '2px solid transparent',
-                  backgroundColor: isSelected ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-                  transition: 'all 0.2s',
+                  ...STYLES.iconButton(isSelected),
+                  borderColor: isSelected ? iconColor : 'transparent',
                 }}
                 styles={{
                   root: {
@@ -219,7 +250,7 @@ export function ProfileForm({
         error={errors.aiMessage}
         minRows={3}
         maxRows={6}
-        maxLength={500}
+        maxLength={VALIDATION_RULES.AI_MESSAGE_MAX_LENGTH}
       />
       
       {/* ボタン */}

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo, type ReactNode } from 'react';
-import { getFirestore } from 'firebase/firestore';
 import { useAuth } from '@/features/auth';
-import type { UserProfile, UpdateProfileData, Gender } from './types';
+import { useStorage } from '@/shared/services/storage';
+import type { UserProfile, UpdateProfileData } from './types';
 import { ProfileRepository } from '../api/repositories';
 
 /**
@@ -25,19 +25,9 @@ interface ProfileContextValue {
   
   /**
    * プロフィールを作成（初回のみ）
-   * @param displayName - ユーザー名
-   * @param gender - 性別
-   * @param iconColor - アイコン色
-   * @param avatarIcon - アバターアイコン
-   * @param aiMessage - AIメッセージ
+   * @param profileData - プロフィール情報
    */
-  createProfile: (
-    displayName: string,
-    gender: Gender,
-    iconColor: string,
-    avatarIcon: string,
-    aiMessage: string
-  ) => Promise<void>;
+  createProfile: (profileData: UpdateProfileData) => Promise<void>;
   
   /**
    * プロフィールを再読み込み
@@ -61,6 +51,7 @@ interface ProfileProviderProps {
  * 
  * ユーザープロフィール情報をアプリケーション全体で管理する。
  * 認証状態（auth feature）と連携し、ログイン時に自動でプロフィールをロードする。
+ * StorageServiceパターンにより、ログイン状態に応じてlocalStorage/Firestoreが自動切り替え。
  * 
  * @example
  * ```tsx
@@ -73,24 +64,24 @@ interface ProfileProviderProps {
  */
 export function ProfileProvider({ children }: ProfileProviderProps) {
   const { user, isAuthenticated } = useAuth();
+  const storage = useStorage();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   
-  // ProfileRepositoryインスタンスを作成
+  // ProfileRepositoryインスタンスを作成（StorageServiceを注入）
   const repository = useMemo(() => {
-    const firestore = getFirestore();
-    return new ProfileRepository(firestore);
-  }, []);
+    return new ProfileRepository(storage);
+  }, [storage]);
   
   /**
-   * プロフィールを取得
+   * プロフィールを取得（内部用ヘルパー）
    */
   const fetchProfile = useCallback(async (userId: string) => {
+    setIsLoading(true);
+    setError(null);
+    
     try {
-      setIsLoading(true);
-      setError(null);
-      
       const profileData = await repository.getProfile(userId);
       setProfile(profileData);
       
@@ -98,52 +89,57 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
         console.log('[ProfileProvider] No profile found for user:', userId);
       }
     } catch (err) {
-      console.error('[ProfileProvider] Failed to fetch profile:', err);
-      setError(err instanceof Error ? err : new Error('Failed to fetch profile'));
+      const error = err instanceof Error ? err : new Error('Failed to fetch profile');
+      console.error('[ProfileProvider] Failed to fetch profile:', error);
+      setError(error);
     } finally {
       setIsLoading(false);
     }
   }, [repository]);
   
   /**
-   * プロフィールを作成
+   * 非同期操作の共通ラッパー
    */
-  const createProfile = useCallback(async (
-    displayName: string,
-    gender: Gender,
-    iconColor: string,
-    avatarIcon: string,
-    aiMessage: string
-  ) => {
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
+  const withAsyncHandler = useCallback(async <T,>(
+    operation: () => Promise<T>,
+    errorMessage: string
+  ): Promise<T> => {
+    setIsLoading(true);
+    setError(null);
     
     try {
-      setIsLoading(true);
-      setError(null);
-      
-      await repository.createProfile(user.id, {
-        displayName,
-        gender,
-        iconColor,
-        avatarIcon,
-        aiMessage,
-      });
-      
-      // 作成後、プロフィールを再取得
-      await fetchProfile(user.id);
-      
-      console.log('[ProfileProvider] Profile created successfully');
+      return await operation();
     } catch (err) {
-      console.error('[ProfileProvider] Failed to create profile:', err);
-      const error = err instanceof Error ? err : new Error('Failed to create profile');
+      const error = err instanceof Error ? err : new Error(errorMessage);
+      console.error(`[ProfileProvider] ${errorMessage}:`, error);
       setError(error);
       throw error;
     } finally {
       setIsLoading(false);
     }
-  }, [user, repository, fetchProfile]);
+  }, []);
+  
+  /**
+   * プロフィールを作成
+   */
+  const createProfile = useCallback(async (profileData: UpdateProfileData) => {
+    if (!user) {
+      throw new Error('User not authenticated');
+    }
+    
+    await withAsyncHandler(async () => {
+      await repository.createProfile(user.id, {
+        displayName: profileData.displayName || '',
+        gender: profileData.gender || '未設定',
+        iconColor: profileData.iconColor || '#228be6',
+        avatarIcon: profileData.avatarIcon || 'IconUser',
+        aiMessage: profileData.aiMessage || '',
+      });
+      
+      await fetchProfile(user.id);
+      console.log('[ProfileProvider] Profile created successfully');
+    }, 'Failed to create profile');
+  }, [user, repository, fetchProfile, withAsyncHandler]);
   
   /**
    * プロフィールを更新
@@ -153,25 +149,12 @@ export function ProfileProvider({ children }: ProfileProviderProps) {
       throw new Error('User not authenticated');
     }
     
-    try {
-      setIsLoading(true);
-      setError(null);
-      
+    await withAsyncHandler(async () => {
       await repository.updateProfile(user.id, updateData);
-      
-      // 更新後、プロフィールを再取得
       await fetchProfile(user.id);
-      
       console.log('[ProfileProvider] Profile updated successfully');
-    } catch (err) {
-      console.error('[ProfileProvider] Failed to update profile:', err);
-      const error = err instanceof Error ? err : new Error('Failed to update profile');
-      setError(error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user, repository, fetchProfile]);
+    }, 'Failed to update profile');
+  }, [user, repository, fetchProfile, withAsyncHandler]);
   
   /**
    * プロフィールを再読み込み

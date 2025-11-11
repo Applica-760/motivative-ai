@@ -14,7 +14,7 @@ export { ProfileProvider, useProfile } from './model';
 export { ProfileForm, ProfileModal } from './ui';
 
 // Config
-export { AVATAR_ICONS, DEFAULT_COLORS, getAvatarIcon } from './config';
+export { AVATAR_ICONS, DEFAULT_COLORS, getAvatarIcon, GENDER_OPTIONS, VALIDATION_RULES } from './config';
 export type { AvatarIconDefinition } from './config';
 
 // API (通常は外部に公開しないが、テスト用に)

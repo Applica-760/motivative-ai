@@ -16,6 +16,9 @@ export const STORAGE_KEYS = {
   /** アクティビティ記録 */
   RECORDS: 'motivative-ai-records',
   
+  /** ユーザープロフィール */
+  PROFILE: 'motivative-ai-profile',
+  
   /** ユーザー設定（将来の拡張用） */
   USER_PREFERENCES: 'user-preferences',
   

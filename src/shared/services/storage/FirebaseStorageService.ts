@@ -15,6 +15,7 @@ import {
 } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/shared/config/firebase';
 import type { ActivityDefinition, ActivityRecord, SavedLayout } from '@/shared/types';
+import type { UserProfile, UpdateProfileData } from '@/features/account';
 import type { StorageService } from './types';
 import { StorageError } from './types';
 import { mapFirestoreDocument } from './firestoreUtils';
@@ -38,6 +39,17 @@ function mapToActivityRecord(
 ): ActivityRecord {
   return mapFirestoreDocument<ActivityRecord>(doc, {
     dateFields: ['timestamp', 'createdAt', 'updatedAt'],
+  });
+}
+
+/**
+ * FirestoreドキュメントをUserProfileに変換
+ */
+function mapToUserProfile(
+  doc: QueryDocumentSnapshot<DocumentData>
+): UserProfile {
+  return mapFirestoreDocument<UserProfile>(doc, {
+    dateFields: ['createdAt', 'updatedAt'],
   });
 }
 
@@ -415,6 +427,102 @@ export class FirebaseStorageService implements StorageService {
         'write',
         error
       );
+    }
+  }
+  
+  // ==================== Profile ====================
+  
+  async getProfile(userId: string): Promise<UserProfile | null> {
+    try {
+      const profileRef = doc(this.db, `users/${userId}/profile/data`);
+      const profileSnap = await getDoc(profileRef);
+      
+      if (!profileSnap.exists()) {
+        console.log('[FirebaseStorageService] Profile not found for user:', userId);
+        return null;
+      }
+      
+      return mapToUserProfile(profileSnap as QueryDocumentSnapshot<DocumentData>);
+    } catch (error) {
+      console.error('[FirebaseStorageService] Failed to get profile:', error);
+      throw new StorageError(
+        'Failed to fetch profile from Firestore',
+        'read',
+        error
+      );
+    }
+  }
+  
+  async createProfile(
+    userId: string,
+    profileData: Omit<UserProfile, 'userId' | 'createdAt' | 'updatedAt'>
+  ): Promise<void> {
+    try {
+      const profileRef = doc(this.db, `users/${userId}/profile/data`);
+      
+      await setDoc(profileRef, {
+        userId,
+        displayName: profileData.displayName,
+        gender: profileData.gender,
+        iconColor: profileData.iconColor,
+        avatarIcon: profileData.avatarIcon,
+        aiMessage: profileData.aiMessage,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      
+      console.log('[FirebaseStorageService] Profile created for user:', userId);
+    } catch (error) {
+      console.error('[FirebaseStorageService] Failed to create profile:', error);
+      throw new StorageError(
+        'Failed to create profile in Firestore',
+        'write',
+        error
+      );
+    }
+  }
+  
+  async updateProfile(userId: string, updates: UpdateProfileData): Promise<void> {
+    try {
+      const profileRef = doc(this.db, `users/${userId}/profile/data`);
+      
+      // 存在確認
+      const profileSnap = await getDoc(profileRef);
+      if (!profileSnap.exists()) {
+        throw new StorageError(
+          `Profile not found for user: ${userId}`,
+          'write'
+        );
+      }
+      
+      await updateDoc(profileRef, {
+        ...updates,
+        updatedAt: serverTimestamp(),
+      });
+      
+      console.log('[FirebaseStorageService] Profile updated for user:', userId);
+    } catch (error) {
+      if (error instanceof StorageError) {
+        throw error;
+      }
+      
+      console.error('[FirebaseStorageService] Failed to update profile:', error);
+      throw new StorageError(
+        'Failed to update profile in Firestore',
+        'write',
+        error
+      );
+    }
+  }
+  
+  async profileExists(userId: string): Promise<boolean> {
+    try {
+      const profileRef = doc(this.db, `users/${userId}/profile/data`);
+      const profileSnap = await getDoc(profileRef);
+      return profileSnap.exists();
+    } catch (error) {
+      console.error('[FirebaseStorageService] Failed to check profile existence:', error);
+      return false;
     }
   }
 }

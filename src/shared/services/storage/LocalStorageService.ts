@@ -1,5 +1,6 @@
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 import type { SavedLayout } from '@/features/grid-layout';
+import type { UserProfile, UpdateProfileData } from '@/features/account';
 import { STORAGE_KEYS } from '@/shared/config';
 import type { StorageService } from './types';
 import { StorageError } from './types';
@@ -84,6 +85,17 @@ export class LocalStorageService extends BaseStorageService implements StorageSe
     };
   }
   
+  /**
+   * Date型のフィールドを復元
+   */
+  private reviveUserProfile(data: UserProfile): UserProfile {
+    return {
+      ...data,
+      createdAt: new Date(data.createdAt),
+      updatedAt: new Date(data.updatedAt),
+    };
+  }
+  
   // ==================== BaseStorageService Implementation ====================
   
   protected async getAllActivities(): Promise<ActivityDefinition[]> {
@@ -144,5 +156,100 @@ export class LocalStorageService extends BaseStorageService implements StorageSe
   
   async saveGridLayout(layout: SavedLayout): Promise<void> {
     this.setItem(STORAGE_KEYS.GRID_LAYOUT_ORDER, layout);
+  }
+  
+  // ==================== Profile ====================
+  
+  async getProfile(userId: string): Promise<UserProfile | null> {
+    try {
+      // localStorageではユーザーIDをキーに含める
+      const key = `${STORAGE_KEYS.PROFILE}-${userId}`;
+      const profile = this.getItem<UserProfile>(key);
+      
+      if (!profile) {
+        return null;
+      }
+      
+      // Date型の復元
+      return this.reviveUserProfile(profile);
+    } catch (error) {
+      console.error('[LocalStorageService] Failed to get profile:', error);
+      throw new StorageError(
+        'Failed to fetch profile from localStorage',
+        'read',
+        error
+      );
+    }
+  }
+  
+  async createProfile(
+    userId: string,
+    profileData: Omit<UserProfile, 'userId' | 'createdAt' | 'updatedAt'>
+  ): Promise<void> {
+    try {
+      const key = `${STORAGE_KEYS.PROFILE}-${userId}`;
+      const now = new Date();
+      
+      const profile: UserProfile = {
+        userId,
+        ...profileData,
+        createdAt: now,
+        updatedAt: now,
+      };
+      
+      this.setItem(key, profile);
+      console.log('[LocalStorageService] Profile created for user:', userId);
+    } catch (error) {
+      console.error('[LocalStorageService] Failed to create profile:', error);
+      throw new StorageError(
+        'Failed to create profile in localStorage',
+        'write',
+        error
+      );
+    }
+  }
+  
+  async updateProfile(userId: string, updates: UpdateProfileData): Promise<void> {
+    try {
+      const key = `${STORAGE_KEYS.PROFILE}-${userId}`;
+      const existingProfile = await this.getProfile(userId);
+      
+      if (!existingProfile) {
+        throw new StorageError(
+          `Profile not found for user: ${userId}`,
+          'write'
+        );
+      }
+      
+      const updatedProfile: UserProfile = {
+        ...existingProfile,
+        ...updates,
+        updatedAt: new Date(),
+      };
+      
+      this.setItem(key, updatedProfile);
+      console.log('[LocalStorageService] Profile updated for user:', userId);
+    } catch (error) {
+      if (error instanceof StorageError) {
+        throw error;
+      }
+      
+      console.error('[LocalStorageService] Failed to update profile:', error);
+      throw new StorageError(
+        'Failed to update profile in localStorage',
+        'write',
+        error
+      );
+    }
+  }
+  
+  async profileExists(userId: string): Promise<boolean> {
+    try {
+      const profile = await this.getProfile(userId);
+      return profile !== null;
+    } catch (error) {
+      console.error('[LocalStorageService] Failed to check profile existence:', error);
+      return false;
+    }
   }
 }
