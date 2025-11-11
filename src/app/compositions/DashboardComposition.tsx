@@ -13,6 +13,8 @@ import { createDashboardGridItems } from './dashboardConfig';
 interface DashboardCompositionProps {
   /** グラフクリック時のコールバック（オプション） */
   onChartClick?: (activityId: string) => void;
+  /** カレンダークリック時のコールバック（オプション） */
+  onCalendarClick?: (activityId: string) => void;
   /** グリッドアイテムを受け取るレンダー関数 */
   children: (gridItems: GridItemConfig[]) => React.ReactNode;
 }
@@ -40,7 +42,8 @@ interface DashboardCompositionProps {
  * ```
  */
 export function DashboardComposition({ 
-  onChartClick, 
+  onChartClick,
+  onCalendarClick,
   children 
 }: DashboardCompositionProps) {
   // ActivityContextからデータを取得
@@ -82,8 +85,8 @@ export function DashboardComposition({
 
   // グリッドアイテムを生成
   const gridItems = useMemo(
-    () => createDashboardGridItems(chartActivities, onChartClick),
-    [chartActivities, onChartClick]
+    () => createDashboardGridItems(chartActivities, activityDefinitions, onChartClick, onCalendarClick),
+    [chartActivities, activityDefinitions, onChartClick, onCalendarClick]
   );
 
   // ローディング中は読み込み表示

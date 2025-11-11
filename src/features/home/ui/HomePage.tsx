@@ -30,8 +30,8 @@ export function HomePage() {
   // タブレット以下（1200px未満）でサイドバーを折りたたみ可能に
   const isMobile = useMediaQuery('(max-width: 1200px)');
 
-  // グラフクリック時のハンドラー
-  const handleChartClick = (activityId: string) => {
+  // グラフ・カレンダークリック時のハンドラー（どちらも記録追加モーダルを開く）
+  const handleActivityClick = (activityId: string) => {
     setPreselectedActivityId(activityId);
     openAddRecord();
   };
@@ -88,7 +88,10 @@ export function HomePage() {
             )}
             
             <Box>
-              <DashboardComposition onChartClick={handleChartClick}>
+              <DashboardComposition 
+                onChartClick={handleActivityClick}
+                onCalendarClick={handleActivityClick}
+              >
                 {(gridItems) => <MainContent gridItems={gridItems} />}
               </DashboardComposition>
             </Box>
