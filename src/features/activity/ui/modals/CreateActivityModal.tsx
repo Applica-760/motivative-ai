@@ -1,8 +1,7 @@
-import { Modal } from '@mantine/core';
 import { ActivityForm } from '../forms';
 import type { ActivityFormData } from '../../model/formTypes';
 import { useActivityContext } from '../../model/ActivityContext';
-import { MODAL_STYLES, MODAL_OVERLAY_PROPS } from '../../config/modalStyles';
+import { StyledModal } from '@/shared/ui';
 
 interface CreateActivityModalProps {
   /** モーダルの開閉状態 */
@@ -47,16 +46,13 @@ export function CreateActivityModal({ opened, onClose }: CreateActivityModalProp
   };
 
   return (
-    <Modal
+    <StyledModal
       opened={opened}
       onClose={onClose}
       title="新しいアクティビティ"
-      centered
       size="lg"
-      overlayProps={MODAL_OVERLAY_PROPS}
-      styles={MODAL_STYLES}
     >
       <ActivityForm onSuccess={handleSuccess} onCancel={onClose} />
-    </Modal>
+    </StyledModal>
   );
 }

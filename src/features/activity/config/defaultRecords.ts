@@ -1,8 +1,8 @@
 import type { ActivityRecord } from '@/shared/types';
 
 /**
- * モックアクティビティ記録データ
- * 開発・テスト用のサンプル記録（過去7日分）
+ * デフォルトアクティビティ記録データ
+ * 初回起動時にユーザーに使い方を例示するためのサンプルデータ（過去7日分）
  */
 
 // 今日から過去7日分の日付を生成
@@ -170,9 +170,9 @@ const readingRecords: ActivityRecord[] = [
 ];
 
 /**
- * すべてのモック記録データ
+ * すべてのデフォルト記録データ
  */
-export const mockActivityRecords: ActivityRecord[] = [
+export const defaultRecords: ActivityRecord[] = [
   ...runningRecords,
   ...readingRecords,
 ];

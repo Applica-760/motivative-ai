@@ -53,7 +53,9 @@ export function MobileSidebar({ isOpen, onClose, side, children }: MobileSidebar
             right: 0,
             bottom: 0,
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(3px)',
             zIndex: 99,
+            animation: 'fadeIn 0.2s ease',
           }}
         />
       )}

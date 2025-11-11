@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { UnstyledButton, Group, Avatar, Text, Box, Menu } from '@mantine/core';
-import { IconUser, IconLogout, IconChevronRight } from '@tabler/icons-react';
+import { IconUser, IconLogout, IconChevronRight, IconSettings } from '@tabler/icons-react';
 import { useAuth } from '../model/AuthContext';
 import { AuthModal } from './AuthModal';
+import { ProfileModal } from '@/features/account';
 
 /**
  * AuthUserButton
@@ -18,6 +19,7 @@ import { AuthModal } from './AuthModal';
 export function AuthUserButton() {
   const { user, isAuthenticated, signOut } = useAuth();
   const [authModalOpened, setAuthModalOpened] = useState(false);
+  const [profileModalOpened, setProfileModalOpened] = useState(false);
   
   /**
    * ユーザー名を取得
@@ -94,6 +96,12 @@ export function AuthUserButton() {
           
           <Menu.Dropdown>
             <Menu.Item
+              leftSection={<IconSettings size={16} />}
+              onClick={() => setProfileModalOpened(true)}
+            >
+              プロフィール設定
+            </Menu.Item>
+            <Menu.Item
               leftSection={<IconLogout size={16} />}
               color="red"
               onClick={handleLogout}
@@ -102,6 +110,12 @@ export function AuthUserButton() {
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
+        
+        {/* プロフィールモーダル */}
+        <ProfileModal
+          opened={profileModalOpened}
+          onClose={() => setProfileModalOpened(false)}
+        />
       </>
     );
   }

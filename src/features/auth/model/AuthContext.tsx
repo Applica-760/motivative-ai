@@ -84,19 +84,24 @@ export function AuthProvider({ children, service }: AuthProviderProps) {
   // 認証状態の初期化と監視
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
+    let isFirstCall = true;
     
     const initAuth = async () => {
       try {
-        setIsLoading(true);
-        
-        // 現在のユーザーを取得
-        const currentUser = await service.getCurrentUser();
-        setUser(currentUser);
-        
-        // 認証状態の変更を監視
+        // onAuthStateChanged の最初のコールバックが呼ばれるまで isLoading を true に保つ
+        // これにより、Firebase認証の確認が完了するまでローディング画面が表示される
         unsubscribe = service.onAuthStateChanged((newUser) => {
           setUser(newUser);
-          setIsLoading(false);
+          
+          // 最初のコールバックで初期化完了
+          if (isFirstCall) {
+            isFirstCall = false;
+            setIsLoading(false);
+            console.log(
+              '[AuthProvider] Initial auth state loaded:',
+              newUser?.email || 'not authenticated'
+            );
+          }
         });
       } catch (err) {
         console.error('[AuthProvider] Initialization error:', err);
@@ -109,7 +114,6 @@ export function AuthProvider({ children, service }: AuthProviderProps) {
                 err
               )
         );
-      } finally {
         setIsLoading(false);
       }
     };

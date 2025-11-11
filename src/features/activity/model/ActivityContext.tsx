@@ -3,8 +3,8 @@ import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 import { useStorage } from '@/shared/services/storage';
 import { ActivityRepositoryImpl } from '../api/repositories/ActivityRepositoryImpl';
 import { RecordRepositoryImpl } from '../api/repositories/RecordRepositoryImpl';
-import { mockActivityDefinitions } from '../model/mockActivityDefinitions';
-import { mockActivityRecords } from '../model/mockActivityRecords';
+import { defaultActivities } from '../config/defaultActivities';
+import { defaultRecords } from '../config/defaultRecords';
 
 interface ActivityContextValue {
   activities: ActivityDefinition[];
@@ -40,38 +40,41 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const [activities, setActivities] = useState<ActivityDefinition[]>([]);
   const [records, setRecords] = useState<ActivityRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // 初期データの読み込み
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
+        setIsInitialized(false);
         
         const [storedActivities, storedRecords] = await Promise.all([
           activityRepository.getAll(),
           recordRepository.getAll(),
         ]);
         
-        // データが存在しない場合は初期モックデータを使用
+        // データが存在しない場合は初期サンプルデータを使用
         if (storedActivities.length === 0) {
-          await storage.saveActivities(mockActivityDefinitions);
-          setActivities(mockActivityDefinitions);
+          await storage.saveActivities(defaultActivities);
+          setActivities(defaultActivities);
         } else {
           setActivities(storedActivities);
         }
 
         if (storedRecords.length === 0) {
-          await storage.saveRecords(mockActivityRecords);
-          setRecords(mockActivityRecords);
+          await storage.saveRecords(defaultRecords);
+          setRecords(defaultRecords);
         } else {
           setRecords(storedRecords);
         }
       } catch (error) {
         console.error('[ActivityContext] Failed to load data:', error);
-        setActivities(mockActivityDefinitions);
-        setRecords(mockActivityRecords);
+        setActivities(defaultActivities);
+        setRecords(defaultRecords);
       } finally {
         setIsLoading(false);
+        setIsInitialized(true);
       }
     };
 
@@ -147,7 +150,9 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
         refreshActivities,
       }}
     >
-      {children}
+      {/* 初期化が完了するまで子コンポーネントを表示しない */}
+      {/* これにより、データが確実に読み込まれた後に画面が表示される */}
+      {isInitialized ? children : null}
     </ActivityContext.Provider>
   );
 }

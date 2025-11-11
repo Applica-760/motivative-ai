@@ -20,9 +20,6 @@ export * from './ui';
 // Config
 export * from './config';
 
-// モックデータ
-export { mockActivityDefinitions } from './model/mockActivityDefinitions';
-
 // ユーティリティ関数
 export * from './model/activityUtils';
 

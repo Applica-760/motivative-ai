@@ -70,6 +70,19 @@ export const colors = {
     teal: 'teal',
     lime: 'lime',
   },
+
+  // Cursor & Animation Effects
+  cursor: {
+    outer: 'rgba(34, 139, 230, 0.5)',    // カスタムカーソル外側の円
+    inner: 'rgba(34, 139, 230, 0.8)',    // カスタムカーソル内側の点
+  },
+
+  // Parallax Effects
+  parallax: {
+    layer1: 'rgba(34, 139, 230, 0.15)',   // 背景レイヤー（最も遅い）
+    layer2: 'rgba(51, 154, 240, 0.25)',   // 中間レイヤー
+    layer3: 'rgba(28, 126, 214, 0.35)',   // 前景レイヤー（最も速い）
+  },
 } as const;
 
 export type Colors = typeof colors;

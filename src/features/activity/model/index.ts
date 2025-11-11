@@ -1,7 +1,6 @@
 /**
  * Activity Model
  */
-export { mockActivityDefinitions } from './mockActivityDefinitions';
 export * from './activityUtils';
 export * from './activityToChartAdapter';
 export * from './formTypes';

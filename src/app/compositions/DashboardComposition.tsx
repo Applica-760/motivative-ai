@@ -52,23 +52,29 @@ export function DashboardComposition({
 
     // 全てのアクティビティを動的に処理
     for (const activity of activityDefinitions) {
+      // number型またはduration型のアクティビティのみをグラフ化対象とする
+      if (activity.valueType !== 'number' && activity.valueType !== 'duration') {
+        continue;
+      }
+
       // このアクティビティの記録を取得
       const activityRecords = records.filter(r => r.activityId === activity.id);
       
-      // 記録があるアクティビティのみグラフに追加
-      if (activityRecords.length > 0) {
-        const chartData = convertActivityRecordsToChartData(activityRecords);
-        
-        activities.push({
-          activityId: activity.id,
-          type: activity.id, // typeとしてIDを使用
-          title: `${activity.icon} ${activity.title}`,
-          dataLabel: `${activity.title} (${activity.unit || ''})`,
-          color: activity.color || '#4ECDC4', // デフォルトカラー
-          data: chartData,
-          chartType: ChartTypeEnum.BAR, // デフォルトでBARチャートを使用
-        });
-      }
+      // 記録の有無に関わらず、グラフを表示
+      // 記録がない場合は空配列を渡し、「データがありません」状態で表示
+      const chartData = activityRecords.length > 0
+        ? convertActivityRecordsToChartData(activityRecords)
+        : [];
+      
+      activities.push({
+        activityId: activity.id,
+        type: activity.id, // typeとしてIDを使用
+        title: `${activity.icon} ${activity.title}`,
+        dataLabel: `${activity.title} (${activity.unit || ''})`,
+        color: activity.color || '#4ECDC4', // デフォルトカラー
+        data: chartData,
+        chartType: ChartTypeEnum.BAR, // デフォルトでBARチャートを使用
+      });
     }
 
     return activities;

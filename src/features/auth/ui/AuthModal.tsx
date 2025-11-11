@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Modal, Tabs, Divider, Stack } from '@mantine/core';
+import { Tabs, Divider, Stack } from '@mantine/core';
+import { StyledModal } from '@/shared/ui';
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
 import { GoogleLoginButton } from './GoogleLoginButton';
@@ -68,12 +69,11 @@ export function AuthModal({ opened, onClose, defaultTab = 'login' }: AuthModalPr
   };
   
   return (
-    <Modal
+    <StyledModal
       opened={opened}
       onClose={onClose}
       title="アカウント"
       size="md"
-      centered
     >
       <Stack gap="md">
         {/* Googleログインボタン */}
@@ -103,6 +103,6 @@ export function AuthModal({ opened, onClose, defaultTab = 'login' }: AuthModalPr
           </Tabs.Panel>
         </Tabs>
       </Stack>
-    </Modal>
+    </StyledModal>
   );
 }

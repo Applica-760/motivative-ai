@@ -1,8 +1,7 @@
-import { Modal } from '@mantine/core';
 import { RecordForm } from '../record-forms';
 import type { RecordFormData } from '../../model/recordFormTypes';
 import { useActivityContext } from '../../model/ActivityContext';
-import { MODAL_STYLES, MODAL_OVERLAY_PROPS } from '../../config/modalStyles';
+import { StyledModal } from '@/shared/ui';
 
 interface AddRecordModalProps {
   /** モーダルの開閉状態 */
@@ -48,20 +47,17 @@ export function AddRecordModal({ opened, onClose, preselectedActivityId }: AddRe
   };
 
   return (
-    <Modal
+    <StyledModal
       opened={opened}
       onClose={onClose}
       title="記録を追加"
-      centered
       size="md"
-      overlayProps={MODAL_OVERLAY_PROPS}
-      styles={MODAL_STYLES}
     >
       <RecordForm 
         onSuccess={handleSuccess} 
         onCancel={onClose}
         initialActivityId={preselectedActivityId}
       />
-    </Modal>
+    </StyledModal>
   );
 }

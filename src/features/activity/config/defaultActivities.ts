@@ -1,10 +1,10 @@
 import type { ActivityDefinition } from '@/shared/types';
 
 /**
- * モックアクティビティ定義
- * 開発・テスト用のサンプルデータ
+ * デフォルトアクティビティ定義
+ * 初回起動時にユーザーに使い方を例示するためのサンプルデータ
  */
-export const mockActivityDefinitions: ActivityDefinition[] = [
+export const defaultActivities: ActivityDefinition[] = [
   {
     id: 'running-001',
     title: 'ランニング',
@@ -27,6 +27,17 @@ export const mockActivityDefinitions: ActivityDefinition[] = [
     createdAt: new Date('2025-01-01'),
     updatedAt: new Date('2025-01-01'),
     order: 2,
+    isArchived: false,
+  },
+  {
+    id: 'meditation-001',
+    title: '瞑想',
+    icon: '🧘',
+    valueType: 'boolean',
+    color: '#A8DADC',
+    createdAt: new Date('2025-01-01'),
+    updatedAt: new Date('2025-01-01'),
+    order: 3,
     isArchived: false,
   },
 ];

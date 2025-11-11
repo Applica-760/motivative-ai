@@ -38,3 +38,13 @@ export const MODAL_OVERLAY_PROPS: ModalProps['overlayProps'] = {
   backgroundOpacity: 0.55,
   blur: 3,
 };
+
+/**
+ * モーダルのトランジション設定
+ * スムーズな開閉アニメーションを提供
+ */
+export const MODAL_TRANSITION_PROPS: ModalProps['transitionProps'] = {
+  transition: 'fade',
+  duration: 200,
+  timingFunction: 'ease',
+};

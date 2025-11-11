@@ -1,4 +1,5 @@
 import { HomePage } from './features/home/ui';
+import { CustomCursor } from '@/shared/ui';
 
 /**
  * App
@@ -8,7 +9,12 @@ import { HomePage } from './features/home/ui';
  * ここでは画面コンポーネントの表示のみを担当。
  */
 function App() {
-  return <HomePage />;
+  return (
+    <>
+      <CustomCursor />
+      <HomePage />
+    </>
+  );
 }
 
 export default App;
