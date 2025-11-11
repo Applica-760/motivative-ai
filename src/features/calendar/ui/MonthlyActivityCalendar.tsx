@@ -52,6 +52,9 @@ export function MonthlyActivityCalendar({
     return days;
   }, [year, month, firstDayOfWeek, daysInMonth]);
 
+  // カレンダーの行数を計算（週数）
+  const numberOfWeeks = Math.ceil(calendarDays.length / 7);
+
   // 特定の日付に記録があるかチェック
   const hasRecordOnDate = (date: Date): boolean => {
     return records.some(record => {
@@ -81,10 +84,26 @@ export function MonthlyActivityCalendar({
   // 曜日ラベル
   const weekdayLabels = ['日', '月', '火', '水', '木', '金', '土'];
 
+  // アクティビティのテーマ色（デフォルトは緑）
+  const activityColor = activity.color || '#51cf66';
+  
+  // 記録がある日の背景色を計算（アクティビティのテーマ色を薄くする）
+  const recordBackgroundColor = `${activityColor}30`; // 透明度を追加
+
   return (
-    <Stack gap="sm" p="md" style={{ height: '100%', width: '100%' }}>
+    <Stack gap={0} p="xs" pt="sm" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* タイトルヘッダー：アクティビティアイコンとタイトル */}
+      <Group gap="xs" mb="xs" wrap="nowrap" px="xs">
+        <Text style={{ fontSize: '24px', lineHeight: 1 }}>
+          {activity.icon}
+        </Text>
+        <Text size="lg" fw={700} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {activity.title}
+        </Text>
+      </Group>
+
       {/* ヘッダー：月切り替え */}
-      <Group justify="space-between" wrap="nowrap" mb="xs">
+      <Group justify="space-between" wrap="nowrap" mb="xs" px="xs">
         <ActionIcon
           variant="subtle"
           color="gray"
@@ -110,89 +129,101 @@ export function MonthlyActivityCalendar({
         </ActionIcon>
       </Group>
 
-      {/* 曜日ヘッダー */}
-      <Group gap={0} wrap="nowrap" style={{ width: '100%' }}>
-        {weekdayLabels.map((label, index) => (
-          <Box
-            key={label}
-            style={{
-              flex: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text
-              size="xs"
-              fw={600}
-              c={index === 0 ? 'red' : index === 6 ? 'blue' : 'dimmed'}
+      {/* カレンダー全体のラッパー - 中央揃えで親要素からはみ出さない */}
+      <Box style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        maxWidth: '100%',
+        minHeight: 0,
+        overflow: 'hidden',
+        padding: '0 4px', // 外側の余白を縮小
+      }}>
+        {/* カレンダーグリッド - 曜日ヘッダーと日付を統合した7列固定グリッド */}
+        <Box style={{ 
+          flex: 1, 
+          display: 'grid',
+          gridTemplateColumns: 'repeat(7, 1fr)',
+          gridTemplateRows: `auto repeat(${numberOfWeeks}, 1fr)`, // 最初の行は曜日（自動高さ）、残りは均等
+          gap: '2px', // ギャップを縮小
+          width: '100%',
+          minHeight: 0,
+        }}>
+          {/* 曜日ヘッダー（グリッドの最初の行） */}
+          {weekdayLabels.map((label, index) => (
+            <Box
+              key={label}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: '4px 0',
+              }}
             >
-              {label}
-            </Text>
-          </Box>
-        ))}
-      </Group>
+              <Text
+                size="sm"
+                fw={600}
+                c={index === 0 ? 'red' : index === 6 ? 'blue' : 'gray.6'}
+              >
+                {label}
+              </Text>
+            </Box>
+          ))}
 
-      {/* カレンダーグリッド - 縦長レイアウト最適化 */}
-      <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        {/* 週ごとに行を分割 */}
-        {Array.from({ length: Math.ceil(calendarDays.length / 7) }, (_, weekIndex) => (
-          <Group key={weekIndex} gap={0} wrap="nowrap" style={{ flex: 1, width: '100%' }}>
-            {calendarDays.slice(weekIndex * 7, (weekIndex + 1) * 7).map((date, dayIndex) => {
-              if (!date) {
-                // 空のセル
-                return <Box key={`empty-${dayIndex}`} style={{ flex: 1 }} />;
-              }
+          {/* カレンダーの日付セル */}
+        {calendarDays.map((date, index) => {
+          if (!date) {
+            // 空のセル
+            return <Box key={`empty-${index}`} />;
+          }
 
-              const hasRecord = hasRecordOnDate(date);
-              const today = isToday(date);
-              const dayOfWeek = date.getDay();
+          const hasRecord = hasRecordOnDate(date);
+          const today = isToday(date);
+          const dayOfWeek = date.getDay();
 
-              return (
-                <Box
-                  key={date.toISOString()}
+          return (
+            <Box
+              key={date.toISOString()}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'space-between', // 日付を上部、アイコンを下部に固定
+                backgroundColor: hasRecord ? recordBackgroundColor : 'transparent',
+                borderRadius: '6px',
+                padding: '6px 4px',
+                border: today ? '2px solid #339af0' : '2px solid transparent',
+                minHeight: 0,
+              }}
+            >
+              {/* 日付（常に上部固定） */}
+              <Text
+                size="sm"
+                fw={today ? 600 : 400}
+                c={dayOfWeek === 0 ? 'red' : dayOfWeek === 6 ? 'blue' : 'gray.5'}
+                style={{
+                  lineHeight: 1,
+                }}
+              >
+                {date.getDate()}
+              </Text>
+
+              {/* アクティビティアイコン（記録がある場合のみ、常に下部固定） */}
+              {hasRecord && (
+                <Text
                   style={{
-                    flex: 1,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    minHeight: '60px',
-                    position: 'relative',
-                    backgroundColor: hasRecord ? '#d3f9d8' : 'transparent',
-                    borderRadius: '6px',
-                    padding: '6px 3px',
-                    border: today ? '2px solid #339af0' : '2px solid transparent',
+                    fontSize: 'clamp(18px, 3.5vw, 28px)',
+                    lineHeight: 1,
                   }}
                 >
-                  {/* 日付 */}
-                  <Text
-                    size="sm"
-                    fw={today ? 600 : 400}
-                    c={dayOfWeek === 0 ? 'red' : dayOfWeek === 6 ? 'blue' : 'dark'}
-                    style={{
-                      marginBottom: '4px',
-                    }}
-                  >
-                    {date.getDate()}
-                  </Text>
-
-                  {/* アクティビティアイコン（記録がある場合） */}
-                  {hasRecord && (
-                    <Text
-                      style={{
-                        fontSize: '28px',
-                        lineHeight: 1,
-                      }}
-                    >
-                      {activity.icon}
-                    </Text>
-                  )}
-                </Box>
-              );
-            })}
-          </Group>
-        ))}
+                  {activity.icon}
+                </Text>
+              )}
+            </Box>
+          );
+        })}
+        </Box>
       </Box>
     </Stack>
   );

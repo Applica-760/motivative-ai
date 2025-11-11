@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import type { StorageService } from './types';
 import { LocalStorageService } from './LocalStorageService';
 import { FirebaseStorageService } from './FirebaseStorageService';
+import { migrateLocalStorageToFirebase, isMigrationCompleted } from './migrateToFirebase';
 
 /**
  * StorageContext
@@ -107,6 +108,23 @@ export function StorageProvider({
     console.log(
       `[StorageProvider] Switched to ${auth.isAuthenticated ? 'Firebase' : 'LocalStorage'} storage`
     );
+    
+    // ログイン時のマイグレーション処理
+    if (auth.isAuthenticated && !isMigrationCompleted()) {
+      console.log('[StorageProvider] Starting migration from LocalStorage to Firebase');
+      
+      migrateLocalStorageToFirebase(newService)
+        .then((result) => {
+          if (result.success) {
+            console.log('[StorageProvider] Migration completed:', result.migratedData);
+          } else {
+            console.error('[StorageProvider] Migration completed with errors:', result.errors);
+          }
+        })
+        .catch((error) => {
+          console.error('[StorageProvider] Migration failed:', error);
+        });
+    }
   }, [auth?.isAuthenticated, auth?.userId, customService]);
   
   return (

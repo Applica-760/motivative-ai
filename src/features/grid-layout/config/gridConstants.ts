@@ -25,8 +25,8 @@ export const GRID_CONFIG = {
   
   /** ドラッグハンドルの位置（px） */
   DRAG_HANDLE_POSITION: {
-    top: 8,
-    left: 8,
+    top: 0,
+    left: 4,
   },
   
   /** ドラッグ中の不透明度 */

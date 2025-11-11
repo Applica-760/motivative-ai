@@ -15,3 +15,8 @@ export { StorageProvider, useStorage } from './StorageProvider';
 export { StorageProviderWithAuth } from './StorageProviderWithAuth';
 export { mapFirestoreDocument, convertToDate } from './firestoreUtils';
 export type { DateFieldConfig } from './firestoreUtils';
+export { 
+  migrateLocalStorageToFirebase, 
+  isMigrationCompleted, 
+  resetMigrationFlag 
+} from './migrateToFirebase';

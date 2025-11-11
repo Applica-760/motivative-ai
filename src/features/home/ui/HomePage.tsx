@@ -27,8 +27,10 @@ export function HomePage() {
   const [addRecordOpened, { open: openAddRecord, close: closeAddRecord }] = useDisclosure();
   const [preselectedActivityId, setPreselectedActivityId] = useState<string | undefined>(undefined);
   
-  // タブレット以下（1200px未満）でサイドバーを折りたたみ可能に
+  // 完全なモバイル表示（1200px未満）
   const isMobile = useMediaQuery('(max-width: 1200px)');
+  // サイドバーを折りたたむ（1600px未満）
+  const shouldCollapseSidebar = useMediaQuery('(max-width: 1600px)');
 
   // グラフ・カレンダークリック時のハンドラー（どちらも記録追加モーダルを開く）
   const handleActivityClick = (activityId: string) => {
@@ -49,7 +51,7 @@ export function HomePage() {
     >
       <AppShell.Header>
         <Container size="xl" h="100%" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem' }}>
-          {isMobile && (
+          {(isMobile || shouldCollapseSidebar) && (
             <Burger
               opened={leftOpened}
               onClick={toggleLeft}
@@ -60,7 +62,7 @@ export function HomePage() {
           <Title order={1} style={{ flex: 1, textAlign: 'left' }}>
             Motivative AI
           </Title>
-          {isMobile && (
+          {(isMobile || shouldCollapseSidebar) && (
             <Burger
               opened={rightOpened}
               onClick={toggleRight}
@@ -77,11 +79,13 @@ export function HomePage() {
             display: 'grid',
             gridTemplateColumns: isMobile 
               ? '1fr' 
-              : 'minmax(280px, 350px) minmax(600px, 1400px) minmax(280px, 350px)',
+              : shouldCollapseSidebar
+                ? '1fr'
+                : 'minmax(200px, 280px) minmax(500px, 1fr) minmax(200px, 280px)',
             gap: '1rem',
             justifyContent: 'center',
           }}>
-            {!isMobile && (
+            {!isMobile && !shouldCollapseSidebar && (
               <Box style={{ border: 'none', height: 'calc(100vh - 60px - 2rem)' }}>
                 <LeftSidebar />
               </Box>
@@ -96,13 +100,26 @@ export function HomePage() {
               </DashboardComposition>
             </Box>
             
-            {!isMobile && (
+            {!isMobile && !shouldCollapseSidebar && (
               <Box style={{ border: 'none', height: 'calc(100vh - 60px - 2rem)' }}>
                 <RightSidebar />
               </Box>
             )}
           </div>
         </Container>
+
+        {/* タブレット用: サイドバーが折りたたまれている場合にバーガーメニューを表示 */}
+        {shouldCollapseSidebar && !isMobile && (
+          <>
+            <MobileSidebar isOpen={leftOpened} onClose={toggleLeft} side="left">
+              <LeftSidebar />
+            </MobileSidebar>
+            
+            <MobileSidebar isOpen={rightOpened} onClose={toggleRight} side="right">
+              <RightSidebar />
+            </MobileSidebar>
+          </>
+        )}
 
         {/* モバイル用のサイドバー */}
         {isMobile && (

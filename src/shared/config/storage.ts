@@ -24,6 +24,9 @@ export const STORAGE_KEYS = {
   
   /** テーマ設定（将来の拡張用） */
   THEME: 'theme',
+  
+  /** LocalStorageからFirebaseへのマイグレーション完了フラグ */
+  MIGRATION_COMPLETED: 'migration-completed',
 } as const;
 
 export type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];

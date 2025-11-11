@@ -37,7 +37,7 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
   
   const gridRef = useRef<HTMLDivElement>(null);
   const cellSize = useCellSize(gridRef, columns);
-  const { items, updateItemPosition, swapItems } = useGridLayout(initialItems, { columns });
+  const { items, isLoading, updateItemPosition, swapItems } = useGridLayout(initialItems, { columns });
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -70,6 +70,20 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
 
   const activeItem = activeId ? items.find((item) => item.id === activeId) : null;
   const containerHeight = calculateContainerHeight(items, cellSize.height);
+
+  // ローディング中は空のコンテナを表示
+  if (isLoading) {
+    return (
+      <Box
+        ref={gridRef}
+        style={{
+          position: 'relative',
+          width: '100%',
+          minHeight: '200px',
+        }}
+      />
+    );
+  }
 
   return (
     <DndContext
