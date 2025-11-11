@@ -51,12 +51,13 @@ export function calculateNewPosition(
     column: newColumn,
     row: newRow,
     columnSpan: currentPosition.columnSpan,
+    rowSpan: currentPosition.rowSpan,
   };
 }
 
 /**
  * グリッドコンテナの高さを計算
- * 最下行のアイテムに基づいて高さを決定
+ * 最下行のアイテムに基づいて高さを決定（rowSpanを考慮）
  * 
  * @param items - グリッドアイテムの配列
  * @param cellHeight - セルの高さ（px）
@@ -70,42 +71,56 @@ export function calculateContainerHeight(
 ): number | 'auto' {
   if (items.length === 0 || cellHeight === 0) return 'auto';
   
-  const maxRow = Math.max(...items.map(item => item.position.row));
+  const maxRow = Math.max(...items.map(item => {
+    const rowSpan = item.position.rowSpan || 1;
+    return item.position.row + rowSpan - 1;
+  }));
   return maxRow * cellHeight + (maxRow - 1) * gap;
 }
 
 /**
  * グリッドアイテムの絶対配置スタイルを計算
+ * rowSpanを考慮した高さを計算
  * 
  * @param position - グリッド位置
  * @param cellSize - セルサイズ
  * @param gap - グリッド間のギャップ（px）
- * @returns 絶対配置のためのスタイル値（left, top, width）
+ * @returns 絶対配置のためのスタイル値（left, top, width, height）
  */
 export function calculateItemPosition(
   position: GridPosition,
   cellSize: CellSize,
   gap: number = GRID_CONFIG.GAP
-): { left: number; top: number; width: number } {
+): { left: number; top: number; width: number; height: number } {
+  const rowSpan = position.rowSpan || 1;
   return {
     left: (position.column - 1) * (cellSize.width + gap),
     top: (position.row - 1) * (cellSize.height + gap),
     width: position.columnSpan * cellSize.width + (position.columnSpan - 1) * gap,
+    height: rowSpan * cellSize.height + (rowSpan - 1) * gap,
   };
 }
 
 /**
- * ドラッグオーバーレイアイテムの幅を計算
+ * ドラッグオーバーレイアイテムのサイズを計算
+ * columnSpanとrowSpanを考慮
  * 
  * @param columnSpan - アイテムの列スパン数
+ * @param rowSpan - アイテムの行スパン数
  * @param cellWidth - セルの幅（px）
+ * @param cellHeight - セルの高さ（px）
  * @param gap - グリッド間のギャップ（px）
- * @returns オーバーレイアイテムの幅（px）
+ * @returns オーバーレイアイテムのサイズ（width, height）
  */
-export function calculateOverlayWidth(
+export function calculateOverlaySize(
   columnSpan: number,
+  rowSpan: number,
   cellWidth: number,
+  cellHeight: number,
   gap: number = GRID_CONFIG.GAP
-): number {
-  return columnSpan * cellWidth + (columnSpan - 1) * gap;
+): { width: number; height: number } {
+  return {
+    width: columnSpan * cellWidth + (columnSpan - 1) * gap,
+    height: rowSpan * cellHeight + (rowSpan - 1) * gap,
+  };
 }

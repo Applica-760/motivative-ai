@@ -5,10 +5,11 @@ import type { GridPosition, SavedLayout } from '@/shared/types';
  * グリッドアイテムのサイズ定義
  * - small-square: 正方形のグリッドアイテム（2列に並ぶ）
  * - small-rectangle: 長方形のグリッドアイテム（全幅）
+ * - small-vertical: 縦長の長方形グリッドアイテム（2行分の高さ）
  * - medium: 中サイズ（将来の拡張用）
  * - large: 大サイズ（将来の拡張用）
  */
-export type GridItemSize = 'small-square' | 'small-rectangle' | 'medium' | 'large';
+export type GridItemSize = 'small-square' | 'small-rectangle' | 'small-vertical' | 'medium' | 'large';
 
 /**
  * グリッドアイテムの位置情報とレイアウト保存の型
@@ -60,6 +61,7 @@ export interface GridColumns {
 export const GRID_SIZE_MAP: Record<GridItemSize, GridColumns> = {
   'small-square': { base: 1, sm: 2, md: 2 },
   'small-rectangle': { base: 1, sm: 1, md: 1 },
+  'small-vertical': { base: 1, sm: 2, md: 2 },
   'medium': { base: 1, sm: 1, md: 2 },
   'large': { base: 1, sm: 1, md: 1 },
 };

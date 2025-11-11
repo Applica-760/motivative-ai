@@ -3,7 +3,7 @@ export {
   calculateNewPosition,
   calculateContainerHeight,
   calculateItemPosition,
-  calculateOverlayWidth,
+  calculateOverlaySize,
 } from './gridCalculations';
 
 export {

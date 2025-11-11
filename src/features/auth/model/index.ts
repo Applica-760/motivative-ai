@@ -28,3 +28,11 @@ export {
 
 // Validators
 export { AuthValidators } from './validators';
+
+// Storage Migration
+export type { MigrationResult } from './storageMigration';
+export {
+  migrateLocalStorageToFirebase,
+  isMigrationCompleted,
+  resetMigrationFlag,
+} from './storageMigration';

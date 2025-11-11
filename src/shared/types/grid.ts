@@ -17,6 +17,8 @@ export interface GridPosition {
   row: number;
   /** 列のスパン数（1=正方形、2=長方形） */
   columnSpan: 1 | 2;
+  /** 行のスパン数（デフォルト: 1） */
+  rowSpan?: 1 | 2;
 }
 
 /**

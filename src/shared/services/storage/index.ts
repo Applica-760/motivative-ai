@@ -8,10 +8,8 @@
 
 export type { StorageService, StorageType } from './types';
 export { StorageError } from './types';
-export { BaseStorageService } from './BaseStorageService';
 export { LocalStorageService } from './LocalStorageService';
 export { FirebaseStorageService } from './FirebaseStorageService';
 export { StorageProvider, useStorage } from './StorageProvider';
-export { StorageProviderWithAuth } from './StorageProviderWithAuth';
 export { mapFirestoreDocument, convertToDate } from './firestoreUtils';
 export type { DateFieldConfig } from './firestoreUtils';

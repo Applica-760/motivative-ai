@@ -6,7 +6,6 @@ import type { GridItemConfig } from '../types';
 import { GRID_CONFIG } from '../config/gridConstants';
 import {
   getItemShadow,
-  calculateAspectRatio,
   getDragHandleStyle,
 } from '../model/styles';
 
@@ -44,14 +43,14 @@ export function DraggableGridItem({ item }: DraggableGridItemProps) {
       style={{
         transform: CSS.Translate.toString(transform),
         width: '100%',
-        aspectRatio: calculateAspectRatio(item.position.columnSpan),
+        height: '100%',
       }}
       {...attributes}
     >
       <Paper
         shadow={shadowStyles.shadow}
         radius="md"
-        p="lg"
+        p="xs"
         withBorder
         style={{
           cursor: (item.clickable ?? Boolean(item.onClick)) ? 'pointer' : 'default',

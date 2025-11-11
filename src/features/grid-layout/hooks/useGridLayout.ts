@@ -33,7 +33,7 @@ export interface UseGridLayoutOptions {
  * 
  * @param initialItems - 初期グリッドアイテム
  * @param options - オプション設定
- * @returns items, updateItemPosition, swapItems
+ * @returns items, updateItemPosition, swapItems, isLoading
  */
 export function useGridLayout(
   initialItems: GridItemConfig[],
@@ -45,20 +45,23 @@ export function useGridLayout(
   const defaultStorage = useStorage();
   const storage = storageService || defaultStorage;
   
-  // 初期化時にストレージから復元
-  const [items, setItems] = useState<GridItemConfig[]>(() =>
-    initialItems
-  );
+  // ストレージからの読み込み完了を待つため、初期値はnull
+  const [items, setItems] = useState<GridItemConfig[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   
-  // 初期読み込み
+  // 初期読み込み：ストレージを優先
   useEffect(() => {
     const loadLayout = async () => {
+      setIsLoading(true);
       try {
         const savedLayout = await storage.getGridLayout();
         const restoredItems = initializeItemsFromStorage(initialItems, savedLayout);
         setItems(restoredItems);
       } catch {
+        // ストレージからの読み込みに失敗した場合のみinitialItemsを使用
         setItems(initialItems);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -69,7 +72,8 @@ export function useGridLayout(
   const updateItemPosition = useCallback(
     (itemId: string, newPosition: GridPosition) => {
       setItems((currentItems) => {
-        if (!isWithinBounds(newPosition, columns) || 
+        // ローディング中は更新しない
+        if (!currentItems || !isWithinBounds(newPosition, columns) || 
             checkCollision(newPosition, itemId, currentItems)) {
           return currentItems;
         }
@@ -86,6 +90,9 @@ export function useGridLayout(
   const swapItems = useCallback(
     (activeId: string, overId: string) => {
       setItems((currentItems) => {
+        // ローディング中は更新しない
+        if (!currentItems) return currentItems;
+        
         const activeItem = currentItems.find((item) => item.id === activeId);
         const overItem = currentItems.find((item) => item.id === overId);
 
@@ -111,17 +118,24 @@ export function useGridLayout(
 
   // 初期アイテムが変更された場合の同期処理
   useEffect(() => {
+    // ローディング中は同期しない
+    if (isLoading) return;
+    
     setItems((currentItems) => {
+      // currentItemsがnullの場合は同期しない
+      if (!currentItems) return currentItems;
+      
       const syncedItems = syncInitialItems(currentItems, initialItems);
       if (syncedItems === null) return currentItems;
 
       storage.saveGridLayout(createLayoutFromItems(syncedItems)).catch(() => {});
       return syncedItems;
     });
-  }, [initialItems, storage]);
+  }, [initialItems, storage, isLoading]);
 
   return {
-    items,
+    items: items || [], // nullの場合は空配列を返す
+    isLoading,
     updateItemPosition,
     swapItems,
   };

@@ -38,16 +38,6 @@ export function getItemShadow(
 }
 
 /**
- * グリッドアイテムのアスペクト比を計算
- * 
- * @param columnSpan - 列スパン数
- * @returns アスペクト比の文字列（例: "1 / 1", "2 / 1"）
- */
-export function calculateAspectRatio(columnSpan: number): string {
-  return `${columnSpan} / 1`;
-}
-
-/**
  * ドラッグハンドルのスタイルを生成
  * 
  * @param top - 上からの位置（px）

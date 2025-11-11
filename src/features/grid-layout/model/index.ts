@@ -4,7 +4,7 @@ export {
   calculateNewPosition,
   calculateContainerHeight,
   calculateItemPosition,
-  calculateOverlayWidth,
+  calculateOverlaySize,
   checkCollision,
   isWithinBounds,
   calculateSwapPositions,
@@ -13,7 +13,6 @@ export {
 // スタイルヘルパー
 export {
   getItemShadow,
-  calculateAspectRatio,
   getDragHandleStyle,
 } from './styles';
 export type { ShadowStyles } from './styles';

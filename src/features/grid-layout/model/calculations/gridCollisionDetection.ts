@@ -2,6 +2,7 @@ import type { GridPosition, GridItemConfig } from '../../types';
 
 /**
  * 位置が他のアイテムと衝突するかチェック
+ * columnSpanとrowSpanの両方を考慮した2D衝突判定
  * 
  * @param newPosition - チェックする位置
  * @param itemId - 現在のアイテムID（自分自身は除外）
@@ -13,17 +14,25 @@ export function checkCollision(
   itemId: string,
   items: GridItemConfig[]
 ): boolean {
+  const newRowSpan = newPosition.rowSpan || 1;
+  const newRowEnd = newPosition.row + newRowSpan - 1;
+  const newColEnd = newPosition.column + newPosition.columnSpan - 1;
+
   return items.some(item => {
-    if (item.id === itemId || item.position.row !== newPosition.row) return false;
+    if (item.id === itemId) return false;
     
-    const itemEnd = item.position.column + item.position.columnSpan - 1;
-    const newEnd = newPosition.column + newPosition.columnSpan - 1;
+    const itemRowSpan = item.position.rowSpan || 1;
+    const itemRowEnd = item.position.row + itemRowSpan - 1;
+    const itemColEnd = item.position.column + item.position.columnSpan - 1;
     
-    return (
-      (newPosition.column >= item.position.column && newPosition.column <= itemEnd) ||
-      (newEnd >= item.position.column && newEnd <= itemEnd) ||
-      (newPosition.column <= item.position.column && newEnd >= itemEnd)
-    );
+    // 行方向の重なりチェック
+    const rowOverlap = !(newPosition.row > itemRowEnd || newRowEnd < item.position.row);
+    
+    // 列方向の重なりチェック
+    const colOverlap = !(newPosition.column > itemColEnd || newColEnd < item.position.column);
+    
+    // 両方が重なっている場合は衝突
+    return rowOverlap && colOverlap;
   });
 }
 
@@ -44,7 +53,7 @@ export function isWithinBounds(
 
 /**
  * 2つのアイテムの位置を入れ替える際の新しい位置を計算
- * 境界チェックを含む
+ * 境界チェックを含む（columnSpanとrowSpanを保持）
  * 
  * @param activeItem - ドラッグ中のアイテム
  * @param overItem - ドロップ先のアイテム
@@ -62,12 +71,14 @@ export function calculateSwapPositions(
   const activePosition: GridPosition = {
     ...overItem.position,
     columnSpan: activeItem.position.columnSpan,
+    rowSpan: activeItem.position.rowSpan,
     column: adjustColumn({ ...overItem.position, columnSpan: activeItem.position.columnSpan }),
   };
   
   const overPosition: GridPosition = {
     ...activeItem.position,
     columnSpan: overItem.position.columnSpan,
+    rowSpan: overItem.position.rowSpan,
     column: adjustColumn({ ...activeItem.position, columnSpan: overItem.position.columnSpan }),
   };
 
