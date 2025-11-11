@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { MantineProvider, type MantineThemeOverride } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { AuthProvider, useAuth } from '@/features/auth';
+import { AuthProvider, useAuth, useStorageMigration } from '@/features/auth';
 import { ProfileProvider } from '@/features/account';
 import { ActivityProvider } from '@/features/activity';
 import { StorageProvider } from '@/shared/services/storage';
@@ -21,6 +21,20 @@ interface AppProvidersProps {
   authService: AuthService;
   /** Mantineテーマ（オプション） */
   theme?: MantineThemeOverride;
+}
+
+/**
+ * マイグレーション処理を実行するコンポーネント
+ * StorageProvider内部で実行される必要がある
+ */
+function MigrationHandler({ children }: { children: ReactNode }) {
+  const { isAuthenticated } = useAuth();
+  
+  // ログイン時のストレージマイグレーション処理
+  // LocalStorageからFirebaseへのデータ移行を自動実行
+  useStorageMigration(isAuthenticated);
+  
+  return <>{children}</>;
 }
 
 /**
@@ -55,11 +69,13 @@ function StorageAndActivityProviders({ children }: { children: ReactNode }) {
         userId: user?.id,
       }}
     >
-      <ActivityProvider key={storageKey}>
-        <ProfileProvider key={storageKey}>
-          {children}
-        </ProfileProvider>
-      </ActivityProvider>
+      <MigrationHandler>
+        <ActivityProvider key={storageKey}>
+          <ProfileProvider key={storageKey}>
+            {children}
+          </ProfileProvider>
+        </ActivityProvider>
+      </MigrationHandler>
     </StorageProvider>
   );
 }

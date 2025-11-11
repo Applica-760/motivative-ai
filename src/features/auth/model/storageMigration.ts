@@ -1,9 +1,26 @@
-import type { StorageService } from './types';
-import { LocalStorageService } from './LocalStorageService';
+import type { StorageService } from '@/shared/services/storage';
+import { LocalStorageService } from '@/shared/services/storage';
 import { STORAGE_KEYS } from '@/shared/config';
 
 /**
+ * マイグレーション結果の型定義
+ */
+export interface MigrationResult {
+  /** マイグレーションが成功したかどうか */
+  success: boolean;
+  /** マイグレーションされたデータの詳細 */
+  migratedData: {
+    activities: number;
+    records: number;
+    gridLayout: boolean;
+  };
+  /** エラーメッセージの配列 */
+  errors: string[];
+}
+
+/**
  * LocalStorageからFirebaseへのデータマイグレーション
+ * Feature-Sliced Design: features/auth/model
  * 
  * ログイン時に一度だけ実行され、LocalStorageに保存されていた
  * データをFirebaseへコピーする。これにより、ユーザーの設定や
@@ -19,15 +36,7 @@ import { STORAGE_KEYS } from '@/shared/config';
  */
 export async function migrateLocalStorageToFirebase(
   firebaseStorage: StorageService
-): Promise<{
-  success: boolean;
-  migratedData: {
-    activities: number;
-    records: number;
-    gridLayout: boolean;
-  };
-  errors: string[];
-}> {
+): Promise<MigrationResult> {
   console.log('[Migration] Starting LocalStorage → Firebase migration');
   
   const localStorageService = new LocalStorageService();
