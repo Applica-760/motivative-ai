@@ -1,0 +1,17 @@
+{
+  "name": "Motivative AI",
+  "short_name": "Motivative",
+  "description": "モチベーション管理ダッシュボード",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#242424",
+  "theme_color": "#242424",
+  "icons": [
+    {
+      "src": "/10779.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

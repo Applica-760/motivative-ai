@@ -10,4 +10,10 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // publicDirの設定を明示化
+  publicDir: 'public',
+  build: {
+    // ビルド時にアセットを適切にコピー
+    assetsInlineLimit: 0, // すべてのアセットをファイルとして出力
+  },
 })
