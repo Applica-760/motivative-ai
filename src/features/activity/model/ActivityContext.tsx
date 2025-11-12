@@ -14,6 +14,7 @@ interface ActivityContextValue {
   updateActivity: (id: string, updates: Omit<ActivityDefinition, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => void;
   addRecord: (record: Omit<ActivityRecord, 'id' | 'createdAt' | 'updatedAt' | 'timestamp'>) => Promise<void>;
   refreshActivities: () => void;
+  getRecordsByActivityId: (activityId: string) => ActivityRecord[];
 }
 
 const ActivityContext = createContext<ActivityContextValue | undefined>(undefined);
@@ -137,6 +138,11 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       throw error;
     }
   }, [activityRepository, recordRepository]);
+  
+  // 特定のアクティビティに紐づく記録を取得
+  const getRecordsByActivityId = useCallback((activityId: string): ActivityRecord[] => {
+    return records.filter(record => record.activityId === activityId);
+  }, [records]);
 
   return (
     <ActivityContext.Provider
@@ -148,6 +154,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
         updateActivity,
         addRecord,
         refreshActivities,
+        getRecordsByActivityId,
       }}
     >
       {/* 初期化が完了するまで子コンポーネントを表示しない */}

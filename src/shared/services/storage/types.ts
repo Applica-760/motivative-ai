@@ -161,6 +161,22 @@ export interface StorageService {
    * @throws StorageError チェックに失敗した場合
    */
   profileExists(userId: string): Promise<boolean>;
+  
+  // ==================== Migration ====================
+  
+  /**
+   * マイグレーション完了フラグを取得
+   * @returns マイグレーションが完了している場合true
+   * @throws StorageError 読み込みに失敗した場合
+   */
+  getMigrationFlag(): Promise<boolean>;
+  
+  /**
+   * マイグレーション完了フラグを設定
+   * @param completed - マイグレーション完了フラグ
+   * @throws StorageError 保存に失敗した場合
+   */
+  setMigrationFlag(completed: boolean): Promise<void>;
 }
 
 /**

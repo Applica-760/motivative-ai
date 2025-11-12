@@ -1,6 +1,4 @@
 import type { StorageService } from '@/shared/services/storage';
-import { LocalStorageService } from '@/shared/services/storage';
-import { STORAGE_KEYS } from '@/shared/config';
 
 /**
  * マイグレーション結果の型定義
@@ -31,15 +29,16 @@ export interface MigrationResult {
  * - アクティビティ記録
  * - グリッドレイアウトの位置情報
  * 
+ * @param localStorage - マイグレーション元のLocalStorageService
  * @param firebaseStorage - マイグレーション先のFirebaseStorageService
  * @returns マイグレーション結果の概要
  */
 export async function migrateLocalStorageToFirebase(
+  localStorage: StorageService,
   firebaseStorage: StorageService
 ): Promise<MigrationResult> {
   console.log('[Migration] Starting LocalStorage → Firebase migration');
   
-  const localStorageService = new LocalStorageService();
   const errors: string[] = [];
   const migratedData = {
     activities: 0,
@@ -50,7 +49,7 @@ export async function migrateLocalStorageToFirebase(
   try {
     // 1. グリッドレイアウトのマイグレーション
     try {
-      const localGridLayout = await localStorageService.getGridLayout();
+      const localGridLayout = await localStorage.getGridLayout();
       
       if (localGridLayout) {
         // Firebaseに既存データがあるかチェック
@@ -75,7 +74,7 @@ export async function migrateLocalStorageToFirebase(
 
     // 2. アクティビティ定義のマイグレーション
     try {
-      const localActivities = await localStorageService.getActivities();
+      const localActivities = await localStorage.getActivities();
       
       if (localActivities.length > 0) {
         // Firebaseに既存データがあるかチェック
@@ -100,7 +99,7 @@ export async function migrateLocalStorageToFirebase(
 
     // 3. アクティビティ記録のマイグレーション
     try {
-      const localRecords = await localStorageService.getRecords();
+      const localRecords = await localStorage.getRecords();
       
       if (localRecords.length > 0) {
         // Firebaseに既存データがあるかチェック
@@ -130,9 +129,12 @@ export async function migrateLocalStorageToFirebase(
       migratedData.records > 0;
 
     if (hasMigratedData) {
-      // マイグレーション完了フラグをlocalStorageに保存
-      // 次回以降のログインでは実行しない
-      localStorage.setItem(STORAGE_KEYS.MIGRATION_COMPLETED, 'true');
+      // マイグレーション完了フラグをStorageService経由で保存
+      // LocalStorageとFirebase両方に保存することで、次回以降の実行を防ぐ
+      await Promise.all([
+        localStorage.setMigrationFlag(true),
+        firebaseStorage.setMigrationFlag(true),
+      ]);
       console.log('[Migration] Migration completed successfully');
     } else {
       console.log('[Migration] No data to migrate');
@@ -156,17 +158,29 @@ export async function migrateLocalStorageToFirebase(
 /**
  * マイグレーションが完了しているかチェック
  * 
+ * @param storage - チェック対象のStorageService
  * @returns マイグレーション完了フラグ
  */
-export function isMigrationCompleted(): boolean {
-  return localStorage.getItem(STORAGE_KEYS.MIGRATION_COMPLETED) === 'true';
+export async function isMigrationCompleted(storage: StorageService): Promise<boolean> {
+  try {
+    return await storage.getMigrationFlag();
+  } catch (error) {
+    console.error('[Migration] Failed to check migration flag:', error);
+    return false;
+  }
 }
 
 /**
  * マイグレーション完了フラグをリセット
  * （開発・テスト用）
+ * 
+ * @param storage - リセット対象のStorageService
  */
-export function resetMigrationFlag(): void {
-  localStorage.removeItem(STORAGE_KEYS.MIGRATION_COMPLETED);
-  console.log('[Migration] Migration flag reset');
+export async function resetMigrationFlag(storage: StorageService): Promise<void> {
+  try {
+    await storage.setMigrationFlag(false);
+    console.log('[Migration] Migration flag reset');
+  } catch (error) {
+    console.error('[Migration] Failed to reset migration flag:', error);
+  }
 }

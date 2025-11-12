@@ -13,10 +13,10 @@ interface ActivityCalendarProps {
  * 月次カレンダーで記録を可視化
  */
 export function ActivityCalendar({ activity }: ActivityCalendarProps) {
-  const { records } = useActivityContext();
+  const { getRecordsByActivityId } = useActivityContext();
   
-  // このアクティビティの記録のみをフィルタリング
-  const activityRecords = records.filter(r => r.activityId === activity.id);
+  // このアクティビティの記録のみを取得
+  const activityRecords = getRecordsByActivityId(activity.id);
 
   return (
     <Stack 

@@ -11,7 +11,7 @@ interface ActivityButtonProps {
   borderColor?: string;
 }
 
-export function ActivityButton({ icon, label, color = 'gray', onClick, backgroundColor, borderColor }: ActivityButtonProps) {
+export function ActivityButton({ icon, label, color = 'gray', onClick, backgroundColor}: ActivityButtonProps) {
   // labelが空の場合は中央揃えのシンプルなデザイン
   const isCentered = !label;
 

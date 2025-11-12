@@ -537,4 +537,43 @@ export class FirebaseStorageService implements StorageService {
       return false;
     }
   }
+  
+  // ==================== Migration ====================
+  
+  async getMigrationFlag(): Promise<boolean> {
+    try {
+      const migrationRef = doc(this.db, `users/${this.userId}/settings/migration`);
+      const migrationSnap = await getDoc(migrationRef);
+      
+      if (!migrationSnap.exists()) {
+        return false;
+      }
+      
+      const data = migrationSnap.data();
+      return data?.completed === true;
+    } catch (error) {
+      console.error('[FirebaseStorageService] Failed to get migration flag:', error);
+      return false;
+    }
+  }
+  
+  async setMigrationFlag(completed: boolean): Promise<void> {
+    try {
+      const migrationRef = doc(this.db, `users/${this.userId}/settings/migration`);
+      
+      await setDoc(migrationRef, {
+        completed,
+        completedAt: serverTimestamp(),
+      });
+      
+      console.log('[FirebaseStorageService] Migration flag set to:', completed);
+    } catch (error) {
+      console.error('[FirebaseStorageService] Failed to set migration flag:', error);
+      throw new StorageError(
+        'Failed to set migration flag in Firestore',
+        'write',
+        error
+      );
+    }
+  }
 }

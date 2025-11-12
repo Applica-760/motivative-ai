@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useStorage } from '@/shared/services/storage';
+import { LocalStorageService } from '@/shared/services/storage';
 import { 
   migrateLocalStorageToFirebase, 
   isMigrationCompleted,
@@ -45,32 +46,48 @@ export function useStorageMigration(isAuthenticated: boolean): void {
     // 認証状態が変わった場合のみ実行
     const authStateChanged = previousAuthState.current !== isAuthenticated;
     
-    // マイグレーション実行条件
-    const shouldMigrate = 
-      isAuthenticated &&                  // ログイン済み
-      !isMigrationCompleted() &&          // マイグレーション未完了
-      authStateChanged &&                 // 認証状態が変わった
-      !migrationInProgress.current;       // マイグレーション中でない
+    if (!isAuthenticated || !authStateChanged || migrationInProgress.current) {
+      previousAuthState.current = isAuthenticated;
+      return;
+    }
     
-    if (shouldMigrate) {
-      console.log('[useStorageMigration] Starting migration from LocalStorage to Firebase');
-      migrationInProgress.current = true;
-      
-      migrateLocalStorageToFirebase(storage)
-        .then((result: MigrationResult) => {
+    // マイグレーション実行条件をチェック
+    const checkAndMigrate = async () => {
+      try {
+        const migrationCompleted = await isMigrationCompleted(storage);
+        
+        const shouldMigrate = 
+          isAuthenticated &&           // ログイン済み
+          !migrationCompleted &&       // マイグレーション未完了
+          authStateChanged &&          // 認証状態が変わった
+          !migrationInProgress.current; // マイグレーション中でない
+        
+        if (shouldMigrate) {
+          console.log('[useStorageMigration] Starting migration from LocalStorage to Firebase');
+          migrationInProgress.current = true;
+          
+          // LocalStorageServiceのインスタンスを作成
+          const localStorageService = new LocalStorageService();
+          
+          const result: MigrationResult = await migrateLocalStorageToFirebase(
+            localStorageService,
+            storage
+          );
+          
           if (result.success) {
             console.log('[useStorageMigration] Migration completed successfully:', result.migratedData);
           } else {
             console.error('[useStorageMigration] Migration completed with errors:', result.errors);
           }
-        })
-        .catch((error: unknown) => {
-          console.error('[useStorageMigration] Migration failed:', error);
-        })
-        .finally(() => {
-          migrationInProgress.current = false;
-        });
-    }
+        }
+      } catch (error: unknown) {
+        console.error('[useStorageMigration] Migration failed:', error);
+      } finally {
+        migrationInProgress.current = false;
+      }
+    };
+    
+    checkAndMigrate();
     
     // 認証状態を記録
     previousAuthState.current = isAuthenticated;

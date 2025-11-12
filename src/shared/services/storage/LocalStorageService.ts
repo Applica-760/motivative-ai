@@ -252,4 +252,30 @@ export class LocalStorageService extends BaseStorageService implements StorageSe
       return false;
     }
   }
+  
+  // ==================== Migration ====================
+  
+  async getMigrationFlag(): Promise<boolean> {
+    try {
+      const flag = this.getItem<boolean>(`${STORAGE_KEYS.MIGRATION_COMPLETED}`);
+      return flag === true;
+    } catch (error) {
+      console.error('[LocalStorageService] Failed to get migration flag:', error);
+      return false;
+    }
+  }
+  
+  async setMigrationFlag(completed: boolean): Promise<void> {
+    try {
+      this.setItem(STORAGE_KEYS.MIGRATION_COMPLETED, completed);
+      console.log('[LocalStorageService] Migration flag set to:', completed);
+    } catch (error) {
+      console.error('[LocalStorageService] Failed to set migration flag:', error);
+      throw new StorageError(
+        'Failed to set migration flag in localStorage',
+        'write',
+        error
+      );
+    }
+  }
 }
