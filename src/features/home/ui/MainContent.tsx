@@ -23,5 +23,5 @@ interface MainContentProps {
  * ```
  */
 export function MainContent({ gridItems }: MainContentProps) {
-  return <DraggableGrid items={gridItems} key={`grid-${gridItems.length}`} />;
+  return <DraggableGrid items={gridItems} />;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useStorage } from '@/shared/services/storage';
 import type { StorageService } from '@/shared/services/storage';
 import type { GridItemConfig, GridPosition } from '../types';
@@ -49,24 +49,41 @@ export function useGridLayout(
   const [items, setItems] = useState<GridItemConfig[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
+  // initialItemsの最新の参照を保持
+  const initialItemsRef = useRef(initialItems);
+  initialItemsRef.current = initialItems;
+  
+  // 初期アイテムのIDリストとサイズ情報をメモ化（アイテム構成の変更検知用）
+  const initialItemsSignature = useMemo(
+    () => initialItems.map(item => 
+      `${item.id}:${item.position.columnSpan}:${item.position.rowSpan || 1}`
+    ).sort().join(','),
+    [initialItems]
+  );
+  
   // 初期読み込み：ストレージを優先
   useEffect(() => {
     const loadLayout = async () => {
+      console.log('[useGridLayout] Starting layout load, storage:', storage.constructor.name);
       setIsLoading(true);
       try {
         const savedLayout = await storage.getGridLayout();
-        const restoredItems = initializeItemsFromStorage(initialItems, savedLayout);
+        console.log('[useGridLayout] Loaded layout from storage:', savedLayout);
+        const restoredItems = initializeItemsFromStorage(initialItemsRef.current, savedLayout);
+        console.log('[useGridLayout] Restored items:', restoredItems.map(i => ({ id: i.id, pos: i.position })));
         setItems(restoredItems);
-      } catch {
+      } catch (error) {
         // ストレージからの読み込みに失敗した場合のみinitialItemsを使用
-        setItems(initialItems);
+        console.error('[useGridLayout] Failed to load layout, using initialItems:', error);
+        setItems(initialItemsRef.current);
       } finally {
         setIsLoading(false);
       }
     };
     
     loadLayout();
-  }, [storage]);
+    // storageとinitialItemsSignatureが変わった時のみ再読み込み
+  }, [storage, initialItemsSignature]);
 
   // アイテムの位置を更新（ドラッグ&ドロップ用）
   const updateItemPosition = useCallback(
@@ -79,7 +96,10 @@ export function useGridLayout(
         }
 
         const newItems = updateItemInList(currentItems, itemId, newPosition);
-        storage.saveGridLayout(createLayoutFromItems(newItems)).catch(() => {});
+        console.log('[useGridLayout] Updating position for', itemId, ':', newPosition);
+        storage.saveGridLayout(createLayoutFromItems(newItems))
+          .then(() => console.log('[useGridLayout] Successfully saved layout'))
+          .catch((error) => console.error('[useGridLayout] Failed to save layout:', error));
         return newItems;
       });
     },
@@ -109,7 +129,10 @@ export function useGridLayout(
           swapResult.overPosition
         );
 
-        storage.saveGridLayout(createLayoutFromItems(newItems)).catch(() => {});
+        console.log('[useGridLayout] Swapping items', activeId, 'and', overId);
+        storage.saveGridLayout(createLayoutFromItems(newItems))
+          .then(() => console.log('[useGridLayout] Successfully saved swapped layout'))
+          .catch((error) => console.error('[useGridLayout] Failed to save swapped layout:', error));
         return newItems;
       });
     },
@@ -125,13 +148,21 @@ export function useGridLayout(
       // currentItemsがnullの場合は同期しない
       if (!currentItems) return currentItems;
       
-      const syncedItems = syncInitialItems(currentItems, initialItems);
-      if (syncedItems === null) return currentItems;
+      console.log('[useGridLayout] Syncing with initialItems');
+      const syncedItems = syncInitialItems(currentItems, initialItemsRef.current);
+      if (syncedItems === null) {
+        console.log('[useGridLayout] No changes detected, skipping sync');
+        return currentItems;
+      }
 
-      storage.saveGridLayout(createLayoutFromItems(syncedItems)).catch(() => {});
+      console.log('[useGridLayout] Items synced, saving to storage');
+      storage.saveGridLayout(createLayoutFromItems(syncedItems))
+        .then(() => console.log('[useGridLayout] Successfully saved synced layout'))
+        .catch((error) => console.error('[useGridLayout] Failed to save synced layout:', error));
       return syncedItems;
     });
-  }, [initialItems, storage, isLoading]);
+    // initialItemsSignatureを使用して、アイテム構成が実際に変わった時のみ実行
+  }, [initialItemsSignature, storage, isLoading]);
 
   return {
     items: items || [], // nullの場合は空配列を返す

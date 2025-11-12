@@ -40,7 +40,7 @@ export function createGraphGridItems(
       id: `${activity.type}-chart`,
       order: startOrder + index,
       size: 'small-rectangle' as const,
-      position: { column, row, columnSpan: 2 },
+      position: { column, row, columnSpan: 2, rowSpan: 1 },
       content: (
         <ActivityChartWidget
           title={activity.title}

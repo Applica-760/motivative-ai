@@ -14,7 +14,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { getFirebaseFirestore } from '@/shared/config/firebase';
-import type { ActivityDefinition, ActivityRecord, SavedLayout } from '@/shared/types';
+import type { ActivityDefinition, ActivityRecord, SavedLayout, GridPosition } from '@/shared/types';
 import type { UserProfile, UpdateProfileData } from '@/features/account';
 import type { StorageService } from './types';
 import { StorageError } from './types';
@@ -416,8 +416,20 @@ export class FirebaseStorageService implements StorageService {
   
   async saveGridLayout(layout: SavedLayout): Promise<void> {
     try {
+      // Firestoreはundefined値をサポートしないため、
+      // rowSpanがundefinedの場合はデフォルト値(1)に変換する
+      const sanitizedPositions = Object.entries(layout.positions).reduce((acc, [id, position]) => {
+        acc[id] = {
+          column: position.column,
+          row: position.row,
+          columnSpan: position.columnSpan,
+          rowSpan: position.rowSpan ?? 1,
+        };
+        return acc;
+      }, {} as Record<string, GridPosition>);
+      
       await setDoc(this.getSettingsDoc(), {
-        positions: layout.positions,
+        positions: sanitizedPositions,
         updatedAt: serverTimestamp(),
       });
     } catch (error) {

@@ -7,6 +7,8 @@ import type { GridPosition, GridItemConfig, SavedLayout } from '../../types';
  * initialItemsのcolumnSpan、rowSpanは常に優先して使用する。
  * これにより、アイテムのサイズ変更（例: rowSpan追加）が正しく反映される。
  * 
+ * rowSpanがundefinedの場合は、ビジネスロジックとしてデフォルト値(1)を使用。
+ * 
  * @param initialItems - 初期アイテムの配列
  * @param savedLayout - 保存されたレイアウト（nullの場合は初期アイテムをそのまま返す）
  * @returns 復元されたアイテムの配列
@@ -26,13 +28,14 @@ export function initializeItemsFromStorage(
     
     // 位置（column, row）は保存データから復元
     // サイズ（columnSpan, rowSpan）は常にinitialItemsの値を使用
+    // rowSpanがundefinedの場合はデフォルト値(1)を使用（ビジネスロジック）
     return {
       ...item,
       position: {
         column: savedPosition.column,
         row: savedPosition.row,
         columnSpan: item.position.columnSpan,
-        rowSpan: item.position.rowSpan,
+        rowSpan: item.position.rowSpan ?? 1,
       },
     };
   });
