@@ -79,7 +79,16 @@ export function QuickActionButton({
           </Text>
         </ThemeIcon>
         <Stack align="center" gap="xs">
-          <Text size="xl" fw={600}>
+          <Text
+            size="xl"
+            fw={600}
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              maxWidth: '100%',
+            }}
+          >
             {title}
           </Text>
           <Text size="sm" c="dimmed" ta="center">

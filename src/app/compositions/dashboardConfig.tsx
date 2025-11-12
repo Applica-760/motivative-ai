@@ -1,6 +1,7 @@
 import type { GridItemConfig } from '@/features/grid-layout';
 import type { ActivityDefinition } from '@/shared/types';
-import { createActivityActionGridItems } from '@/features/activity';
+// 一時的にコメントアウト - 将来的に復元する可能性あり
+// import { createActivityActionGridItems } from '@/features/activity';
 import { createGraphGridItems, type ActivityData } from '@/features/graph';
 import { createCalendarGridItems } from '@/features/calendar';
 
@@ -26,7 +27,9 @@ export function createDashboardGridItems(
   onCalendarClick?: (activityId: string) => void
 ): GridItemConfig[] {
   // アクティビティアクションウィジェット（記録追加、新規アクティビティ）
-  const actionItems = createActivityActionGridItems();
+  // 一時的にコメントアウト - 将来的に復元する可能性あり
+  // const actionItems = createActivityActionGridItems();
+  const actionItems: GridItemConfig[] = [];
   
   // グラフチャートウィジェット
   // startOrderでアクションウィジェットの後に配置
