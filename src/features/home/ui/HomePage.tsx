@@ -27,10 +27,10 @@ export function HomePage() {
   const [addRecordOpened, { open: openAddRecord, close: closeAddRecord }] = useDisclosure();
   const [preselectedActivityId, setPreselectedActivityId] = useState<string | undefined>(undefined);
   
-  // 完全なモバイル表示（1200px未満）
-  const isMobile = useMediaQuery('(max-width: 1200px)');
-  // サイドバーを折りたたむ（1600px未満）
-  const shouldCollapseSidebar = useMediaQuery('(max-width: 1600px)');
+  // 完全なモバイル表示（1000px未満）
+  const isMobile = useMediaQuery('(max-width: 1000px)');
+  // サイドバーを折りたたむ（1850px未満 = Containerサイズ + 余裕）
+  const shouldCollapseSidebar = useMediaQuery('(max-width: 1850px)');
 
   // グラフ・カレンダークリック時のハンドラー（どちらも記録追加モーダルを開く）
   const handleActivityClick = (activityId: string) => {
@@ -50,31 +50,52 @@ export function HomePage() {
       header={{ height: 60 }}
     >
       <AppShell.Header>
-        <Container size="xl" h="100%" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem' }}>
-          {(isMobile || shouldCollapseSidebar) && (
-            <Burger
-              opened={leftOpened}
-              onClick={toggleLeft}
-              size="sm"
-              aria-label="左サイドバーを切り替え"
-            />
-          )}
-          <Title order={1} style={{ flex: 1, textAlign: 'left' }}>
-            Motivative AI
-          </Title>
-          {(isMobile || shouldCollapseSidebar) && (
-            <Burger
-              opened={rightOpened}
-              onClick={toggleRight}
-              size="sm"
-              aria-label="右サイドバーを切り替え"
-            />
-          )}
+        <Container size="1800px" px={0} h="100%" style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile 
+              ? '1fr' 
+              : shouldCollapseSidebar
+                ? 'auto 1fr auto'
+                : 'minmax(200px, 280px) minmax(500px, 1fr) minmax(200px, 280px)',
+            gap: '1rem',
+            width: '100%',
+            alignItems: 'center',
+          }}>
+            {/* 左のBurgerまたはスペーサー */}
+            <Box style={{ display: 'flex', alignItems: 'center' }}>
+              {(isMobile || shouldCollapseSidebar) && (
+                <Burger
+                  opened={leftOpened}
+                  onClick={toggleLeft}
+                  size="sm"
+                  aria-label="左サイドバーを切り替え"
+                />
+              )}
+            </Box>
+            
+            {/* タイトル */}
+            <Title order={1}>
+              Motivative AI
+            </Title>
+            
+            {/* 右のBurgerまたはスペーサー */}
+            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              {(isMobile || shouldCollapseSidebar) && (
+                <Burger
+                  opened={rightOpened}
+                  onClick={toggleRight}
+                  size="sm"
+                  aria-label="右サイドバーを切り替え"
+                />
+              )}
+            </Box>
+          </div>
         </Container>
       </AppShell.Header>
 
       <AppShell.Main>
-        <Container size="2100px" px="md">
+        <Container size="1800px" px={0}>
           <div style={{
             display: 'grid',
             gridTemplateColumns: isMobile 

@@ -7,9 +7,14 @@ interface ActivityButtonProps {
   label: string;
   color?: string;
   onClick?: () => void;
+  backgroundColor?: string;
+  borderColor?: string;
 }
 
-export function ActivityButton({ icon, label, color = 'gray', onClick }: ActivityButtonProps) {
+export function ActivityButton({ icon, label, color = 'gray', onClick, backgroundColor, borderColor }: ActivityButtonProps) {
+  // labelが空の場合は中央揃えのシンプルなデザイン
+  const isCentered = !label;
+
   return (
     <Button
       variant="light"
@@ -21,13 +26,17 @@ export function ActivityButton({ icon, label, color = 'gray', onClick }: Activit
       style={{
         boxShadow: `0 2px 8px ${colors.shadow.light}`,
         transition: 'all 0.2s ease',
+        ...(backgroundColor && { backgroundColor }),
+        // ...(borderColor && { border: `1px solid ${borderColor}` }),
       }}
       styles={{
         inner: {
-          justifyContent: 'space-between',
+          justifyContent: isCentered ? 'center' : 'space-between',
         },
         label: {
-          width: '100%',
+          width: isCentered ? 'auto' : '100%',
+          display: 'flex',
+          justifyContent: 'center',
         },
       }}
       onMouseEnter={(e) => {
@@ -39,22 +48,28 @@ export function ActivityButton({ icon, label, color = 'gray', onClick }: Activit
         e.currentTarget.style.boxShadow = `0 2px 8px ${colors.shadow.light}`;
       }}
     >
-      <Group justify="space-between" style={{ width: '100%' }} wrap="nowrap">
-        <Group gap="sm" wrap="nowrap">
-          <Text size="xl">{icon}</Text>
-          <Text size="md" fw={500}>
-            {label}
-          </Text>
+      {isCentered ? (
+        <Text size="xl" fw={700}>
+          {icon}
+        </Text>
+      ) : (
+        <Group justify="space-between" style={{ width: '100%' }} wrap="nowrap">
+          <Group gap="sm" wrap="nowrap">
+            <Text size="xl">{icon}</Text>
+            <Text size="md" fw={500}>
+              {label}
+            </Text>
+          </Group>
+          <Group gap={4} wrap="nowrap" style={{ marginRight: -8 }}>
+            <ActionIcon variant="transparent" size="sm" color="gray">
+              <IconMenu2 size={18} />
+            </ActionIcon>
+            <ActionIcon variant="transparent" size="sm" color="gray">
+              <IconChevronRight size={18} />
+            </ActionIcon>
+          </Group>
         </Group>
-        <Group gap={4} wrap="nowrap" style={{ marginRight: -8 }}>
-          <ActionIcon variant="transparent" size="sm" color="gray">
-            <IconMenu2 size={18} />
-          </ActionIcon>
-          <ActionIcon variant="transparent" size="sm" color="gray">
-            <IconChevronRight size={18} />
-          </ActionIcon>
-        </Group>
-      </Group>
+      )}
     </Button>
   );
 }

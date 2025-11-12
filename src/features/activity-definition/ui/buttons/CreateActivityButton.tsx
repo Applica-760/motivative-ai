@@ -36,8 +36,8 @@ export function CreateActivityButton({ onClick, disabled = false }: CreateActivi
     <>
       <QuickActionButton
         icon="✨"
-        title="新しいアクティビティ"
-        description="新しいアクティビティを作成"
+        title="アクティビティを作成"
+        description=""
         gradient={ACTIVITY_DEFINITION_GRADIENTS.create}
         onClick={handleClick}
         disabled={disabled}

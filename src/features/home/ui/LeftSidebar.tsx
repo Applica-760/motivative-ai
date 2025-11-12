@@ -2,13 +2,15 @@ import { Paper, Stack, Text, Loader, Box } from '@mantine/core';
 import { useState } from 'react';
 import { ActivityButton } from '@/shared/ui';
 import { useActivities } from '@/features/activity/hooks';
-import { EditActivityModal } from '@/features/activity-definition/ui/modals';
+import { EditActivityModal, CreateActivityModal } from '@/features/activity-definition/ui/modals';
 import { AuthUserButton } from '@/features/auth';
+import { colors } from '@/shared/config';
 import type { ActivityDefinition } from '@/shared/types';
 
 export function LeftSidebar() {
   const { activities, isLoading } = useActivities();
   const [editingActivity, setEditingActivity] = useState<ActivityDefinition | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleActivityClick = (activity: ActivityDefinition) => {
     setEditingActivity(activity);
@@ -16,6 +18,14 @@ export function LeftSidebar() {
 
   const handleCloseEditModal = () => {
     setEditingActivity(null);
+  };
+
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
   };
 
   return (
@@ -26,7 +36,7 @@ export function LeftSidebar() {
         </Text>
         
         <Box style={{ flex: 1, overflowY: 'auto' }}>
-          <Stack gap="md">
+          <Stack gap="md" mt="xs">
             {isLoading ? (
               <Box style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
                 <Loader size="md" color="teal" />
@@ -60,6 +70,20 @@ export function LeftSidebar() {
               ))
             )}
           </Stack>
+          
+          {/* 新しいアクティビティボタン（特別なスタイル） */}
+          {!isLoading && (
+            <Box mt="md">
+              <ActivityButton
+                icon="＋"
+                label=""
+                color="teal"
+                onClick={handleOpenCreateModal}
+                backgroundColor={colors.background.gridItemDark}
+                borderColor="white"
+              />
+            </Box>
+          )}
         </Box>
         
         {/* ユーザー認証ボタン */}
@@ -76,6 +100,12 @@ export function LeftSidebar() {
           activity={editingActivity}
         />
       )}
+
+      {/* 作成モーダル */}
+      <CreateActivityModal
+        opened={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
+      />
     </aside>
   );
 }

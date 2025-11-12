@@ -37,7 +37,7 @@ export function AddRecordButton({ onClick, disabled = false }: AddRecordButtonPr
       <QuickActionButton
         icon="➕"
         title="記録を追加"
-        description="既存のアクティビティに今日の記録を追加"
+        description=""
         gradient={ACTIVITY_GRADIENTS.addRecord}
         onClick={handleClick}
         disabled={disabled}
