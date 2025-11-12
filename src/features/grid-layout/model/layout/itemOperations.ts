@@ -50,6 +50,8 @@ export function swapItemsInList(
  * サイズ（columnSpan, rowSpan）は常にinitialItemsから取得する。
  * これにより、サイズの変更が正しく反映される。
  * 
+ * rowSpanがundefinedの場合は、ビジネスロジックとしてデフォルト値(1)を使用。
+ * 
  * @param currentItems - 現在のアイテム
  * @param initialItems - 初期アイテム
  * @returns 同期されたアイテム、変更がない場合はnull
@@ -66,13 +68,14 @@ export function syncInitialItems(
     !initialItems.every(item => currentIds.has(item.id));
 
   // サイズ変更をチェック（columnSpan, rowSpanの変更）
+  // rowSpanはデフォルト値(1)で比較（ビジネスロジック）
   const sizeChanged = initialItems.some(initialItem => {
     const currentItem = currentItems.find(item => item.id === initialItem.id);
     if (!currentItem) return false;
     
     return (
       currentItem.position.columnSpan !== initialItem.position.columnSpan ||
-      currentItem.position.rowSpan !== initialItem.position.rowSpan
+      (currentItem.position.rowSpan ?? 1) !== (initialItem.position.rowSpan ?? 1)
     );
   });
 
@@ -83,6 +86,7 @@ export function syncInitialItems(
 
   // 既存アイテムは位置（column, row）を保持、サイズ（columnSpan, rowSpan）はinitialから取得
   // 新しいアイテムは初期位置を使用
+  // rowSpanがundefinedの場合はデフォルト値(1)を使用（ビジネスロジック）
   return initialItems.map(initialItem => {
     const existingItem = currentItems.find(item => item.id === initialItem.id);
     
@@ -93,7 +97,7 @@ export function syncInitialItems(
           column: existingItem.position.column,
           row: existingItem.position.row,
           columnSpan: initialItem.position.columnSpan,
-          rowSpan: initialItem.position.rowSpan,
+          rowSpan: initialItem.position.rowSpan ?? 1,
         },
       };
     }
