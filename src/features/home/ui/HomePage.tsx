@@ -32,7 +32,7 @@ export function HomePage() {
   // サイドバーを折りたたむ（1850px未満 = Containerサイズ + 余裕）
   const shouldCollapseSidebar = useMediaQuery('(max-width: 1850px)');
 
-  // グラフ・カレンダークリック時のハンドラー（どちらも記録追加モーダルを開く）
+  // グラフ・カレンダー・テキストログクリック時のハンドラー（すべて記録追加モーダルを開く）
   const handleActivityClick = (activityId: string) => {
     setPreselectedActivityId(activityId);
     openAddRecord();
@@ -116,6 +116,7 @@ export function HomePage() {
               <DashboardComposition 
                 onChartClick={handleActivityClick}
                 onCalendarClick={handleActivityClick}
+                onTextLogClick={handleActivityClick}
               >
                 {(gridItems) => <MainContent gridItems={gridItems} />}
               </DashboardComposition>

@@ -1,9 +1,10 @@
 import type { GridItemConfig } from '@/features/grid-layout';
-import type { ActivityDefinition } from '@/shared/types';
+import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 // 一時的にコメントアウト - 将来的に復元する可能性あり
 // import { createActivityActionGridItems } from '@/features/activity';
 import { createGraphGridItems, type ActivityData } from '@/features/graph';
 import { createCalendarGridItems } from '@/features/calendar';
+import { createTextLogGridItems } from '@/features/text-log';
 
 /**
  * ダッシュボードのグリッドアイテム設定を生成する
@@ -16,15 +17,19 @@ import { createCalendarGridItems } from '@/features/calendar';
  * 各featureの独立性を保ちながら統合する。
  * 
  * @param activities - アクティビティデータの配列（グラフ用）
- * @param activityDefinitions - アクティビティ定義の配列（カレンダー用）
+ * @param activityDefinitions - アクティビティ定義の配列（カレンダー・テキストログ用）
+ * @param records - アクティビティ記録の配列（テキストログ用）
  * @param onChartClick - グラフクリック時のコールバック（オプション）
  * @param onCalendarClick - カレンダークリック時のコールバック（オプション）
+ * @param onTextLogClick - テキストログクリック時のコールバック（オプション）
  */
 export function createDashboardGridItems(
   activities: ActivityData[],
   activityDefinitions: ActivityDefinition[],
+  records: ActivityRecord[],
   onChartClick?: (activityId: string) => void,
-  onCalendarClick?: (activityId: string) => void
+  onCalendarClick?: (activityId: string) => void,
+  onTextLogClick?: (activityId: string) => void
 ): GridItemConfig[] {
   // アクティビティアクションウィジェット（記録追加、新規アクティビティ）
   // 一時的にコメントアウト - 将来的に復元する可能性あり
@@ -43,5 +48,14 @@ export function createDashboardGridItems(
     onCalendarClick
   );
   
-  return [...actionItems, ...graphItems, ...calendarItems];
+  // テキストログウィジェット
+  // startOrderでカレンダーウィジェットの後に配置
+  const textLogItems = createTextLogGridItems(
+    activityDefinitions,
+    records,
+    actionItems.length + graphItems.length + calendarItems.length,
+    onTextLogClick
+  );
+  
+  return [...actionItems, ...graphItems, ...calendarItems, ...textLogItems];
 }

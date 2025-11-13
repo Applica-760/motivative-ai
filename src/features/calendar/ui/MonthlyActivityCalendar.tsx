@@ -91,9 +91,9 @@ export function MonthlyActivityCalendar({
   const recordBackgroundColor = `${activityColor}30`; // 透明度を追加
 
   return (
-    <Stack gap={0} p="xs" pt="sm" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Stack gap={0} p="xs" pt="0" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* タイトルヘッダー：アクティビティアイコンとタイトル */}
-      <Group gap="xs" mb="xs" wrap="nowrap" px="xs">
+      <Group gap="xs" mb={4} wrap="nowrap" px="xs">
         <Text style={{ fontSize: '24px', lineHeight: 1 }}>
           {activity.icon}
         </Text>

@@ -58,6 +58,7 @@ export const colors = {
     addRecord: GRID_ITEM_BACKGROUND_DARK, // 記録を追加ウィジェットの背景色
     newActivity: GRID_ITEM_BACKGROUND_DARK, // 新しいアクティビティウィジェットの背景色
     chart: GRID_ITEM_BACKGROUND_DARK, // グラフウィジェットの背景色
+    textLog: GRID_ITEM_BACKGROUND_DARK, // テキストログウィジェットの背景色
     default: GRID_ITEM_BACKGROUND_DARK, // デフォルト背景色（将来の拡張用）
   },
 

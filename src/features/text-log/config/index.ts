@@ -1,0 +1,1 @@
+export { createTextLogGridItems } from './gridConfig';

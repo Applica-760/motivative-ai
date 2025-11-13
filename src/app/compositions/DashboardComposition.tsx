@@ -15,6 +15,8 @@ interface DashboardCompositionProps {
   onChartClick?: (activityId: string) => void;
   /** カレンダークリック時のコールバック（オプション） */
   onCalendarClick?: (activityId: string) => void;
+  /** テキストログクリック時のコールバック（オプション） */
+  onTextLogClick?: (activityId: string) => void;
   /** グリッドアイテムを受け取るレンダー関数 */
   children: (gridItems: GridItemConfig[]) => React.ReactNode;
 }
@@ -44,6 +46,7 @@ interface DashboardCompositionProps {
 export function DashboardComposition({ 
   onChartClick,
   onCalendarClick,
+  onTextLogClick,
   children 
 }: DashboardCompositionProps) {
   // ActivityContextからデータを取得
@@ -85,8 +88,15 @@ export function DashboardComposition({
 
   // グリッドアイテムを生成
   const gridItems = useMemo(
-    () => createDashboardGridItems(chartActivities, activityDefinitions, onChartClick, onCalendarClick),
-    [chartActivities, activityDefinitions, onChartClick, onCalendarClick]
+    () => createDashboardGridItems(
+      chartActivities, 
+      activityDefinitions, 
+      records,
+      onChartClick, 
+      onCalendarClick,
+      onTextLogClick
+    ),
+    [chartActivities, activityDefinitions, records, onChartClick, onCalendarClick, onTextLogClick]
   );
 
   // ローディング中は読み込み表示
