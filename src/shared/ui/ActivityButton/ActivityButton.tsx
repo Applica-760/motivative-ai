@@ -26,6 +26,8 @@ export function ActivityButton({ icon, label, color = 'gray', onClick, backgroun
       style={{
         boxShadow: `0 2px 8px ${colors.shadow.light}`,
         transition: 'all 0.2s ease',
+        paddingLeft: '11px',
+        paddingRight: '11px',
         ...(backgroundColor && { backgroundColor }),
         // ...(borderColor && { border: `1px solid ${borderColor}` }),
       }}

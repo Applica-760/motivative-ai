@@ -26,11 +26,9 @@ export function createCalendarGridItems(
 
   // 各カレンダーを2×2の正方形として配置
   return booleanActivities.map((activity, index) => {
-    // 3行目以降に配置（1行目: アクションボタン、2行目以降: グラフ）
-    // 1列配置で縦に並べる（各カレンダーが2列×2行分のサイズを占有）
-    const rowOffset = index * 2; // 0, 2, 4, 6...
-    const row = 3 + rowOffset;
-    const column = 1;
+    // 右上に配置（4列目、1-2行目）
+    const row = 1;
+    const column = 4;
 
     return {
       id: `${activity.id}-calendar`,

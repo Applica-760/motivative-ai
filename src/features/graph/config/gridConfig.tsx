@@ -30,11 +30,11 @@ export function createGraphGridItems(
   startOrder = 0,
   onChartClick?: (activityId: string) => void
 ): GridItemConfig[] {
-  // 各チャートの位置を計算（2行目以降に長方形として配置）
+  // 各チャートの位置を計算（中央に長方形として配置）
   return activities.map((activity, index) => {
-    const row = Math.floor(index / 2) + 2; // 2行目から開始
-    const columnOffset = (index % 2) * 2; // 0 or 2
-    const column = columnOffset + 1; // 1 or 3
+    // ランニングは1行目、読書は2行目に配置
+    const row = index + 1; // 1, 2, 3...
+    const column = 2; // 2列目開始（2-3列にまたがる）
     
     return {
       id: `${activity.type}-chart`,

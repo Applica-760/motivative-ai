@@ -34,9 +34,8 @@ export function createTextLogGridItems(
   // 各テキストログを1×2の縦長として配置
   return textActivities.map((activity, index) => {
     // 配置計算: 1列×2行の縦長カード
-    // 各カードが1列×2行分のサイズを占有
-    const rowOffset = index * 2; // 0, 2, 4, 6...
-    const row = 3 + rowOffset; // グラフ・カレンダーの後に配置
+    // 左上に配置（1列目、1-2行目）
+    const row = 1;
     const column = 1;
 
     // アクティビティに紐づく記録をフィルタリング

@@ -5,6 +5,7 @@ import { ActivityRepositoryImpl } from '@/features/activity-definition/api/repos
 import { RecordRepositoryImpl } from '@/features/activity-record/api/repositories';
 import { defaultActivities } from '@/features/activity-definition/config';
 import { defaultRecords } from '@/features/activity-record/config';
+import { DEFAULT_DATA_VERSION, DATA_VERSION_KEY, shouldResetData } from '@/shared/config/devConfig';
 
 interface ActivityContextValue {
   activities: ActivityDefinition[];
@@ -52,24 +53,57 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
         setIsLoading(true);
         setIsInitialized(false);
         
-        const [storedActivities, storedRecords] = await Promise.all([
-          activityRepository.getAll(),
-          recordRepository.getAll(),
-        ]);
+        // バージョン管理: データのリセットが必要かチェック
+        const currentVersion = await storage.getCustomData(DATA_VERSION_KEY);
+        const needsReset = shouldResetData(currentVersion);
         
-        // データが存在しない場合は初期サンプルデータを使用
-        if (storedActivities.length === 0) {
+        if (needsReset) {
+          console.log('[ActivityContext] 🔄 Resetting data to defaults...');
+          
+          // データをクリア
+          await storage.saveActivities([]);
+          await storage.saveRecords([]);
+          
+          // グリッドレイアウトもクリア
+          try {
+            await storage.saveGridLayout({ positions: {} });
+          } catch (e) {
+            console.warn('[ActivityContext] Failed to clear grid layout:', e);
+          }
+          
+          // デフォルトデータを保存
           await storage.saveActivities(defaultActivities);
-          setActivities(defaultActivities);
-        } else {
-          setActivities(storedActivities);
-        }
-
-        if (storedRecords.length === 0) {
           await storage.saveRecords(defaultRecords);
+          
+          // バージョンを更新
+          await storage.setCustomData(DATA_VERSION_KEY, DEFAULT_DATA_VERSION);
+          
+          console.log('[ActivityContext] ✅ Data reset complete');
+          
+          setActivities(defaultActivities);
           setRecords(defaultRecords);
         } else {
-          setRecords(storedRecords);
+          // 通常の読み込みロジック
+          const [storedActivities, storedRecords] = await Promise.all([
+            activityRepository.getAll(),
+            recordRepository.getAll(),
+          ]);
+          
+          // データが存在しない場合は初期サンプルデータを使用
+          if (storedActivities.length === 0) {
+            await storage.saveActivities(defaultActivities);
+            await storage.setCustomData(DATA_VERSION_KEY, DEFAULT_DATA_VERSION);
+            setActivities(defaultActivities);
+          } else {
+            setActivities(storedActivities);
+          }
+
+          if (storedRecords.length === 0) {
+            await storage.saveRecords(defaultRecords);
+            setRecords(defaultRecords);
+          } else {
+            setRecords(storedRecords);
+          }
         }
       } catch (error) {
         console.error('[ActivityContext] Failed to load data:', error);

@@ -2,20 +2,20 @@ import { Paper, Stack, Text, Loader, Box } from '@mantine/core';
 import { useState, useMemo } from 'react';
 import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { ActivityButton } from '@/shared/ui';
+import { ActivityButton, SortableActivityButton, AboutModal } from '@/shared/ui';
 import { useActivities } from '@/features/activity/hooks';
 import { useActivityContext } from '@/features/activity/model/ActivityContext';
 import { EditActivityModal, CreateActivityModal } from '@/features/activity-definition/ui/modals';
 import { AuthUserButton } from '@/features/auth';
 import { colors } from '@/shared/config';
 import type { ActivityDefinition } from '@/shared/types';
-import { SortableActivityButton } from './SortableActivityButton';
 
 export function LeftSidebar() {
   const { activities, isLoading } = useActivities();
   const { reorderActivities } = useActivityContext();
   const [editingActivity, setEditingActivity] = useState<ActivityDefinition | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   
   // 楽観的UI用のローカル状態
   const [localActivities, setLocalActivities] = useState<ActivityDefinition[]>([]);
@@ -152,8 +152,31 @@ export function LeftSidebar() {
           )}
         </Box>
         
-        {/* ユーザー認証ボタン */}
+        {/* アプリ情報とユーザー認証ボタン */}
         <Box mt="md" pt="md" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          {/* MotivativeAIとは？テキスト */}
+          <Text
+            size="sm"
+            c="dimmed"
+            mb="md"
+            style={{
+              cursor: 'pointer',
+              transition: 'color 0.2s ease',
+              '&:hover': {
+                color: '#fff',
+              },
+            }}
+            onClick={() => setIsAboutModalOpen(true)}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#fff';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '';
+            }}
+          >
+            Motivative AIとは？
+          </Text>
+          
           <AuthUserButton />
         </Box>
       </Paper>
@@ -171,6 +194,12 @@ export function LeftSidebar() {
       <CreateActivityModal
         opened={isCreateModalOpen}
         onClose={handleCloseCreateModal}
+      />
+
+      {/* Motivative AIとは？モーダル */}
+      <AboutModal
+        opened={isAboutModalOpen}
+        onClose={() => setIsAboutModalOpen(false)}
       />
     </aside>
   );
