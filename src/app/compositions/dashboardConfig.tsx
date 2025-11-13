@@ -5,6 +5,7 @@ import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 import { createGraphGridItems, type ActivityData } from '@/features/graph';
 import { createCalendarGridItems } from '@/features/calendar';
 import { createTextLogGridItems } from '@/features/text-log';
+import { createTimerGridItems } from '@/features/timer';
 
 /**
  * ダッシュボードのグリッドアイテム設定を生成する
@@ -31,20 +32,27 @@ export function createDashboardGridItems(
   onCalendarClick?: (activityId: string) => void,
   onTextLogClick?: (activityId: string) => void
 ): GridItemConfig[] {
+  // タイマーウィジェット（最上部に配置）
+  const timerItems = createTimerGridItems();
+  
   // アクティビティアクションウィジェット（記録追加、新規アクティビティ）
   // 一時的にコメントアウト - 将来的に復元する可能性あり
   // const actionItems = createActivityActionGridItems();
   const actionItems: GridItemConfig[] = [];
   
   // グラフチャートウィジェット
-  // startOrderでアクションウィジェットの後に配置
-  const graphItems = createGraphGridItems(activities, actionItems.length, onChartClick);
+  // startOrderでタイマー + アクションウィジェットの後に配置
+  const graphItems = createGraphGridItems(
+    activities,
+    timerItems.length + actionItems.length,
+    onChartClick
+  );
   
   // カレンダーウィジェット
   // startOrderでグラフウィジェットの後に配置
   const calendarItems = createCalendarGridItems(
     activityDefinitions,
-    actionItems.length + graphItems.length,
+    timerItems.length + actionItems.length + graphItems.length,
     onCalendarClick
   );
   
@@ -53,9 +61,9 @@ export function createDashboardGridItems(
   const textLogItems = createTextLogGridItems(
     activityDefinitions,
     records,
-    actionItems.length + graphItems.length + calendarItems.length,
+    timerItems.length + actionItems.length + graphItems.length + calendarItems.length,
     onTextLogClick
   );
   
-  return [...actionItems, ...graphItems, ...calendarItems, ...textLogItems];
+  return [...timerItems, ...actionItems, ...graphItems, ...calendarItems, ...textLogItems];
 }
