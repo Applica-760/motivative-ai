@@ -1,13 +1,17 @@
-import { Paper, Stack, Text, Center } from '@mantine/core';
+import { Paper, Stack, Center } from '@mantine/core';
 import { useEyeTracking, useParallax } from '../hooks';
 import { CharacterEyes } from './CharacterEyes';
 import { ParallaxBackground } from './ParallaxBackground';
+import { SpeechBubbleList } from './SpeechBubbleList';
+import type { SpeechBubbleMessage } from '../config/messageConfig';
 
 interface AiCharacterProps {
-  /** ユーザー名（表示用） */
-  userName?: string;
-  /** 挨拶メッセージ */
-  greeting?: string;
+  /** 表示するメッセージのリスト */
+  messages: SpeechBubbleMessage[];
+  /** メッセージクリック時のコールバック（オプション） */
+  onMessageClick?: (message: SpeechBubbleMessage) => void;
+  /** キャラクタークリック時のコールバック（オプション） */
+  onCharacterClick?: () => void;
 }
 
 /**
@@ -15,57 +19,75 @@ interface AiCharacterProps {
  * Feature-Sliced Design: features/ai/ui
  * 
  * マウスを追跡する目とパララックス背景を持つAIキャラクター。
+ * 複数の吹き出しメッセージをリスト表示。
+ * キャラクター（目）をクリックすると励ましメッセージを表示。
  * 将来的にチャット機能を統合する予定。
  * 
  * 責務:
  * - キャラクターの目のアニメーション
  * - パララックス背景エフェクト
- * - ユーザーへの挨拶表示
+ * - メッセージリストの表示
+ * - クリックインタラクション
  * 
  * @example
  * ```tsx
- * <AiCharacter userName="ゲストユーザさん" greeting="こんにちは！" />
+ * <AiCharacter 
+ *   messages={messages}
+ *   onCharacterClick={addEncouragement}
+ * />
  * ```
  */
-export function AiCharacter({ userName = 'ゲストユーザさん', greeting = 'こんにちは！' }: AiCharacterProps) {
+export function AiCharacter({ messages, onMessageClick, onCharacterClick }: AiCharacterProps) {
   const { eyesRef, pupilPosition } = useEyeTracking();
   const { containerRef, getParallaxOffset } = useParallax();
 
   return (
     <div ref={containerRef} style={{ position: 'relative' }}>
-      <Paper p="lg" style={{ position: 'relative', overflow: 'hidden', minHeight: '320px' }}>
-        {/* パララックス背景 */}
-        <ParallaxBackground getParallaxOffset={getParallaxOffset} />
+      <Paper p="lg" style={{ position: 'relative' }}>
+        {/* パララックス背景（固定高さコンテナ） */}
+        <div 
+          style={{ 
+            position: 'relative', 
+            height: '320px', 
+            overflow: 'hidden',
+            pointerEvents: 'none',
+          }}
+        >
+          <ParallaxBackground 
+            getParallaxOffset={getParallaxOffset}
+            onCircleClick={onCharacterClick}
+          />
+        </div>
 
         {/* メインコンテンツ */}
-        <Stack gap="xl" align="center" style={{ position: 'relative', zIndex: 1 }}>
+        <Stack 
+          gap="xl" 
+          align="center" 
+          style={{ 
+            position: 'relative', 
+            zIndex: 5, 
+            pointerEvents: 'none',
+            marginTop: '-320px', // パララックスコンテナと重ねる
+          }}
+        >
           {/* マウス追跡する目 */}
-          <Center style={{ marginTop: '80px' }}>
+          <Center 
+            style={{ 
+              marginTop: '80px', 
+              pointerEvents: 'auto', 
+              position: 'relative', 
+              zIndex: 20,
+              cursor: onCharacterClick ? 'pointer' : 'default',
+            }}
+            onClick={onCharacterClick}
+          >
             <CharacterEyes pupilPosition={pupilPosition} eyesRef={eyesRef} />
           </Center>
 
-          {/* 吹き出し */}
-          <Paper
-            shadow="md"
-            p="md"
-            radius="lg"
-            withBorder
-            style={{
-              position: 'relative',
-              width: '100%',
-              maxWidth: '250px',
-              marginTop: '120px',
-            }}
-          >
-            <Stack gap={0}>
-              <Text size="lg" fw={600} ta="center">
-                {userName}
-              </Text>
-              <Text size="lg" fw={600} ta="center">
-                {greeting}
-              </Text>
-            </Stack>
-          </Paper>
+          {/* 吹き出しリスト */}
+          <div style={{ marginTop: '120px', width: '100%', pointerEvents: 'auto' }}>
+            <SpeechBubbleList messages={messages} onMessageClick={onMessageClick} />
+          </div>
         </Stack>
       </Paper>
     </div>
