@@ -76,7 +76,7 @@ export class ActivityRepositoryImpl implements ActivityRepository {
    */
   async update(
     id: string,
-    updates: Partial<Omit<ActivityDefinition, 'id' | 'createdAt' | 'updatedAt' | 'order'>>
+    updates: Partial<Omit<ActivityDefinition, 'id' | 'createdAt'>>
   ): Promise<ActivityDefinition> {
     try {
       const safeUpdates = {

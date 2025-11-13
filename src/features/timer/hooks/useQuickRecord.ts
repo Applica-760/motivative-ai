@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
-import { useActivityContext } from '@/features/activity';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useStorage } from '@/shared/services/storage';
+import { TimerRepository } from '../api/repositories';
 import { secondsToMinutes } from '../model/timerUtils';
 import { notifications } from '@mantine/notifications';
 
@@ -14,28 +15,42 @@ export interface UseQuickRecordReturn {
   saveRecord: (seconds: number) => Promise<boolean>;
 }
 
-const SELECTED_ACTIVITY_KEY = 'timer-selected-activity';
-
 /**
  * タイマーから記録を素早く保存するためのフック
  * 
+ * 3層アーキテクチャに準拠し、TimerRepositoryを通してデータアクセス。
+ * 
  * 機能:
  * - duration型アクティビティの選択状態を管理
- * - ActivityContextを通じて記録を保存
- * - 選択状態をlocalStorageに永続化
+ * - TimerRepositoryを通じて記録を保存
+ * - StorageService経由で選択状態を永続化（ログイン状態に応じてLocalStorage/Firebase自動切替）
  */
 export function useQuickRecord(): UseQuickRecordReturn {
-  const { addRecord } = useActivityContext();
-  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(() => {
-    return localStorage.getItem(SELECTED_ACTIVITY_KEY);
-  });
+  const storage = useStorage();
+  const repository = useMemo(() => new TimerRepository(storage), [storage]);
+  
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
+  // 初回マウント時にRepositoryから復元
+  useEffect(() => {
+    const loadSelected = async () => {
+      try {
+        const id = await repository.loadSelectedActivity();
+        setSelectedActivityId(id);
+      } catch (error) {
+        console.error('[useQuickRecord] Failed to load selected activity:', error);
+      }
+    };
+    
+    loadSelected();
+  }, [repository]);
+
   // アクティビティを選択
-  const selectActivity = useCallback((activityId: string) => {
+  const selectActivity = useCallback(async (activityId: string) => {
     setSelectedActivityId(activityId);
-    localStorage.setItem(SELECTED_ACTIVITY_KEY, activityId);
-  }, []);
+    await repository.saveSelectedActivity(activityId);
+  }, [repository]);
 
   // 記録を保存
   const saveRecord = useCallback(
@@ -62,19 +77,7 @@ export function useQuickRecord(): UseQuickRecordReturn {
         setIsSaving(true);
         
         const minutes = secondsToMinutes(seconds);
-        const now = new Date();
-        const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
-
-        await addRecord({
-          activityId: selectedActivityId,
-          value: {
-            type: 'duration',
-            value: minutes,
-            unit: 'minutes',
-          },
-          date: dateStr,
-          note: 'タイマーから記録',
-        });
+        await repository.addRecord(selectedActivityId, seconds, 'タイマーから記録');
 
         notifications.show({
           title: '記録完了',
@@ -95,7 +98,7 @@ export function useQuickRecord(): UseQuickRecordReturn {
         setIsSaving(false);
       }
     },
-    [selectedActivityId, addRecord]
+    [selectedActivityId, repository]
   );
 
   return {

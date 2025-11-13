@@ -1,5 +1,6 @@
 import { Stack, Title, Button, Divider, Box } from '@mantine/core';
 import { IconDeviceFloppy } from '@tabler/icons-react';
+import { colors } from '@/shared/config';
 import { useTimer } from '../hooks/useTimer';
 import { useQuickRecord } from '../hooks/useQuickRecord';
 import { TimerDisplay } from './TimerDisplay';
@@ -88,18 +89,22 @@ export function TimerWidget() {
         disabled={!canSaveRecord}
         loading={isSaving}
         fullWidth
-        variant="filled"
-        color="cyan"
         size="sm"
         style={{ 
           flexShrink: 0,
         }}
         styles={{
           root: {
+            backgroundColor: colors.action.primary,
+            color: colors.button.textDark,
+            fontWeight: 600,
+            '&:hover': {
+              backgroundColor: colors.action.primaryHover,
+            },
             '&[data-disabled]': {
-              backgroundColor: '#6b6b6b !important',
-              color: '#d0d0d0 !important',
-              borderColor: '#6b6b6b !important',
+              backgroundColor: `${colors.button.disabledBackground} !important`,
+              color: `${colors.button.disabledText} !important`,
+              borderColor: `${colors.button.disabledBackground} !important`,
               opacity: '1 !important',
               pointerEvents: 'none',
             },

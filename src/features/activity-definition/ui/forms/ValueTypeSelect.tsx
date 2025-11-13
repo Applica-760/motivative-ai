@@ -1,4 +1,5 @@
 import { Box, Radio, Stack, Text } from '@mantine/core';
+import { colors } from '@/shared/config';
 import { VALUE_TYPE_OPTIONS } from '../../config/formConstants';
 import type { ActivityValueType } from '@/shared/types';
 
@@ -18,9 +19,9 @@ export function ValueTypeSelect({ value, onChange, error }: ValueTypeSelectProps
         size="sm"
         fw={500}
         mb="0.5rem"
-        style={{ color: '#ccc' }}
+        style={{ color: colors.form.placeholder }}
       >
-        記録タイプ <span style={{ color: '#fa5252' }}>*</span>
+        記録タイプ <span style={{ color: colors.form.required }}>*</span>
       </Text>
       
       <Radio.Group
@@ -33,8 +34,8 @@ export function ValueTypeSelect({ value, onChange, error }: ValueTypeSelectProps
               key={option.value}
               p="md"
               style={{
-                backgroundColor: value === option.value ? '#2a2a2a' : '#1a1a1a',
-                border: `2px solid ${value === option.value ? '#4ECDC4' : '#333'}`,
+                backgroundColor: value === option.value ? colors.form.background : colors.modal.background,
+                border: `2px solid ${value === option.value ? colors.action.primary : colors.button.secondaryBackground}`,
                 borderRadius: '8px',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
@@ -45,7 +46,7 @@ export function ValueTypeSelect({ value, onChange, error }: ValueTypeSelectProps
                 value={option.value}
                 label={
                   <Box>
-                    <Text fw={500} size="sm" style={{ color: '#fff' }}>
+                    <Text fw={500} size="sm" style={{ color: colors.form.text }}>
                       {option.icon} {option.label}
                     </Text>
                     <Text size="xs" c="dimmed" mt={4}>
@@ -55,11 +56,11 @@ export function ValueTypeSelect({ value, onChange, error }: ValueTypeSelectProps
                 }
                 styles={{
                   radio: {
-                    backgroundColor: '#2a2a2a',
-                    borderColor: '#444',
+                    backgroundColor: colors.form.background,
+                    borderColor: colors.form.border,
                     '&:checked': {
-                      backgroundColor: '#4ECDC4',
-                      borderColor: '#4ECDC4',
+                      backgroundColor: colors.action.primary,
+                      borderColor: colors.action.primary,
                     },
                   },
                 }}

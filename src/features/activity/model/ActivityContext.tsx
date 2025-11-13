@@ -12,6 +12,8 @@ interface ActivityContextValue {
   isLoading: boolean;
   addActivity: (activity: Omit<ActivityDefinition, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => Promise<void>;
   updateActivity: (id: string, updates: Omit<ActivityDefinition, 'id' | 'createdAt' | 'updatedAt' | 'order'>) => void;
+  deleteActivity: (id: string) => Promise<void>;
+  reorderActivities: (activityIds: string[]) => Promise<void>;
   addRecord: (record: Omit<ActivityRecord, 'id' | 'createdAt' | 'updatedAt' | 'timestamp'>) => Promise<void>;
   refreshActivities: () => void;
   getRecordsByActivityId: (activityId: string) => ActivityRecord[];
@@ -111,6 +113,66 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
     }
   }, [activityRepository]);
 
+  // アクティビティを削除（関連レコードも削除）
+  const deleteActivity = useCallback(async (id: string) => {
+    try {
+      // 関連レコードを取得
+      const relatedRecords = records.filter(record => record.activityId === id);
+      
+      // 関連レコードを削除
+      await Promise.all(
+        relatedRecords.map(record => recordRepository.delete(record.id))
+      );
+      
+      // アクティビティを削除
+      await activityRepository.delete(id);
+      
+      // 状態を更新
+      setActivities(prev => prev.filter(activity => activity.id !== id));
+      setRecords(prev => prev.filter(record => record.activityId !== id));
+      
+      console.log('[ActivityContext] Deleted activity and related records:', {
+        activityId: id,
+        deletedRecordsCount: relatedRecords.length,
+      });
+    } catch (error) {
+      console.error('[ActivityContext] Failed to delete activity:', error);
+      throw error;
+    }
+  }, [activityRepository, recordRepository, records]);
+
+  // アクティビティの並び順を変更
+  const reorderActivities = useCallback(async (activityIds: string[]) => {
+    try {
+      // 新しい順序でorderプロパティを更新
+      const updatedActivities = activities.map(activity => {
+        const newOrder = activityIds.indexOf(activity.id);
+        if (newOrder === -1) return activity; // IDが見つからない場合は変更しない
+        
+        return {
+          ...activity,
+          order: newOrder,
+          updatedAt: new Date(),
+        };
+      });
+
+      // 各アクティビティを更新
+      await Promise.all(
+        updatedActivities.map(activity => 
+          activityRepository.update(activity.id, activity)
+        )
+      );
+
+      // 状態を更新（order順にソート）
+      setActivities(updatedActivities.sort((a, b) => a.order - b.order));
+      
+      console.log('[ActivityContext] Reordered activities:', activityIds);
+    } catch (error) {
+      console.error('[ActivityContext] Failed to reorder activities:', error);
+      throw error;
+    }
+  }, [activities, activityRepository]);
+
   // 記録を追加
   const addRecord = useCallback(async (
     recordData: Omit<ActivityRecord, 'id' | 'createdAt' | 'updatedAt' | 'timestamp'>
@@ -144,19 +206,32 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
     return records.filter(record => record.activityId === activityId);
   }, [records]);
 
+  const value = useMemo(() => ({
+    activities,
+    records,
+    isLoading,
+    addActivity,
+    updateActivity,
+    deleteActivity,
+    reorderActivities,
+    addRecord,
+    refreshActivities,
+    getRecordsByActivityId,
+  }), [
+    activities,
+    records,
+    isLoading,
+    addActivity,
+    updateActivity,
+    deleteActivity,
+    reorderActivities,
+    addRecord,
+    refreshActivities,
+    getRecordsByActivityId,
+  ]);
+
   return (
-    <ActivityContext.Provider
-      value={{
-        activities,
-        records,
-        isLoading,
-        addActivity,
-        updateActivity,
-        addRecord,
-        refreshActivities,
-        getRecordsByActivityId,
-      }}
-    >
+    <ActivityContext.Provider value={value}>
       {/* 初期化が完了するまで子コンポーネントを表示しない */}
       {/* これにより、データが確実に読み込まれた後に画面が表示される */}
       {isInitialized ? children : null}

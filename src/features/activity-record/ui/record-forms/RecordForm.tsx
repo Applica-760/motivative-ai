@@ -1,10 +1,11 @@
 import { Box, Stack, Text, Divider } from '@mantine/core';
 import { useState } from 'react';
+import { colors } from '@/shared/config';
 import { useRecordForm } from '../../hooks/useRecordForm';
-import { ActivitySelect } from './ActivitySelect';
-import { ValueInput } from './ValueInput';
-import { DateField } from './DateField';
-import { NoteField } from './NoteField';
+import { ActivitySelect } from '../ActivitySelect';
+import { ValueInput } from '../ValueInput';
+import { DateField } from '../DateField';
+import { NoteField } from '../NoteField';
 import { FormActions } from '@/shared/components';
 import type { RecordFormData } from '../../model/recordFormTypes';
 
@@ -71,7 +72,7 @@ export function RecordForm({ onSuccess, onCancel, initialActivityId }: RecordFor
       <Stack gap="lg">
         {/* アクティビティ選択セクション */}
         <Box>
-          <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
+          <Text size="sm" fw={600} mb="md" style={{ color: colors.action.primary }}>
             アクティビティ
           </Text>
           <ActivitySelect
@@ -81,11 +82,11 @@ export function RecordForm({ onSuccess, onCancel, initialActivityId }: RecordFor
           />
         </Box>
 
-        <Divider color="#333" />
+        <Divider color={colors.divider.default} />
 
         {/* 値入力セクション */}
         <Box>
-          <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
+          <Text size="sm" fw={600} mb="md" style={{ color: colors.action.primary }}>
             記録内容
           </Text>
           <Stack gap="md">
@@ -104,11 +105,11 @@ export function RecordForm({ onSuccess, onCancel, initialActivityId }: RecordFor
           </Stack>
         </Box>
 
-        <Divider color="#333" />
+        <Divider color={colors.divider.default} />
 
         {/* メモセクション */}
         <Box>
-          <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
+          <Text size="sm" fw={600} mb="md" style={{ color: colors.action.primary }}>
             メモ
           </Text>
           <NoteField

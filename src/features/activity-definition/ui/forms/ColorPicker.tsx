@@ -1,4 +1,5 @@
 import { Box, SimpleGrid, Text } from '@mantine/core';
+import { colors } from '@/shared/config';
 import { ACTIVITY_COLORS } from '../../config/formConstants';
 
 interface ColorPickerProps {
@@ -17,9 +18,9 @@ export function ColorPicker({ value, onChange, error }: ColorPickerProps) {
         size="sm"
         fw={500}
         mb="0.5rem"
-        style={{ color: '#ccc' }}
+        style={{ color: colors.form.placeholder }}
       >
-        カラー <span style={{ color: '#fa5252' }}>*</span>
+        カラー <span style={{ color: colors.form.required }}>*</span>
       </Text>
       
       <SimpleGrid cols={6} spacing="xs" mb="xs">
@@ -32,7 +33,7 @@ export function ColorPicker({ value, onChange, error }: ColorPickerProps) {
               width: '100%',
               aspectRatio: '1',
               backgroundColor: color.value,
-              border: value === color.value ? '3px solid #fff' : '2px solid #444',
+              border: value === color.value ? `3px solid ${colors.form.text}` : `2px solid ${colors.form.border}`,
               borderRadius: '8px',
               cursor: 'pointer',
               transition: 'all 0.2s',

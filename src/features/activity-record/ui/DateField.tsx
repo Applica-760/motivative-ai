@@ -1,4 +1,5 @@
 import { TextInput } from '@mantine/core';
+import { colors } from '@/shared/config';
 
 interface DateFieldProps {
   value: string;
@@ -24,12 +25,12 @@ export function DateField({ value, onChange, error }: DateFieldProps) {
       error={error}
       styles={{
         input: {
-          backgroundColor: '#2a2a2a',
-          borderColor: '#444',
-          color: '#fff',
+          backgroundColor: colors.form.background,
+          borderColor: colors.form.border,
+          color: colors.form.text,
           colorScheme: 'dark',
           '&:focus': {
-            borderColor: '#4ECDC4',
+            borderColor: colors.form.borderFocus,
           },
           '&::-webkit-calendar-picker-indicator': {
             filter: 'invert(1)',
@@ -37,7 +38,7 @@ export function DateField({ value, onChange, error }: DateFieldProps) {
           },
         },
         label: {
-          color: '#ccc',
+          color: colors.form.placeholder,
           marginBottom: '0.5rem',
         },
       }}

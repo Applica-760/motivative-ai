@@ -278,4 +278,43 @@ export class LocalStorageService extends BaseStorageService implements StorageSe
       );
     }
   }
+  
+  // ==================== Custom Data ====================
+  
+  async getCustomData(key: string): Promise<string | null> {
+    try {
+      const data = localStorage.getItem(key);
+      return data;
+    } catch (error) {
+      throw new StorageError(
+        `Failed to get custom data: ${key}`,
+        'read',
+        error
+      );
+    }
+  }
+  
+  async setCustomData(key: string, value: string): Promise<void> {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      throw new StorageError(
+        `Failed to set custom data: ${key}`,
+        'write',
+        error
+      );
+    }
+  }
+  
+  async deleteCustomData(key: string): Promise<void> {
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {
+      throw new StorageError(
+        `Failed to delete custom data: ${key}`,
+        'delete',
+        error
+      );
+    }
+  }
 }

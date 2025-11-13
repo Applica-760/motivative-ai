@@ -72,6 +72,44 @@ export const colors = {
     lime: 'lime',
   },
 
+  // Action Colors (buttons, focus states)
+  action: {
+    primary: '#4ECDC4',        // メインアクション (ティール)
+    primaryHover: '#3db8b8',   // ホバー時
+    primaryDark: '#2ca3a3',    // アクティブ時
+  },
+
+  // Form Colors (inputs, fields)
+  form: {
+    background: '#2a2a2a',     // 入力フィールド背景
+    border: '#444',            // 通常のボーダー
+    borderFocus: '#4ECDC4',    // フォーカス時のボーダー
+    text: '#fff',              // テキスト
+    placeholder: '#ccc',       // プレースホルダー
+    textDisabled: '#888',      // 無効化テキスト
+    required: '#fa5252',       // 必須マーカー
+  },
+
+  // Button Colors
+  button: {
+    textDark: '#1a1a1a',          // 明るいボタンのテキスト
+    textDisabled: '#666',          // 無効化ボタンのテキスト
+    disabledText: '#d0d0d0',       // Timer用無効化テキスト
+    secondaryBackground: '#333',   // セカンダリボタン背景
+    disabledBackground: '#6b6b6b', // 無効化ボタン背景
+  },
+
+  // Modal Colors
+  modal: {
+    background: '#1a1a1a',     // モーダル背景
+    border: '#333',            // モーダルボーダー
+  },
+
+  // Divider Colors
+  divider: {
+    default: '#333',           // デフォルト区切り線
+  },
+
   // Cursor & Animation Effects
   cursor: {
     outer: 'rgba(34, 139, 230, 0.5)',    // カスタムカーソル外側の円

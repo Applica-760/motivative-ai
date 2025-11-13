@@ -1,5 +1,6 @@
-import { Modal } from '@mantine/core';
+import { Modal, Stack } from '@mantine/core';
 import { ActivityForm } from '../forms';
+import { DeleteActivityButton } from '../buttons';
 import type { ActivityFormData } from '../../model/formTypes';
 import type { ActivityDefinition } from '@/shared/types';
 import { useActivityContext } from '@/features/activity/model/ActivityContext';
@@ -61,12 +62,21 @@ export function EditActivityModal({ opened, onClose, activity }: EditActivityMod
       overlayProps={MODAL_OVERLAY_PROPS}
       styles={MODAL_STYLES}
     >
-      <ActivityForm 
-        onSuccess={handleSuccess} 
-        onCancel={onClose}
-        initialData={initialData}
-        submitButtonText="更新する"
-      />
+      <Stack gap={0}>
+        {/* 編集フォーム */}
+        <ActivityForm 
+          onSuccess={handleSuccess} 
+          onCancel={onClose}
+          initialData={initialData}
+          submitButtonText="更新する"
+        />
+        
+        {/* 削除ボタン */}
+        <DeleteActivityButton 
+          activity={activity}
+          onSuccess={onClose}
+        />
+      </Stack>
     </Modal>
   );
 }
