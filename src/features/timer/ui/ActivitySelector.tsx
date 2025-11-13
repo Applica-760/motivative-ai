@@ -1,6 +1,8 @@
 import { Select, Text, Box } from '@mantine/core';
-import { useActivityContext } from '@/features/activity';
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useStorage } from '@/shared/services/storage';
+import { TimerRepository } from '../api/repositories';
+import type { ActivityDefinition } from '@/shared/types';
 
 interface ActivitySelectorProps {
   /** 選択中のアクティビティID */
@@ -12,25 +14,40 @@ interface ActivitySelectorProps {
 /**
  * duration型のアクティビティを選択するセレクトボックス
  * 
+ * 3層アーキテクチャに準拠し、TimerRepositoryを通してデータアクセス。
  * タイマーで記録するアクティビティを選択できる
  */
 export function ActivitySelector({ selectedActivityId, onSelect }: ActivitySelectorProps) {
-  const { activities, isLoading } = useActivityContext();
+  const storage = useStorage();
+  const repository = useMemo(() => new TimerRepository(storage), [storage]);
+  
+  const [activities, setActivities] = useState<ActivityDefinition[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // duration型のアクティビティのみフィルタリング
-  const durationActivities = useMemo(() => {
-    return activities.filter(
-      (activity) => activity.valueType === 'duration' && !activity.isArchived
-    );
-  }, [activities]);
+  // Repositoryからduration型アクティビティを取得
+  useEffect(() => {
+    const loadActivities = async () => {
+      try {
+        setIsLoading(true);
+        const durationActivities = await repository.getDurationActivities();
+        setActivities(durationActivities);
+      } catch (error) {
+        console.error('[ActivitySelector] Failed to load activities:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadActivities();
+  }, [repository]);
 
   // Selectコンポーネント用のデータ形式に変換
   const selectData = useMemo(() => {
-    return durationActivities.map((activity) => ({
+    return activities.map((activity) => ({
       value: activity.id,
       label: `${activity.icon} ${activity.title}`,
     }));
-  }, [durationActivities]);
+  }, [activities]);
 
   if (isLoading) {
     return (
@@ -47,7 +64,7 @@ export function ActivitySelector({ selectedActivityId, onSelect }: ActivitySelec
     );
   }
 
-  if (durationActivities.length === 0) {
+  if (activities.length === 0) {
     return (
       <Box>
         <Text size="sm" c="dimmed" mb="xs">

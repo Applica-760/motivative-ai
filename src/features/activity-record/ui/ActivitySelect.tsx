@@ -1,4 +1,5 @@
 import { Select, Loader, Text, Box } from '@mantine/core';
+import { colors } from '@/shared/config';
 import { useActivities } from '../hooks/useActivities';
 
 interface ActivitySelectProps {
@@ -20,15 +21,15 @@ export function ActivitySelect({ value, onChange, error }: ActivitySelectProps) 
   if (!isLoading && activities.length === 0) {
     return (
       <Box>
-        <Text size="sm" fw={500} mb="0.5rem" style={{ color: '#ccc' }}>
-          アクティビティ <span style={{ color: '#fa5252' }}>*</span>
+        <Text size="sm" fw={500} mb="0.5rem" style={{ color: colors.form.placeholder }}>
+          アクティビティ <span style={{ color: colors.form.required }}>*</span>
         </Text>
         <Box
           p="md"
           style={{
-            backgroundColor: '#2a2a2a',
+            backgroundColor: colors.form.background,
             borderRadius: '8px',
-            border: '1px solid #444',
+            border: `1px solid ${colors.form.border}`,
             textAlign: 'center',
           }}
         >
@@ -62,28 +63,28 @@ export function ActivitySelect({ value, onChange, error }: ActivitySelectProps) 
       leftSection={isLoading ? <Loader size="xs" /> : undefined}
       styles={{
         input: {
-          backgroundColor: '#2a2a2a',
-          borderColor: '#444',
-          color: '#fff',
+          backgroundColor: colors.form.background,
+          borderColor: colors.form.border,
+          color: colors.form.text,
           '&:focus': {
-            borderColor: '#4ECDC4',
+            borderColor: colors.form.borderFocus,
           },
         },
         label: {
-          color: '#ccc',
+          color: colors.form.placeholder,
           marginBottom: '0.5rem',
         },
         dropdown: {
-          backgroundColor: '#2a2a2a',
-          borderColor: '#444',
+          backgroundColor: colors.form.background,
+          borderColor: colors.form.border,
         },
         option: {
-          color: '#fff',
+          color: colors.form.text,
           '&[data-selected]': {
-            backgroundColor: '#4ECDC4',
+            backgroundColor: colors.action.primary,
           },
           '&:hover': {
-            backgroundColor: '#333',
+            backgroundColor: colors.button.secondaryBackground,
           },
         },
       }}

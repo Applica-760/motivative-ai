@@ -26,7 +26,7 @@ export interface ActivityRepository {
    */
   update(
     id: string,
-    updates: Partial<Omit<ActivityDefinition, 'id' | 'createdAt' | 'updatedAt' | 'order'>>
+    updates: Partial<Omit<ActivityDefinition, 'id' | 'createdAt'>>
   ): Promise<ActivityDefinition>;
   
   /**

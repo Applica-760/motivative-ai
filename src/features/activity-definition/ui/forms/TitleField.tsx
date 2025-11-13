@@ -1,4 +1,5 @@
 import { TextInput } from '@mantine/core';
+import { colors } from '@/shared/config';
 
 interface TitleFieldProps {
   value: string;
@@ -9,27 +10,27 @@ interface TitleFieldProps {
 /**
  * アクティビティ名入力フィールド
  */
+
 export function TitleField({ value, onChange, error }: TitleFieldProps) {
   return (
     <TextInput
-      label="アクティビティ名"
-      placeholder="例: ランニング、読書、筋トレ"
+      label="タイトル"
+      placeholder="例: 読書、運動、瞑想"
       value={value}
       onChange={(e) => onChange(e.currentTarget.value)}
-      error={error}
       required
+      error={error}
       styles={{
         input: {
-          backgroundColor: '#2a2a2a',
-          borderColor: '#444',
-          color: '#fff',
+          backgroundColor: colors.form.background,
+          borderColor: colors.form.border,
+          color: colors.form.text,
           '&:focus': {
-            borderColor: '#4ECDC4',
+            borderColor: colors.form.borderFocus,
           },
         },
         label: {
-          color: '#ccc',
-          marginBottom: '0.5rem',
+          color: colors.form.placeholder,
         },
       }}
     />

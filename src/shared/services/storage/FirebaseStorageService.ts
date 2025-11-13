@@ -576,4 +576,56 @@ export class FirebaseStorageService implements StorageService {
       );
     }
   }
+  
+  // ==================== Custom Data ====================
+  
+  async getCustomData(key: string): Promise<string | null> {
+    try {
+      const dataRef = doc(this.db, `users/${this.userId}/customData/${key}`);
+      const dataSnap = await getDoc(dataRef);
+      
+      if (!dataSnap.exists()) {
+        return null;
+      }
+      
+      const data = dataSnap.data();
+      return data?.value ?? null;
+    } catch (error) {
+      throw new StorageError(
+        `Failed to get custom data: ${key}`,
+        'read',
+        error
+      );
+    }
+  }
+  
+  async setCustomData(key: string, value: string): Promise<void> {
+    try {
+      const dataRef = doc(this.db, `users/${this.userId}/customData/${key}`);
+      
+      await setDoc(dataRef, {
+        value,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      throw new StorageError(
+        `Failed to set custom data: ${key}`,
+        'write',
+        error
+      );
+    }
+  }
+  
+  async deleteCustomData(key: string): Promise<void> {
+    try {
+      const dataRef = doc(this.db, `users/${this.userId}/customData/${key}`);
+      await deleteDoc(dataRef);
+    } catch (error) {
+      throw new StorageError(
+        `Failed to delete custom data: ${key}`,
+        'delete',
+        error
+      );
+    }
+  }
 }

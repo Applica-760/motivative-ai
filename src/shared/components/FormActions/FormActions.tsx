@@ -1,4 +1,5 @@
 import { Box, Button } from '@mantine/core';
+import { colors } from '@/shared/config';
 
 interface FormActionsProps {
   /** 送信中かどうか */
@@ -18,6 +19,8 @@ interface FormActionsProps {
  * 
  * ActivityFormとRecordFormで共通のボタンレイアウトとスタイルを提供。
  * 複数のfeatureで使用されるため、shared/componentsに配置。
+ * 
+ * 色定義は shared/config/colors.ts を使用
  */
 export function FormActions({
   isSubmitting,
@@ -42,10 +45,10 @@ export function FormActions({
           fullWidth
           styles={{
             root: {
-              borderColor: '#444',
-              color: '#fff',
+              borderColor: colors.form.border,
+              color: colors.form.text,
               '&:hover': {
-                backgroundColor: '#333',
+                backgroundColor: colors.button.secondaryBackground,
               },
             },
           }}
@@ -61,15 +64,15 @@ export function FormActions({
         fullWidth
         styles={{
           root: {
-            backgroundColor: '#4ECDC4',
-            color: '#1a1a1a',
+            backgroundColor: colors.action.primary,
+            color: colors.button.textDark,
             fontWeight: 600,
             '&:hover': {
-              backgroundColor: '#3db8b8',
+              backgroundColor: colors.action.primaryHover,
             },
             '&:disabled': {
-              backgroundColor: '#333',
-              color: '#666',
+              backgroundColor: colors.button.secondaryBackground,
+              color: colors.button.textDisabled,
             },
           },
         }}

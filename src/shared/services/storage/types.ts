@@ -177,6 +177,31 @@ export interface StorageService {
    * @throws StorageError 保存に失敗した場合
    */
   setMigrationFlag(completed: boolean): Promise<void>;
+  
+  // ==================== Custom Data ====================
+  
+  /**
+   * カスタムデータを取得
+   * @param key - データキー
+   * @returns データ文字列、存在しない場合はnull
+   * @throws StorageError 読み込みに失敗した場合
+   */
+  getCustomData(key: string): Promise<string | null>;
+  
+  /**
+   * カスタムデータを保存
+   * @param key - データキー
+   * @param value - 保存するデータ文字列
+   * @throws StorageError 保存に失敗した場合
+   */
+  setCustomData(key: string, value: string): Promise<void>;
+  
+  /**
+   * カスタムデータを削除
+   * @param key - データキー
+   * @throws StorageError 削除に失敗した場合
+   */
+  deleteCustomData(key: string): Promise<void>;
 }
 
 /**

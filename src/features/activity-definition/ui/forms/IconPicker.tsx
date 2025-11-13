@@ -1,4 +1,5 @@
 import { Box, SimpleGrid, Text } from '@mantine/core';
+import { colors } from '@/shared/config';
 import { ACTIVITY_ICONS } from '../../config/formConstants';
 
 interface IconPickerProps {
@@ -17,9 +18,9 @@ export function IconPicker({ value, onChange, error }: IconPickerProps) {
         size="sm"
         fw={500}
         mb="0.5rem"
-        style={{ color: '#ccc' }}
+        style={{ color: colors.form.placeholder }}
       >
-        アイコン <span style={{ color: '#fa5252' }}>*</span>
+        アイコン <span style={{ color: colors.form.required }}>*</span>
       </Text>
       
       <SimpleGrid cols={6} spacing="xs" mb="xs">
@@ -34,13 +35,13 @@ export function IconPicker({ value, onChange, error }: IconPickerProps) {
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '1.5rem',
-              backgroundColor: value === icon ? '#4ECDC4' : '#2a2a2a',
-              border: `2px solid ${value === icon ? '#4ECDC4' : '#444'}`,
+              backgroundColor: value === icon ? colors.action.primary : colors.form.background,
+              border: `2px solid ${value === icon ? colors.action.primary : colors.form.border}`,
               borderRadius: '8px',
               cursor: 'pointer',
               transition: 'all 0.2s',
               '&:hover': {
-                backgroundColor: value === icon ? '#4ECDC4' : '#333',
+                backgroundColor: value === icon ? colors.action.primary : colors.button.secondaryBackground,
                 transform: 'scale(1.05)',
               },
             }}

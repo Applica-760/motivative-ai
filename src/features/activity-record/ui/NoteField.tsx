@@ -1,4 +1,5 @@
 import { Textarea } from '@mantine/core';
+import { colors } from '@/shared/config';
 
 interface NoteFieldProps {
   value: string;
@@ -22,15 +23,15 @@ export function NoteField({ value, onChange, error }: NoteFieldProps) {
       maxLength={500}
       styles={{
         input: {
-          backgroundColor: '#2a2a2a',
-          borderColor: '#444',
-          color: '#fff',
+          backgroundColor: colors.form.background,
+          borderColor: colors.form.border,
+          color: colors.form.text,
           '&:focus': {
-            borderColor: '#4ECDC4',
+            borderColor: colors.form.borderFocus,
           },
         },
         label: {
-          color: '#ccc',
+          color: colors.form.placeholder,
           marginBottom: '0.5rem',
         },
       }}

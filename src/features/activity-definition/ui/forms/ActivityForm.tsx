@@ -1,5 +1,6 @@
 import { Box, Stack, Text, Divider } from '@mantine/core';
 import { useState } from 'react';
+import { colors } from '@/shared/config';
 import { useActivityForm } from '../../hooks/useActivityForm';
 import { TitleField } from './TitleField';
 import { IconPicker } from './IconPicker';
@@ -78,7 +79,7 @@ export function ActivityForm({
       <Stack gap="lg">
         {/* 基本情報セクション */}
         <Box>
-          <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
+          <Text size="sm" fw={600} mb="md" style={{ color: colors.action.primary }}>
             基本情報
           </Text>
           <Stack gap="md">
@@ -96,11 +97,11 @@ export function ActivityForm({
           </Stack>
         </Box>
 
-        <Divider color="#333" />
+        <Divider color={colors.divider.default} />
 
         {/* 記録設定セクション */}
         <Box>
-          <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
+          <Text size="sm" fw={600} mb="md" style={{ color: colors.action.primary }}>
             記録設定
           </Text>
           <Stack gap="md">
@@ -119,11 +120,11 @@ export function ActivityForm({
           </Stack>
         </Box>
 
-        <Divider color="#333" />
+        <Divider color={colors.divider.default} />
 
         {/* デザイン設定セクション */}
         <Box>
-          <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
+          <Text size="sm" fw={600} mb="md" style={{ color: colors.action.primary }}>
             デザイン
           </Text>
           <ColorPicker

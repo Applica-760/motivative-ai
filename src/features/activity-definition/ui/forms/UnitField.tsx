@@ -1,4 +1,5 @@
 import { Box, Select, TextInput } from '@mantine/core';
+import { colors } from '@/shared/config';
 import { NUMBER_UNIT_PRESETS } from '../../config/formConstants';
 
 interface UnitFieldProps {
@@ -29,12 +30,12 @@ export function UnitField({ value, onChange, valueType, error }: UnitFieldProps)
         disabled
         styles={{
           input: {
-            backgroundColor: '#2a2a2a',
-            borderColor: '#444',
-            color: '#888',
+            backgroundColor: colors.form.background,
+            borderColor: colors.form.border,
+            color: colors.form.textDisabled,
           },
           label: {
-            color: '#ccc',
+            color: colors.form.placeholder,
             marginBottom: '0.5rem',
           },
         }}
@@ -63,28 +64,28 @@ export function UnitField({ value, onChange, valueType, error }: UnitFieldProps)
         required
         styles={{
           input: {
-            backgroundColor: '#2a2a2a',
-            borderColor: '#444',
-            color: '#fff',
+            backgroundColor: colors.form.background,
+            borderColor: colors.form.border,
+            color: colors.form.text,
             '&:focus': {
-              borderColor: '#4ECDC4',
+              borderColor: colors.form.borderFocus,
             },
           },
           label: {
-            color: '#ccc',
+            color: colors.form.placeholder,
             marginBottom: '0.5rem',
           },
           dropdown: {
-            backgroundColor: '#2a2a2a',
-            borderColor: '#444',
+            backgroundColor: colors.form.background,
+            borderColor: colors.form.border,
           },
           option: {
-            color: '#fff',
+            color: colors.form.text,
             '&[data-selected]': {
-              backgroundColor: '#4ECDC4',
+              backgroundColor: colors.action.primary,
             },
             '&:hover': {
-              backgroundColor: '#333',
+              backgroundColor: colors.button.secondaryBackground,
             },
           },
         }}
