@@ -74,11 +74,13 @@ export function SortableActivityButton({ activity, onClick }: SortableActivityBu
         }}
         onMouseEnter={(e) => {
           if (!isDragging) {
+            e.currentTarget.style.transform = 'translateY(-4px)';
             e.currentTarget.style.boxShadow = `0 8px 16px ${colors.shadow.medium}`;
           }
         }}
         onMouseLeave={(e) => {
           if (!isDragging) {
+            e.currentTarget.style.transform = 'translateY(0)';
             e.currentTarget.style.boxShadow = `0 2px 8px ${colors.shadow.light}`;
           }
         }}

@@ -16,5 +16,8 @@
 export { AiCharacter } from './ui/AiCharacter';
 export { CharacterEyes } from './ui/CharacterEyes';
 export { ParallaxBackground } from './ui/ParallaxBackground';
-export { useEyeTracking, useParallax } from './hooks';
-export { PARALLAX_LAYERS, EYE_CONFIG } from './config';
+export { SpeechBubble } from './ui/SpeechBubble';
+export { SpeechBubbleList } from './ui/SpeechBubbleList';
+export { useEyeTracking, useParallax, useEncouragement } from './hooks';
+export { PARALLAX_LAYERS, EYE_CONFIG, SAMPLE_MESSAGES, ENCOURAGEMENT_MESSAGES, getRandomEncouragement } from './config';
+export type { SpeechBubbleMessage, EncouragementMessage } from './config';
