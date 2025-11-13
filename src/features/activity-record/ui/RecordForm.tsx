@@ -1,6 +1,7 @@
 import { Box, Stack, Text, Divider } from '@mantine/core';
 import { useState } from 'react';
 import { useRecordForm } from '../hooks/useRecordForm';
+import { useActivity } from '../hooks/useActivities';
 import { ActivitySelect } from './ActivitySelect';
 import { ValueInput } from './ValueInput';
 import { DateField } from './DateField';
@@ -42,6 +43,12 @@ export function RecordForm({ onSuccess, onCancel, initialActivityId }: RecordFor
     validate,
     resetForm,
   } = useRecordForm(initialActivityId);
+  
+  // 選択されたアクティビティの情報を取得
+  const { activity } = useActivity(formData.activityId);
+  
+  // テキスト型の場合はメモ欄を非表示にする
+  const shouldShowNoteField = activity?.valueType !== 'text';
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,19 +111,22 @@ export function RecordForm({ onSuccess, onCancel, initialActivityId }: RecordFor
           </Stack>
         </Box>
 
-        <Divider color="#333" />
-
-        {/* メモセクション */}
-        <Box>
-          <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
-            メモ
-          </Text>
-          <NoteField
-            value={formData.note || ''}
-            onChange={updateNote}
-            error={errors.note}
-          />
-        </Box>
+        {/* メモセクション（テキスト型の場合は非表示） */}
+        {shouldShowNoteField && (
+          <>
+            <Divider color="#333" />
+            <Box>
+              <Text size="sm" fw={600} mb="md" style={{ color: '#4ECDC4' }}>
+                メモ
+              </Text>
+              <NoteField
+                value={formData.note || ''}
+                onChange={updateNote}
+                error={errors.note}
+              />
+            </Box>
+          </>
+        )}
 
         {/* アクションボタン */}
         <FormActions
