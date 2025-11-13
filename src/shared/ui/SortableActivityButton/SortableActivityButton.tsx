@@ -59,6 +59,8 @@ export function SortableActivityButton({ activity, onClick }: SortableActivityBu
           cursor: isDragging ? 'grabbing' : 'pointer',
           // ドラッグ中はボタン自体のtransitionを無効化
           transition: isDragging ? 'none' : 'box-shadow 0.2s ease, transform 0.2s ease',
+          paddingLeft: '16px',
+          paddingRight: '16px',
         }}
         styles={{
           inner: {

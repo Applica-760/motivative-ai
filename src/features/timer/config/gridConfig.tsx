@@ -18,7 +18,7 @@ export function createTimerGridItems(startOrder = 0): GridItemConfig[] {
       size: 'small-vertical',
       position: {
         column: 1,
-        row: 1,
+        row: 3,
         columnSpan: 1,
         rowSpan: 2,
       },
