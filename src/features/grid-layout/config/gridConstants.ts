@@ -6,7 +6,7 @@ export const GRID_CONFIG = {
   GAP: 24,
   
   /** デスクトップの列数 */
-  DESKTOP_COLUMNS: 4,
+  DESKTOP_COLUMNS: 5,
   
   /** モバイルの列数 */
   MOBILE_COLUMNS: 2,

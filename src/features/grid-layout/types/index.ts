@@ -70,7 +70,7 @@ export const GRID_SIZE_MAP: Record<GridItemSize, GridColumns> = {
  * グリッドの列数定義
  */
 export const GRID_COLUMNS = {
-  DESKTOP: 4,
+  DESKTOP: 5,
   MOBILE: 2,
 } as const;
 
