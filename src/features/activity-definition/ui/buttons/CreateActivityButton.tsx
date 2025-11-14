@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { QuickActionButton } from '@/shared/components';
+import { QuickActionButton } from '@/shared/ui';
 import { ACTIVITY_DEFINITION_GRADIENTS } from '../../config/constants';
 import { CreateActivityModal } from '../modals';
 

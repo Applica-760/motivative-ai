@@ -1,5 +1,10 @@
-import type { ActivityDefinition, ActivityRecord, SavedLayout } from '@/shared/types';
-import type { UserProfile, UpdateProfileData } from '@/features/account';
+import type {
+  ActivityDefinition,
+  ActivityRecord,
+  SavedLayout,
+  UserProfile,
+  UpdateProfileData,
+} from '@/shared/types';
 
 /**
  * ストレージサービスの抽象インターフェース

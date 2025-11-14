@@ -1,4 +1,4 @@
-import { ChartCard } from '@/shared/components';
+import { ChartCard } from '@/shared/ui';
 import { ActivityChart } from '@/features/graph/ui';
 import type { ChartDataPoint, ChartType } from '@/shared/types';
 

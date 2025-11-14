@@ -28,3 +28,10 @@ export type {
   GridPosition,
   SavedLayout,
 } from './grid';
+
+// User types
+export type {
+  Gender,
+  UserProfile,
+  UpdateProfileData,
+} from './user';

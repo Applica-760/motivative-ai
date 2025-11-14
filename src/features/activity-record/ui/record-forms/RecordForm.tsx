@@ -6,7 +6,7 @@ import { ActivitySelect } from '../ActivitySelect';
 import { ValueInput } from '../ValueInput';
 import { DateField } from '../DateField';
 import { NoteField } from '../NoteField';
-import { FormActions } from '@/shared/components';
+import { FormActions } from '@/shared/ui';
 import type { RecordFormData } from '../../model/recordFormTypes';
 
 interface RecordFormProps {

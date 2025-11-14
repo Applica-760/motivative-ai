@@ -7,7 +7,7 @@ import { IconPicker } from './IconPicker';
 import { ValueTypeSelect } from './ValueTypeSelect';
 import { UnitField } from './UnitField';
 import { ColorPicker } from './ColorPicker';
-import { FormActions } from '@/shared/components';
+import { FormActions } from '@/shared/ui';
 import type { ActivityFormData } from '../../model/formTypes';
 
 interface ActivityFormProps {

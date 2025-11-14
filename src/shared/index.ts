@@ -11,8 +11,5 @@ export * from './types';
 // Services
 export * from './services';
 
-// UI Components (低レベルUI)
+// UI Components
 export * from './ui';
-
-// Components (特定ユースケース向け汎用コンポーネント)
-export * from './components';

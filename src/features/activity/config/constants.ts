@@ -1,5 +1,5 @@
 import { gradients } from '@/shared/config';
-import type { ActionGradient } from '@/shared/components';
+import type { ActionGradient } from '@/shared/ui';
 
 /**
  * アクティビティ関連のグラデーション定義
