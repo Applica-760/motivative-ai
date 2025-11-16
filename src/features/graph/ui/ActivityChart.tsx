@@ -1,7 +1,6 @@
 import { ChartTypeEnum } from '@/shared/types';
 import type { ChartDataPoint, ChartType } from '@/shared/types';
 import { ChartFactory } from './ChartFactory';
-import './ActivityChart.css';
 
 interface ActivityChartProps {
   data: ChartDataPoint[];
