@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useStorage } from '@/shared/services/storage';
 import type { StorageService } from '@/shared/services/storage';
-import type { GridItemConfig, GridPosition } from '../types';
+import type { GridItemConfig, GridPosition, SavedLayout } from '../types';
+import { STORAGE_KEYS } from '@/shared/config/storage';
 import {
   initializeItemsFromStorage,
   createLayoutFromItems,
@@ -63,27 +64,98 @@ export function useGridLayout(
   
   // 初期読み込み：ストレージを優先
   useEffect(() => {
+    const layoutKeyForColumns = (cols: number) => `${STORAGE_KEYS.GRID_LAYOUT_ORDER}-${cols}col`;
+
+    const parseSavedLayout = (data: string | null): SavedLayout | null => {
+      if (!data) return null;
+      try {
+        return JSON.parse(data) as SavedLayout;
+      } catch {
+        return null;
+      }
+    };
+
+    // 読み順で並べ替え（row→column）
+    const sortByReadingOrder = (items: GridItemConfig[], baseLayout?: SavedLayout | null) => {
+      const positions = baseLayout?.positions;
+      return [...items].sort((a, b) => {
+        const pa = positions?.[a.id] ?? a.position;
+        const pb = positions?.[b.id] ?? b.position;
+        if (pa.row !== pb.row) return pa.row - pb.row;
+        return pa.column - pb.column;
+      });
+    };
+
+    // rowSpan/columnSpanを考慮した貪欲配置
+    const reflowItems = (inputItems: GridItemConfig[], cols: number): GridItemConfig[] => {
+      const placed: GridItemConfig[] = [];
+      for (const item of inputItems) {
+        const rowSpan = item.position.rowSpan ?? 1;
+        const columnSpan = item.position.columnSpan ?? (item.size === 'small-rectangle' ? 2 : 1);
+
+        let placedItem: GridItemConfig | null = null;
+        // 探索上限: 現在の最大行+十分なマージン（items数×rowSpan程度）
+        const maxSearchRow = (placed.length + 1) * (rowSpan || 1) + 50;
+        outer: for (let r = 1; r <= maxSearchRow; r++) {
+          for (let c = 1; c <= Math.max(1, cols - columnSpan + 1); c++) {
+            const candidate: GridPosition = { column: c, row: r, columnSpan: columnSpan as 1 | 2, rowSpan };
+            if (!isWithinBounds(candidate, cols)) continue;
+            if (checkCollision(candidate, item.id, placed)) continue;
+            placedItem = { ...item, position: candidate };
+            break outer;
+          }
+        }
+        placed.push(placedItem ?? { ...item });
+      }
+      return placed;
+    };
+
     const loadLayout = async () => {
-      console.log('[useGridLayout] Starting layout load, storage:', storage.constructor.name);
+      console.log('[useGridLayout] Starting layout load, storage:', storage.constructor.name, 'columns:', columns);
       setIsLoading(true);
       try {
-        const savedLayout = await storage.getGridLayout();
-        console.log('[useGridLayout] Loaded layout from storage:', savedLayout);
-        const restoredItems = initializeItemsFromStorage(initialItemsRef.current, savedLayout);
-        console.log('[useGridLayout] Restored items:', restoredItems.map(i => ({ id: i.id, pos: i.position })));
-        setItems(restoredItems);
+        // 1) 列数別のカスタムデータから読み込み
+        const key = layoutKeyForColumns(columns);
+        const customData = await storage.getCustomData(key);
+        const columnScopedLayout = parseSavedLayout(customData);
+
+        if (columnScopedLayout) {
+          const restored = initializeItemsFromStorage(initialItemsRef.current, columnScopedLayout);
+          setItems(restored);
+          console.log('[useGridLayout] Restored from column-scoped layout:', key);
+          return;
+        }
+
+        // 2) 旧レイアウト（共通キー）をフォールバックで読み込み、現在列数にリフロー
+        const legacyLayout = await storage.getGridLayout();
+        let baseItemsForOrder = initialItemsRef.current;
+        if (legacyLayout) {
+          // 読み順は旧レイアウトのrow/columnを採用
+          baseItemsForOrder = sortByReadingOrder(initialItemsRef.current, legacyLayout);
+        } else {
+          // 初期のposition順で読み順
+          baseItemsForOrder = sortByReadingOrder(initialItemsRef.current);
+        }
+
+        const reflowed = reflowItems(baseItemsForOrder, columns);
+        setItems(reflowed);
+
+        // 新フォーマットで保存（列数別）+ 互換のため旧キーにも保存
+        const layoutToSave = createLayoutFromItems(reflowed);
+        await storage.setCustomData(key, JSON.stringify(layoutToSave));
+        await storage.saveGridLayout(layoutToSave);
+        console.log('[useGridLayout] Reflowed and saved new column-scoped layout:', key);
       } catch (error) {
-        // ストレージからの読み込みに失敗した場合のみinitialItemsを使用
         console.error('[useGridLayout] Failed to load layout, using initialItems:', error);
         setItems(initialItemsRef.current);
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     loadLayout();
-    // storageとinitialItemsSignatureが変わった時のみ再読み込み
-  }, [storage, initialItemsSignature]);
+    // storage/initialItemsSignature/columns が変わった時のみ再読み込み
+  }, [storage, initialItemsSignature, columns]);
 
   // アイテムの位置を更新（ドラッグ&ドロップ用）
   const updateItemPosition = useCallback(
@@ -97,8 +169,13 @@ export function useGridLayout(
 
         const newItems = updateItemInList(currentItems, itemId, newPosition);
         console.log('[useGridLayout] Updating position for', itemId, ':', newPosition);
-        storage.saveGridLayout(createLayoutFromItems(newItems))
-          .then(() => console.log('[useGridLayout] Successfully saved layout'))
+        const layout = createLayoutFromItems(newItems);
+        const key = `${STORAGE_KEYS.GRID_LAYOUT_ORDER}-${columns}col`;
+        Promise.all([
+          storage.saveGridLayout(layout), // 互換
+          storage.setCustomData(key, JSON.stringify(layout)), // 列数別
+        ])
+          .then(() => console.log('[useGridLayout] Successfully saved layout (legacy + column-scoped)'))
           .catch((error) => console.error('[useGridLayout] Failed to save layout:', error));
         return newItems;
       });
@@ -130,8 +207,13 @@ export function useGridLayout(
         );
 
         console.log('[useGridLayout] Swapping items', activeId, 'and', overId);
-        storage.saveGridLayout(createLayoutFromItems(newItems))
-          .then(() => console.log('[useGridLayout] Successfully saved swapped layout'))
+        const layout = createLayoutFromItems(newItems);
+        const key = `${STORAGE_KEYS.GRID_LAYOUT_ORDER}-${columns}col`;
+        Promise.all([
+          storage.saveGridLayout(layout),
+          storage.setCustomData(key, JSON.stringify(layout)),
+        ])
+          .then(() => console.log('[useGridLayout] Successfully saved swapped layout (legacy + column-scoped)'))
           .catch((error) => console.error('[useGridLayout] Failed to save swapped layout:', error));
         return newItems;
       });

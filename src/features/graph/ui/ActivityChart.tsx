@@ -8,8 +8,6 @@ interface ActivityChartProps {
   color?: string;
   height?: number;
   chartType?: ChartType;
-  /** チャートタイプ変更時のコールバック */
-  onChartTypeChange?: (type: ChartType) => void;
 }
 
 /**

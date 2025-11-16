@@ -1,7 +1,9 @@
 import type { GridItemConfig } from '@/features/grid-item';
 import { colors } from '@/shared/config';
 import type { ChartDataPoint, ChartType } from '@/shared/types';
-import { ActivityChartWidget } from '../ui';
+import { ActivityChartWidget, ChartTypeToggle } from '../ui';
+import { useGraphPreferences } from '../model';
+import type { ContainerSize } from '@/features/grid-item';
 
 /**
  * アクティビティデータの型定義
@@ -33,7 +35,7 @@ export interface ActivityData {
 export function createGraphGridItems(
   activities: ActivityData[],
   startOrder = 0,
-  onChartClick?: (activityId: string) => void
+  onChartClick?: (activityId: string) => void,
 ): GridItemConfig[] {
   // 各チャートの位置を計算(中央に長方形として配置)
   return activities.map((activity, index) => {
@@ -46,6 +48,34 @@ export function createGraphGridItems(
     // NOTE: 現時点では、ボタンとチャートの状態は独立しています
     //       将来的に状態を共有する場合は、React Contextや状態管理ライブラリを検討
     
+    // フックはコンポーネント内でのみ使用可能なため、
+    // アクションとコンテンツを小さなコンポーネントでラップしてContextから値を取得する。
+    const Actions = () => {
+      const { getChartType, setChartType } = useGraphPreferences();
+      const current = getChartType(activity.activityId) ?? activity.chartType;
+      return (
+        <ChartTypeToggle
+          currentType={current}
+          onTypeChange={(type) => setChartType(activity.activityId, type)}
+        />
+      );
+    };
+
+    const Content = ({ containerSize }: { containerSize: ContainerSize | undefined }) => {
+      const { getChartType } = useGraphPreferences();
+      const current = getChartType(activity.activityId) ?? activity.chartType;
+      return (
+        <ActivityChartWidget
+          data={activity.data}
+          dataLabel={activity.dataLabel}
+          color={activity.color}
+          chartType={current}
+          onClick={onChartClick ? () => onChartClick(activity.activityId) : undefined}
+          containerSize={containerSize}
+        />
+      );
+    };
+
     return {
       id: `${activity.type}-chart`,
       order: startOrder + index,
@@ -54,19 +84,9 @@ export function createGraphGridItems(
       header: {
         icon: activity.icon,
         title: activity.title,
-        // TODO: チャート切り替えボタンを追加（状態共有の実装が必要）
-        actions: undefined,
+        actions: <Actions />,
       },
-      content: (containerSize) => (
-        <ActivityChartWidget
-          data={activity.data}
-          dataLabel={activity.dataLabel}
-          color={activity.color}
-          chartType={activity.chartType}
-          onClick={onChartClick ? () => onChartClick(activity.activityId) : undefined}
-          containerSize={containerSize}
-        />
-      ),
+      content: (containerSize) => <Content containerSize={containerSize} />,
       backgroundColor: colors.gridItem.chart,
       shadow: 'lg' as const,
     };

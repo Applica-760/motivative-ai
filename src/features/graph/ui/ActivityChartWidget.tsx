@@ -12,8 +12,6 @@ interface ActivityChartWidgetProps {
   onClick?: () => void;
   /** コンテナサイズ（表示/非表示制御のみに使用） */
   containerSize?: ContainerSize;
-  /** チャートタイプ変更時のコールバック */
-  onChartTypeChange?: (type: ChartType) => void;
 }
 
 /**
@@ -28,7 +26,6 @@ interface ActivityChartWidgetProps {
  */
 export function ActivityChartWidget({ 
   onClick, 
-  onChartTypeChange,
   ...chartProps 
 }: ActivityChartWidgetProps) {
   const isClickable = !!onClick;
@@ -61,10 +58,7 @@ export function ActivityChartWidget({
       }}
       aria-label={isClickable ? 'グラフの記録を追加' : undefined}
     >
-      <ActivityChart 
-        {...chartProps} 
-        onChartTypeChange={onChartTypeChange}
-      />
+      <ActivityChart {...chartProps} />
     </Box>
   );
 }

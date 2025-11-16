@@ -7,6 +7,11 @@ export const GRID_CONFIG = {
   
   /** デスクトップの列数 */
   DESKTOP_COLUMNS: 5,
+  /** 最小の列数（狭幅時の下限） */
+  MIN_COLUMNS: 2,
+  
+  /** セルの最小許容幅（px）: この幅を下回らない最大列数を選択する */
+  MIN_CELL_WIDTH: 200,
   
   /** モバイルの列数 */
   MOBILE_COLUMNS: 2,

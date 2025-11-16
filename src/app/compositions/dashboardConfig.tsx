@@ -30,7 +30,7 @@ export function createDashboardGridItems(
   records: ActivityRecord[],
   onChartClick?: (activityId: string) => void,
   onCalendarClick?: (activityId: string) => void,
-  onTextLogClick?: (activityId: string) => void
+  onTextLogClick?: (activityId: string) => void,
 ): GridItemConfig[] {
   // タイマーウィジェット（最上部に配置）
   const timerItems = createTimerGridItems();
