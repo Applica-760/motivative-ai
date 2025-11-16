@@ -3,6 +3,13 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "runtime": "nodejs20"
+    }
+  ],
   "hosting": {
     "public": "dist",
     "ignore": [
@@ -11,6 +18,14 @@
       "**/node_modules/**"
     ],
     "rewrites": [
+      {
+        "source": "/api/ai/**",
+        "function": { "functionId": "aiApi", "region": "us-central1" }
+      },
+      {
+        "source": "/api/py/**",
+        "function": { "functionId": "py-api", "region": "us-central1" }
+      },
       {
         "source": "**",
         "destination": "/index.html"

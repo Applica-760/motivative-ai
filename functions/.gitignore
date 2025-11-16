@@ -1,0 +1,6 @@
+node_modules/
+.npmrc
+.DS_Store
+# If you ever use local env files for emulators only
+.env
+.env.*
