@@ -1,4 +1,4 @@
-import type { GridItemConfig } from '@/features/grid-layout';
+import type { GridItemConfig } from '@/features/grid-item';
 import { colors, gridItemShadows } from '@/shared/config';
 import { AddRecordButton } from '@/features/activity-record';
 import { CreateActivityButton } from '@/features/activity-definition';

@@ -1,7 +1,7 @@
 import { Stack, Button, Divider, Box } from '@mantine/core';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { colors } from '@/shared/config';
-import type { ContainerSize } from '@/features/grid-layout';
+import type { ContainerSize } from '@/features/grid-item';
 import { useTimer } from '../hooks/useTimer';
 import { useQuickRecord } from '../hooks/useQuickRecord';
 import { TimerDisplay } from './TimerDisplay';

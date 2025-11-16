@@ -1,7 +1,7 @@
 import { Box } from '@mantine/core';
 import { ActivityChart } from './ActivityChart';
 import type { ChartDataPoint, ChartType } from '@/shared/types';
-import type { ContainerSize } from '@/features/grid-layout';
+import type { ContainerSize } from '@/features/grid-item';
 
 interface ActivityChartWidgetProps {
   data: ChartDataPoint[];

@@ -41,7 +41,7 @@ import { useState } from 'react';
 import { Box, Paper } from '@mantine/core';
 
 // 2. 内部モジュール（@/から始まるエイリアス）
-import { DraggableGrid } from '@/features/grid-layout';
+import { DraggableGrid } from '@/features/grid-item';
 import { colors } from '@/shared/config';
 
 // 3. 相対パス

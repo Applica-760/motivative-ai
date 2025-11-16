@@ -1,4 +1,4 @@
-import type { GridItemConfig } from '@/features/grid-layout';
+import type { GridItemConfig } from '@/features/grid-item';
 import type { ActivityDefinition } from '@/shared/types';
 import { colors } from '@/shared/config';
 import { ActivityCalendarWidget } from '../ui';

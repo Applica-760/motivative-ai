@@ -1,7 +1,7 @@
 import { Box } from '@mantine/core';
 import { ActivityCalendar } from './ActivityCalendar';
 import type { ActivityDefinition } from '@/shared/types';
-import type { ContainerSize } from '@/features/grid-layout';
+import type { ContainerSize } from '@/features/grid-item';
 
 interface ActivityCalendarWidgetProps {
   /** 表示するアクティビティ */

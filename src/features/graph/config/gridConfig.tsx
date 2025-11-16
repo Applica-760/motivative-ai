@@ -1,4 +1,4 @@
-import type { GridItemConfig } from '@/features/grid-layout';
+import type { GridItemConfig } from '@/features/grid-item';
 import { colors } from '@/shared/config';
 import type { ChartDataPoint, ChartType } from '@/shared/types';
 import { ActivityChartWidget } from '../ui';

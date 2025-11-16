@@ -247,4 +247,4 @@ ActivityContextは将来的にStorageServiceを内部で使用するようにリ
 
 - [ARCHITECTURE.md](../../../../ARCHITECTURE.md) - アプリケーション全体のアーキテクチャ
 - [Activity Feature](../../../features/activity/README.md) - Activity機能の実装
-- [Grid Layout](../../../features/grid-layout/README.md) - Grid Layout機能の実装
+- [Grid Item Feature](../../../features/grid-item/README.md) - Grid Item機能の実装
