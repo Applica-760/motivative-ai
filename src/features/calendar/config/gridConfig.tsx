@@ -1,4 +1,4 @@
-import type { GridItemConfig } from '@/features/grid-layout';
+import type { GridItemConfig } from '@/features/grid-item';
 import type { ActivityDefinition } from '@/shared/types';
 import { colors } from '@/shared/config';
 import { ActivityCalendarWidget } from '../ui';
@@ -35,10 +35,15 @@ export function createCalendarGridItems(
       order: startOrder + index,
       size: 'small-vertical' as const,
       position: { column, row, columnSpan: 2, rowSpan: 2 },
-      content: (
+      header: {
+        icon: activity.icon,
+        title: activity.title,
+      },
+      content: (containerSize) => (
         <ActivityCalendarWidget
           activity={activity}
           onClick={onCalendarClick ? () => onCalendarClick(activity.id) : undefined}
+          containerSize={containerSize}
         />
       ),
       backgroundColor: colors.gridItem.default,

@@ -5,6 +5,7 @@ import { AuthProvider, useAuth, useStorageMigration } from '@/features/auth';
 import { ProfileProvider } from '@/features/account';
 import { ActivityProvider } from '@/features/activity';
 import { StorageProvider } from '@/shared/services/storage';
+import { GraphPreferencesProvider } from '@/features/graph';
 import { LoadingScreen } from '@/shared/ui';
 import type { AuthService } from '@/features/auth/model/types';
 
@@ -72,7 +73,9 @@ function StorageAndActivityProviders({ children }: { children: ReactNode }) {
       <MigrationHandler>
         <ActivityProvider key={storageKey}>
           <ProfileProvider key={storageKey}>
-            {children}
+            <GraphPreferencesProvider>
+              {children}
+            </GraphPreferencesProvider>
           </ProfileProvider>
         </ActivityProvider>
       </MigrationHandler>

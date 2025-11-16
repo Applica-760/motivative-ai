@@ -1,4 +1,4 @@
-import type { GridItemConfig } from '@/features/grid-layout';
+import type { GridItemConfig } from '@/features/grid-item';
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 import { colors } from '@/shared/config';
 import { TextLogWidget } from '../ui';
@@ -48,11 +48,16 @@ export function createTextLogGridItems(
       order: startOrder + index,
       size: 'small-vertical' as const, // 1×2の縦長
       position: { column, row, columnSpan: 1, rowSpan: 2 },
-      content: (
+      header: {
+        icon: activity.icon,
+        title: activity.title,
+      },
+      content: (containerSize) => (
         <TextLogWidget
           activity={activity}
           records={activityRecords}
           onClick={onTextLogClick ? () => onTextLogClick(activity.id) : undefined}
+          containerSize={containerSize}
         />
       ),
       backgroundColor: colors.gridItem.textLog,

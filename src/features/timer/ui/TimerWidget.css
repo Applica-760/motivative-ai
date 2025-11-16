@@ -1,0 +1,75 @@
+/**
+ * TimerWidget Container Query Styles
+ * 
+ * グリッドアイテムがcontainerType: 'size'を持つため、
+ * このコンポーネントはコンテナサイズに応じてスタイルを変更できます。
+ * 
+ * スタイリング方針:
+ * - レイアウト、サイズ、スペーシングなどの視覚的スタイルはCSSで管理
+ * - 表示/非表示などのロジックはJavaScriptで管理
+ */
+
+/* ===== ベースレイアウト ===== */
+
+.timer-widget-container {
+  height: 100%;
+  width: 100%;
+  min-height: 0;
+  padding: 0.5rem 1rem 1rem 1rem;
+  transition: all 0.3s ease;
+}
+
+
+.timer-widget-divider {
+  flex-shrink: 0;
+}
+
+.timer-widget-activity-selector {
+  flex-shrink: 0;
+}
+
+.timer-widget-button {
+  flex-shrink: 0;
+}
+
+/* ===== Container Query レスポンシブスタイル ===== */
+
+/* 極小サイズ (xs: ~200px) */
+@container (max-width: 200px) {
+  .timer-widget-container {
+    padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+  }
+
+}
+
+/* 小サイズ (sm: 200px~300px) */
+@container (min-width: 201px) and (max-width: 300px) {
+  .timer-widget-container {
+    padding: 0.375rem 0.75rem 0.75rem 0.75rem;
+  }
+
+}
+
+/* 中サイズ (md: 300px~400px) - デフォルトスタイルを使用 */
+@container (min-width: 301px) and (max-width: 400px) {
+  .timer-widget-container {
+    padding: 0.5rem 1rem 1rem 1rem;
+  }
+
+}
+
+/* 大サイズ (lg: 400px~600px) */
+@container (min-width: 401px) and (max-width: 600px) {
+  .timer-widget-container {
+    padding: 0.625rem 1.25rem 1.25rem 1.25rem;
+  }
+
+}
+
+/* 特大サイズ (xl: 600px~) */
+@container (min-width: 601px) {
+  .timer-widget-container {
+    padding: 0.75rem 1.5rem 1.5rem 1.5rem;
+  }
+
+}

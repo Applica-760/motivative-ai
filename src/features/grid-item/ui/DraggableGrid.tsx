@@ -6,11 +6,10 @@ import {
   pointerWithin,
 } from '@dnd-kit/core';
 import { Box } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import { useState, useRef } from 'react';
 import type { GridItemConfig } from '../types';
 import { DraggableGridItem } from './DraggableGridItem';
-import { useGridLayout, useCellSize } from '../hooks';
+import { useGridLayout, useCellSize, useContainerSize } from '../hooks';
 import { GRID_CONFIG } from '../config/gridConstants';
 import {
   calculateNewPosition,
@@ -30,12 +29,30 @@ interface DraggableGridProps {
  * 各アイテムは明示的なposition（column, row, columnSpan）を持つ
  */
 export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
-  const isMobile = useMediaQuery(`(max-width: ${GRID_CONFIG.MOBILE_BREAKPOINT}px)`);
-  
-  // デバイスサイズに応じた列数
-  const columns = isMobile ? GRID_CONFIG.MOBILE_COLUMNS : GRID_CONFIG.DESKTOP_COLUMNS;
-  
   const gridRef = useRef<HTMLDivElement>(null);
+  const containerSize = useContainerSize(gridRef);
+
+  // コンテナ幅に基づく段階的な列数決定（5→4→3→2）。
+  // セル幅が MIN_CELL_WIDTH を下回らない最大列数を選択する。
+  const computeColumns = (rawWidth: number): number => {
+    // 計測の信頼性向上: 自身の幅が0/小さい場合は親要素の幅をフォールバックに使用
+    const parentWidth = gridRef.current?.parentElement?.getBoundingClientRect().width ?? 0;
+    const width = Math.max(rawWidth, parentWidth);
+    if (!width || width <= 0) return GRID_CONFIG.MIN_COLUMNS; // 初期値のフォールバック
+    const maxCols = GRID_CONFIG.DESKTOP_COLUMNS;
+    const minCols = GRID_CONFIG.MIN_COLUMNS;
+
+    for (let cols = maxCols; cols >= minCols; cols--) {
+      const cellWidth = (width - GRID_CONFIG.GAP * (cols - 1)) / cols;
+      if (cellWidth >= GRID_CONFIG.MIN_CELL_WIDTH) {
+        return cols;
+      }
+    }
+    return GRID_CONFIG.MIN_COLUMNS;
+  };
+
+  const columns = computeColumns(containerSize.width);
+
   const cellSize = useCellSize(gridRef, columns);
   const { items, isLoading, updateItemPosition, swapItems } = useGridLayout(initialItems, { columns });
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -85,6 +102,19 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
     );
   }
 
+  // 表示用プロップ（ヘッダー/アクション/コンテンツ）は最新のinitialItemsから取得し、
+  // 位置情報（position）はレイアウト状態itemsから使用してマージする。
+  const resolveItem = (layoutItem: GridItemConfig): GridItemConfig => {
+    const visual = initialItems.find((i) => i.id === layoutItem.id);
+    if (!visual) return layoutItem;
+    return {
+      ...visual,
+      // レイアウトで確定した位置/順序を優先
+      position: layoutItem.position,
+      order: layoutItem.order,
+    };
+  };
+
   return (
     <DndContext
       collisionDetection={pointerWithin}
@@ -99,12 +129,13 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
           height: typeof containerHeight === 'number' ? `${containerHeight}px` : containerHeight,
         }}
       >
-        {items.map((item) => {
-          const position = calculateItemPosition(item.position, cellSize);
+        {items.map((layoutItem) => {
+          const mergedItem = resolveItem(layoutItem);
+          const position = calculateItemPosition(mergedItem.position, cellSize);
           
           return (
             <Box
-              key={item.id}
+              key={mergedItem.id}
               style={{
                 position: 'absolute',
                 left: `${position.left}px`,
@@ -113,7 +144,7 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
                 height: `${position.height}px`,
               }}
             >
-              <DraggableGridItem item={item} />
+              <DraggableGridItem item={mergedItem} />
             </Box>
           );
         })}
@@ -121,25 +152,31 @@ export function DraggableGrid({ items: initialItems }: DraggableGridProps) {
       
       <DragOverlay>
         {activeItem && cellSize.width > 0 ? (
+          // オーバーレイ表示時も最新の見た目を反映
+          (() => {
+            const mergedActive = resolveItem(activeItem);
+            return (
           <Box
             style={{
               width: `${calculateOverlaySize(
-                activeItem.position.columnSpan,
-                activeItem.position.rowSpan || 1,
+                mergedActive.position.columnSpan,
+                mergedActive.position.rowSpan || 1,
                 cellSize.width,
                 cellSize.height
               ).width}px`,
               height: `${calculateOverlaySize(
-                activeItem.position.columnSpan,
-                activeItem.position.rowSpan || 1,
+                mergedActive.position.columnSpan,
+                mergedActive.position.rowSpan || 1,
                 cellSize.width,
                 cellSize.height
               ).height}px`,
               opacity: GRID_CONFIG.DRAG_OVERLAY_OPACITY,
             }}
           >
-            <DraggableGridItem item={activeItem} />
+              <DraggableGridItem item={mergedActive} />
           </Box>
+            );
+          })()
         ) : null}
       </DragOverlay>
     </DndContext>

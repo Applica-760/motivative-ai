@@ -1,0 +1,127 @@
+/**
+ * TimerDisplay Container Query Styles
+ * 
+ * グリッドアイテムがcontainerType: 'size'を持つため、
+ * このコンポーネントはコンテナサイズに応じてスタイルを変更できます。
+ * 
+ * スタイリング方針:
+ * - レイアウト、サイズ、スペーシングなどの視覚的スタイルはCSSで管理
+ * - 表示/非表示などのロジックはJavaScriptで管理
+ */
+
+/* ===== ベースレイアウト ===== */
+
+.timer-display-container {
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.timer-display-ring {
+  width: 10rem;
+  height: 10rem;
+  transition: all 0.3s ease;
+}
+
+.timer-display-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: font-size 0.3s ease;
+}
+
+.timer-display-time {
+  font-size: 1.125rem;
+  font-weight: 700;
+  font-variant: tabular-nums;
+  letter-spacing: 0.05em;
+  transition: font-size 0.3s ease;
+}
+
+/* ===== Container Query レスポンシブスタイル ===== */
+
+/* 極小サイズ (xs: ~200px) */
+@container (max-width: 200px) {
+  .timer-display-ring {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .timer-display-label {
+    font-size: 0.5rem;
+    font-weight: 400;
+  }
+
+  .timer-display-time {
+    font-size: 0.625rem;
+    font-weight: 600;
+  }
+}
+
+/* 小サイズ (sm: 200px~300px) */
+@container (min-width: 201px) and (max-width: 300px) {
+  .timer-display-ring {
+    width: 7rem;
+    height: 7rem;
+  }
+
+  .timer-display-label {
+    font-size: 0.625rem;
+    font-weight: 400;
+  }
+
+  .timer-display-time {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+}
+
+/* 中サイズ (md: 300px~400px) - デフォルトスタイルを使用 */
+@container (min-width: 301px) and (max-width: 400px) {
+  .timer-display-ring {
+    width: 9rem;
+    height: 9rem;
+  }
+
+  .timer-display-label {
+    font-size: 0.75rem;
+  }
+
+  .timer-display-time {
+    font-size: 1rem;
+  }
+}
+
+/* 大サイズ (lg: 400px~600px) */
+@container (min-width: 401px) and (max-width: 600px) {
+  .timer-display-ring {
+    width: 12rem;
+    height: 12rem;
+  }
+
+  .timer-display-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .timer-display-time {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+}
+
+/* 特大サイズ (xl: 600px~) */
+@container (min-width: 601px) {
+  .timer-display-ring {
+    width: 14rem;
+    height: 14rem;
+  }
+
+  .timer-display-label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .timer-display-time {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}

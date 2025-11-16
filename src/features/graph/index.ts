@@ -9,3 +9,6 @@ export { ActivityChart, ActivityChartWidget } from './ui';
 // Grid Configuration
 export { createGraphGridItems } from './config';
 export type { ActivityData } from './config';
+
+// Preferences Provider & Hook
+export { GraphPreferencesProvider, useGraphPreferences } from './model';

@@ -1,4 +1,4 @@
-import type { GridItemConfig } from '@/features/grid-layout';
+import type { GridItemConfig } from '@/features/grid-item';
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 // 一時的にコメントアウト - 将来的に復元する可能性あり
 // import { createActivityActionGridItems } from '@/features/activity';
@@ -30,7 +30,7 @@ export function createDashboardGridItems(
   records: ActivityRecord[],
   onChartClick?: (activityId: string) => void,
   onCalendarClick?: (activityId: string) => void,
-  onTextLogClick?: (activityId: string) => void
+  onTextLogClick?: (activityId: string) => void,
 ): GridItemConfig[] {
   // タイマーウィジェット（最上部に配置）
   const timerItems = createTimerGridItems();

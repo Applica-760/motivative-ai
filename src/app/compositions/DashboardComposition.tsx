@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Center, Loader } from '@mantine/core';
-import type { GridItemConfig } from '@/features/grid-layout';
+import type { GridItemConfig } from '@/features/grid-item';
 import { useActivityContext } from '@/features/activity';
 import { convertActivityRecordsToChartData } from '@/features/activity-analytics';
 import type { ActivityData } from '@/features/graph';
@@ -75,7 +75,8 @@ export function DashboardComposition({
       activities.push({
         activityId: activity.id,
         type: activity.id, // typeとしてIDを使用
-        title: `${activity.icon} ${activity.title}`,
+        title: activity.title,
+        icon: activity.icon,
         dataLabel: `${activity.title} (${activity.unit || ''})`,
         color: activity.color || '#4ECDC4', // デフォルトカラー
         data: chartData,

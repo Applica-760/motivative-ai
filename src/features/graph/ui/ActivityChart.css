@@ -1,0 +1,166 @@
+/**
+ * ActivityChart Container Query Styles
+ * 
+ * グリッドアイテムがcontainerType: 'size'を持つため、
+ * このコンポーネントはコンテナサイズに応じてスタイルを変更できます。
+ * 
+ * スタイリング方針:
+ * - レイアウト、サイズ、スペーシングなどの視覚的スタイルはCSSで管理
+ * - 表示/非表示などのロジックはJavaScriptで管理
+ */
+
+/* デフォルトスタイル */
+.activity-chart-container {
+  transition: all 0.3s ease;
+}
+
+.activity-chart-title {
+  font-size: 1rem;
+  transition: font-size 0.3s ease;
+}
+
+.activity-chart-button {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  transition: all 0.3s ease;
+}
+
+.activity-chart-icon {
+  width: 16px;
+  height: 16px;
+  transition: all 0.3s ease;
+}
+
+/* ===== Container Query レスポンシブスタイル ===== */
+
+/* 極小サイズ (xs: ~200px) */
+@container (max-width: 200px) {
+  .activity-chart-container {
+    padding: 0.25rem;
+  }
+
+  .activity-chart-header {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+  
+  .activity-chart-title {
+    font-size: 0.75rem;
+  }
+  
+  .activity-chart-controls {
+    gap: 0.125rem;
+  }
+  
+  .activity-chart-button {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+  }
+  
+  .activity-chart-icon {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* 小サイズ (sm: 200px~300px) */
+@container (min-width: 201px) and (max-width: 300px) {
+  .activity-chart-container {
+    padding: 0.5rem;
+  }
+
+  .activity-chart-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .activity-chart-title {
+    font-size: 0.875rem;
+  }
+  
+  .activity-chart-button {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    min-height: 28px;
+  }
+  
+  .activity-chart-icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* 中サイズ (md: 300px~400px) - デフォルトスタイルを使用 */
+@container (min-width: 301px) and (max-width: 400px) {
+  .activity-chart-header {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* 大サイズ (lg: 400px~600px) */
+@container (min-width: 401px) and (max-width: 600px) {
+  .activity-chart-container {
+    padding: 0.5rem;
+  }
+
+  .activity-chart-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .activity-chart-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+  
+  .activity-chart-button {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .activity-chart-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* 特大サイズ (xl: 600px~) */
+@container (min-width: 601px) {
+  .activity-chart-container {
+    padding: 1rem;
+  }
+
+  .activity-chart-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .activity-chart-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .activity-chart-button {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .activity-chart-icon {
+    width: 20px;
+    height: 20px;
+  }
+}

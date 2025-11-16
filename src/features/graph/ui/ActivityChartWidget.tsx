@@ -1,15 +1,17 @@
 import { Box } from '@mantine/core';
 import { ActivityChart } from './ActivityChart';
 import type { ChartDataPoint, ChartType } from '@/shared/types';
+import type { ContainerSize } from '@/features/grid-item';
 
 interface ActivityChartWidgetProps {
-  title: string;
   data: ChartDataPoint[];
   dataLabel: string;
   color?: string;
   height?: number;
   chartType?: ChartType;
   onClick?: () => void;
+  /** コンテナサイズ（表示/非表示制御のみに使用） */
+  containerSize?: ContainerSize;
 }
 
 /**
@@ -17,8 +19,15 @@ interface ActivityChartWidgetProps {
  * グリッドアイテムに注入できる形式でラップ
  * 
  * クリック可能な場合は、適切なスタイルとアクセシビリティ属性を追加
+ * 
+ * 注意: 
+ * - タイトル、アイコン、チャート切り替えボタンは GridItemHeader で表示されます
+ * - このコンポーネントはチャート本体のみを表示します
  */
-export function ActivityChartWidget({ onClick, ...chartProps }: ActivityChartWidgetProps) {
+export function ActivityChartWidget({ 
+  onClick, 
+  ...chartProps 
+}: ActivityChartWidgetProps) {
   const isClickable = !!onClick;
 
   return (
@@ -47,7 +56,7 @@ export function ActivityChartWidget({ onClick, ...chartProps }: ActivityChartWid
           onClick();
         }
       }}
-      aria-label={isClickable ? `${chartProps.title}の記録を追加` : undefined}
+      aria-label={isClickable ? 'グラフの記録を追加' : undefined}
     >
       <ActivityChart {...chartProps} />
     </Box>

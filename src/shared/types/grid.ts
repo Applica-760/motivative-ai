@@ -1,9 +1,9 @@
 /**
- * グリッドレイアウト関連の共通型定義
+ * グリッドアイテム関連の共通型定義
  * Feature-Sliced Design: shared/types
  * 
  * グリッドシステムで使用される基本的なデータ構造を定義。
- * feature層（grid-layout）とinfrastructure層（storage）の両方から使用される。
+ * feature層（grid-item）とinfrastructure層（storage）の両方から使用される。
  */
 
 /**

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { GridPosition, SavedLayout } from '@/shared/types';
+import type { ContainerSize } from '../hooks/useContainerSize';
 
 /**
  * グリッドアイテムのサイズ定義
@@ -18,6 +19,12 @@ export type GridItemSize = 'small-square' | 'small-rectangle' | 'small-vertical'
 export type { GridPosition, SavedLayout };
 
 /**
+ * グリッドアイテムのコンテンツレンダー関数
+ * コンテナサイズに応じて動的にレンダリングするための関数型
+ */
+export type GridItemRenderFunction = (containerSize: ContainerSize) => ReactNode;
+
+/**
  * グリッドアイテムの設定
  */
 export interface GridItemConfig {
@@ -29,8 +36,24 @@ export interface GridItemConfig {
   size: GridItemSize;
   /** グリッド上の配置位置（必須：明示的な位置管理） */
   position: GridPosition;
-  /** 表示するコンテンツ */
-  content: ReactNode;
+  /** 
+   * ヘッダー情報（オプション）
+   * アイコンとタイトルを統一的なスタイルで表示
+   */
+  header?: {
+    /** アイコン（絵文字） */
+    icon: string;
+    /** タイトル */
+    title: string;
+    /** 右側に配置する追加要素（チャート切り替えボタンなど） */
+    actions?: ReactNode;
+  };
+  /** 
+   * 表示するコンテンツ
+   * - ReactNode: 静的なコンテンツ
+   * - GridItemRenderFunction: コンテナサイズに応じて動的にレンダリング
+   */
+  content: ReactNode | GridItemRenderFunction;
   /** 背景色（オプション） */
   backgroundColor?: string;
   /** ボックスシャドウのカスタム設定（オプション） */

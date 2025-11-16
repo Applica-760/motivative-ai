@@ -27,11 +27,11 @@ export function RightSidebar() {
   const greetingMessages: SpeechBubbleMessage[] = useMemo(() => [
     {
       id: 'greeting',
-      text: `${userName}\nこんにちは！`,
+      text: `${userName}\nこんにちは`,
     },
     {
       id: 'motivation',
-      text: '今日も頑張りましょう！',
+      text: '今日も頑張りましょう',
     },
   ], [userName]);
 

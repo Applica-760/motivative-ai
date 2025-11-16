@@ -1,5 +1,5 @@
-import { DraggableGrid } from '@/features/grid-layout';
-import type { GridItemConfig } from '@/features/grid-layout';
+import { DraggableGrid } from '@/features/grid-item';
+import type { GridItemConfig } from '@/features/grid-item';
 
 /**
  * MainContentのProps

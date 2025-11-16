@@ -1,11 +1,18 @@
-import { Stack, Title, Button, Divider, Box } from '@mantine/core';
+import { Stack, Button, Divider, Box } from '@mantine/core';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { colors } from '@/shared/config';
+import type { ContainerSize } from '@/features/grid-item';
 import { useTimer } from '../hooks/useTimer';
 import { useQuickRecord } from '../hooks/useQuickRecord';
 import { TimerDisplay } from './TimerDisplay';
 import { TimerControls } from './TimerControls';
 import { ActivitySelector } from './ActivitySelector';
+import './TimerWidget.css';
+
+interface TimerWidgetProps {
+  /** コンテナサイズ */
+  containerSize?: ContainerSize;
+}
 
 /**
  * タイマーウィジェット（MVP版）
@@ -18,7 +25,7 @@ import { ActivitySelector } from './ActivitySelector';
  * 
  * グリッドサイズ: small-square（1×1の正方形）
  */
-export function TimerWidget() {
+export function TimerWidget({ containerSize: _containerSize }: TimerWidgetProps = {}) {
   const { seconds, status, start, stop, reset } = useTimer();
   const { selectedActivityId, selectActivity, isSaving, saveRecord } = useQuickRecord();
 
@@ -34,33 +41,7 @@ export function TimerWidget() {
   const canSaveRecord = status === 'stopped' && seconds > 0;
 
   return (
-    <Stack
-      gap="sm"
-      style={{
-        height: '100%',
-        width: '100%',
-        minHeight: 0,
-        paddingTop: '8px',
-        paddingBottom: '16px',
-        paddingLeft: '16px',
-        paddingRight: '16px',
-      }}
-    >
-      {/* ヘッダー */}
-      <Title 
-        order={3} 
-        size="h5" 
-        ta="left" 
-        style={{ 
-          flexShrink: 0,
-          marginTop: 0,
-          marginBottom: 0,
-          paddingLeft: '4px',
-        }}
-      >
-        ⏱️ タイマー
-      </Title>
-
+    <Stack gap="sm" className="timer-widget-container">
       {/* タイマー表示 */}
       <TimerDisplay seconds={seconds} />
 
@@ -72,10 +53,10 @@ export function TimerWidget() {
         onReset={reset}
       />
 
-      <Divider style={{ flexShrink: 0 }} />
+      <Divider className="timer-widget-divider" />
 
       {/* アクティビティ選択 */}
-      <Box style={{ flexShrink: 0 }}>
+      <Box className="timer-widget-activity-selector">
         <ActivitySelector
           selectedActivityId={selectedActivityId}
           onSelect={selectActivity}
@@ -90,9 +71,7 @@ export function TimerWidget() {
         loading={isSaving}
         fullWidth
         size="sm"
-        style={{ 
-          flexShrink: 0,
-        }}
+        className="timer-widget-button"
         styles={{
           root: {
             backgroundColor: colors.action.primary,

@@ -1,5 +1,5 @@
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
-import type { SavedLayout } from '@/features/grid-layout';
+import type { SavedLayout } from '@/features/grid-item';
 import type { UserProfile, UpdateProfileData } from '@/features/account';
 import { STORAGE_KEYS } from '@/shared/config';
 import type { StorageService } from './types';
