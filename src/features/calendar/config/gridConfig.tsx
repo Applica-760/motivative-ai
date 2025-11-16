@@ -35,10 +35,11 @@ export function createCalendarGridItems(
       order: startOrder + index,
       size: 'small-vertical' as const,
       position: { column, row, columnSpan: 2, rowSpan: 2 },
-      content: (
+      content: (containerSize) => (
         <ActivityCalendarWidget
           activity={activity}
           onClick={onCalendarClick ? () => onCalendarClick(activity.id) : undefined}
+          containerSize={containerSize}
         />
       ),
       backgroundColor: colors.gridItem.default,

@@ -22,7 +22,7 @@ export function createTimerGridItems(startOrder = 0): GridItemConfig[] {
         columnSpan: 1,
         rowSpan: 2,
       },
-      content: <TimerWidget />,
+      content: (containerSize) => <TimerWidget containerSize={containerSize} />,
       backgroundColor: colors.gridItem.default,
       shadow: 'md',
     },

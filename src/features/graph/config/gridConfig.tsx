@@ -41,7 +41,8 @@ export function createGraphGridItems(
       order: startOrder + index,
       size: 'small-rectangle' as const,
       position: { column, row, columnSpan: 2, rowSpan: 1 },
-      content: (
+      // レンダー関数としてcontentを定義（コンテナサイズを受け取る）
+      content: (containerSize) => (
         <ActivityChartWidget
           title={activity.title}
           data={activity.data}
@@ -49,6 +50,7 @@ export function createGraphGridItems(
           color={activity.color}
           chartType={activity.chartType}
           onClick={onChartClick ? () => onChartClick(activity.activityId) : undefined}
+          containerSize={containerSize}
         />
       ),
       backgroundColor: colors.gridItem.chart,

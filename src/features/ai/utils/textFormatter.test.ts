@@ -46,7 +46,7 @@ describe('formatMessageText', () => {
 
 describe('calculateComplexity', () => {
   it('短いメッセージは複雑度が低い', () => {
-    const formatted = formatMessageText('こんにちは！');
+    const formatted = formatMessageText('こんにちは');
     const complexity = calculateComplexity(formatted);
     expect(complexity).toBeLessThan(0.5);
   });

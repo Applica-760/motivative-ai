@@ -1,6 +1,7 @@
 import { Box } from '@mantine/core';
 import { TextLogList } from './TextLogList';
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
+import type { ContainerSize } from '@/features/grid-layout';
 
 interface TextLogWidgetProps {
   /** アクティビティ定義 */
@@ -11,6 +12,9 @@ interface TextLogWidgetProps {
   
   /** クリックハンドラー（オプション） */
   onClick?: () => void;
+  
+  /** コンテナサイズ */
+  containerSize?: ContainerSize;
 }
 
 /**

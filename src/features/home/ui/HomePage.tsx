@@ -54,7 +54,7 @@ export function HomePage() {
           <div style={{
             display: 'grid',
             gridTemplateColumns: isMobile 
-              ? '1fr' 
+              ? 'auto 1fr auto' 
               : shouldCollapseSidebar
                 ? 'auto 1fr auto'
                 : 'minmax(200px, 280px) minmax(500px, 1fr) minmax(200px, 280px)',
@@ -63,7 +63,12 @@ export function HomePage() {
             alignItems: 'center',
           }}>
             {/* 左のBurgerまたはスペーサー */}
-            <Box style={{ display: 'flex', alignItems: 'center' }}>
+            <Box style={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              marginLeft: '1rem',
+              marginRight: '0.5rem',
+            }}>
               {(isMobile || shouldCollapseSidebar) && (
                 <Burger
                   opened={leftOpened}
@@ -75,12 +80,27 @@ export function HomePage() {
             </Box>
             
             {/* タイトル */}
-            <Title order={1}>
+            <Title 
+              order={1}
+              style={{
+                marginLeft: '1rem',
+                marginRight: '1rem',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
               Motivative AI
             </Title>
             
             {/* 右のBurgerまたはスペーサー */}
-            <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+            <Box style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'flex-end',
+              marginLeft: '0.5rem',
+              marginRight: '1rem',
+            }}>
               {(isMobile || shouldCollapseSidebar) && (
                 <Burger
                   opened={rightOpened}

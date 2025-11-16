@@ -2,6 +2,7 @@ import { Box, Text, Stack } from '@mantine/core';
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 import { toTextLogItems, formatDisplayDate } from '../model';
 import type { TextLogItem } from '../model';
+import './TextLogList.css';
 
 interface TextLogListProps {
   /** アクティビティ定義 */
@@ -54,42 +55,24 @@ export function TextLogList({ activity, records, maxItems = 5 }: TextLogListProp
   const hasRecords = logItems.length > 0;
 
   return (
-    <Box
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '0 1rem 1rem 0.5rem',
-      }}
-    >
+    <Box className="text-log-container">
       {/* ヘッダー（6点ボタンと横並び） */}
-      <Box mb="xs" style={{ marginLeft: '1rem' }}>
-        <Text
-          size="lg"
-          fw={600}
-          style={{
-            color: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}
-        >
+      <Box className="text-log-header">
+        <Text fw={600} className="text-log-title">
           {activity.icon} {activity.title}
         </Text>
       </Box>
 
       {/* 記録リスト */}
-      <Box style={{ flex: 1, overflow: 'auto', marginLeft: '1.5rem' }}>
+      <Box className="text-log-content">
         {hasRecords ? (
           <Stack gap="lg">
             {groupedLogs.map((group) => (
               <Box key={group.date}>
                 {/* 日付ヘッダー */}
                 <Text
-                  size="xs"
                   c="dimmed"
-                  mb="xs"
-                  style={{ fontWeight: 600 }}
+                  className="text-log-date-header"
                 >
                   {formatDisplayDate(group.date)}
                 </Text>
@@ -99,12 +82,7 @@ export function TextLogList({ activity, records, maxItems = 5 }: TextLogListProp
                   {group.items.map((item) => (
                     <Text
                       key={item.id}
-                      size="sm"
-                      style={{
-                        color: '#e0e0e0',
-                        lineHeight: 1.6,
-                        wordBreak: 'break-word',
-                      }}
+                      className="text-log-item"
                     >
                       {item.displayText}
                     </Text>
@@ -114,16 +92,8 @@ export function TextLogList({ activity, records, maxItems = 5 }: TextLogListProp
             ))}
           </Stack>
         ) : (
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-              minHeight: '120px',
-            }}
-          >
-            <Text size="sm" c="dimmed" ta="center">
+          <Box className="text-log-empty">
+            <Text c="dimmed" className="text-log-empty-text">
               記録がありません
             </Text>
           </Box>

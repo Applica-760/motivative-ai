@@ -1,6 +1,7 @@
 import { Box } from '@mantine/core';
 import { ActivityChart } from './ActivityChart';
 import type { ChartDataPoint, ChartType } from '@/shared/types';
+import type { ContainerSize } from '@/features/grid-layout';
 
 interface ActivityChartWidgetProps {
   title: string;
@@ -10,6 +11,8 @@ interface ActivityChartWidgetProps {
   height?: number;
   chartType?: ChartType;
   onClick?: () => void;
+  /** コンテナサイズ（表示/非表示制御のみに使用） */
+  containerSize?: ContainerSize;
 }
 
 /**
@@ -18,7 +21,11 @@ interface ActivityChartWidgetProps {
  * 
  * クリック可能な場合は、適切なスタイルとアクセシビリティ属性を追加
  */
-export function ActivityChartWidget({ onClick, ...chartProps }: ActivityChartWidgetProps) {
+export function ActivityChartWidget({ 
+  onClick, 
+  containerSize,
+  ...chartProps 
+}: ActivityChartWidgetProps) {
   const isClickable = !!onClick;
 
   return (
@@ -49,7 +56,7 @@ export function ActivityChartWidget({ onClick, ...chartProps }: ActivityChartWid
       }}
       aria-label={isClickable ? `${chartProps.title}の記録を追加` : undefined}
     >
-      <ActivityChart {...chartProps} />
+      <ActivityChart {...chartProps} containerSize={containerSize} />
     </Box>
   );
 }

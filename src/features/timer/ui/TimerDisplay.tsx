@@ -1,5 +1,6 @@
 import { RingProgress, Text, Center, Stack } from '@mantine/core';
 import { formatTime, calculateProgress } from '../model/timerUtils';
+import './TimerDisplay.css';
 
 interface TimerDisplayProps {
   /** 経過秒数 */
@@ -16,9 +17,9 @@ export function TimerDisplay({ seconds }: TimerDisplayProps) {
   const timeString = formatTime(seconds);
 
   return (
-    <Center style={{ flexShrink: 0 }}>
+    <Center className="timer-display-container">
       <RingProgress
-        size={160}
+        className="timer-display-ring"
         thickness={10}
         roundCaps
         sections={[
@@ -30,14 +31,10 @@ export function TimerDisplay({ seconds }: TimerDisplayProps) {
         label={
           <Center>
             <Stack gap={0} align="center">
-              <Text size="xs" c="dimmed" fw={500}>
+              <Text c="dimmed" className="timer-display-label">
                 経過時間
               </Text>
-              <Text
-                size="lg"
-                fw={700}
-                style={{ fontVariant: 'tabular-nums', letterSpacing: '0.05em' }}
-              >
+              <Text className="timer-display-time">
                 {timeString}
               </Text>
             </Stack>

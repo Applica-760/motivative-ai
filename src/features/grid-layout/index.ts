@@ -2,8 +2,9 @@
 export { DraggableGrid, DraggableGridItem } from './ui';
 
 // フック
-export { useGridLayout, useCellSize } from './hooks';
+export { useGridLayout, useCellSize, useContainerSize } from './hooks';
 export type { UseGridLayoutOptions } from './hooks/useGridLayout';
+export type { ContainerSize } from './hooks/useContainerSize';
 
 // ユーティリティ関数
 export { assignGridPositions, createGridPosition } from './utils';
@@ -15,6 +16,7 @@ export type {
   GridPosition,
   CellSize,
   SavedLayout,
+  GridItemRenderFunction,
 } from './types';
 export { GRID_SIZE_MAP, GRID_COLUMNS } from './types';
 
@@ -39,4 +41,4 @@ export {
 export type { ShadowStyles } from './model';
 
 // 設定
-export { GRID_CONFIG } from './config';
+export { GRID_CONFIG, containerQuery } from './config';

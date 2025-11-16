@@ -3,6 +3,7 @@ import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useState, useMemo } from 'react';
 import type { ActivityDefinition, ActivityRecord } from '@/shared/types';
 import { isSameDay } from '../model';
+import './MonthlyActivityCalendar.css';
 
 interface MonthlyActivityCalendarProps {
   /** 表示するアクティビティ */
@@ -91,19 +92,19 @@ export function MonthlyActivityCalendar({
   const recordBackgroundColor = `${activityColor}30`; // 透明度を追加
 
   return (
-    <Stack gap={0} p="xs" pt="0" style={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Stack gap={0} className="monthly-calendar-container">
       {/* タイトルヘッダー：アクティビティアイコンとタイトル */}
-      <Group gap="xs" mb={4} wrap="nowrap" px="xs">
-        <Text style={{ fontSize: '24px', lineHeight: 1 }}>
+      <Group gap="xs" wrap="nowrap" className="monthly-calendar-title-group">
+        <Text className="monthly-calendar-icon">
           {activity.icon}
         </Text>
-        <Text size="lg" fw={700} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Text fw={700} className="monthly-calendar-title">
           {activity.title}
         </Text>
       </Group>
 
       {/* ヘッダー：月切り替え */}
-      <Group justify="space-between" wrap="nowrap" mb="xs" px="xs">
+      <Group justify="space-between" wrap="nowrap" className="monthly-calendar-nav-group">
         <ActionIcon
           variant="subtle"
           color="gray"
@@ -114,7 +115,7 @@ export function MonthlyActivityCalendar({
           <IconChevronLeft size={18} />
         </ActionIcon>
         
-        <Text size="sm" fw={600}>
+        <Text className="monthly-calendar-year-month">
           {yearMonthDisplay}
         </Text>
         
@@ -130,40 +131,19 @@ export function MonthlyActivityCalendar({
       </Group>
 
       {/* カレンダー全体のラッパー - 中央揃えで親要素からはみ出さない */}
-      <Box style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        width: '100%',
-        maxWidth: '100%',
-        minHeight: 0,
-        overflow: 'hidden',
-        padding: '0 4px', // 外側の余白を縮小
-      }}>
+      <Box className="monthly-calendar-wrapper">
         {/* カレンダーグリッド - 曜日ヘッダーと日付を統合した7列固定グリッド */}
-        <Box style={{ 
-          flex: 1, 
-          display: 'grid',
-          gridTemplateColumns: 'repeat(7, 1fr)',
-          gridTemplateRows: `auto repeat(${numberOfWeeks}, 1fr)`, // 最初の行は曜日（自動高さ）、残りは均等
-          gap: '2px', // ギャップを縮小
-          width: '100%',
-          minHeight: 0,
-        }}>
+        <Box 
+          className="monthly-calendar-grid"
+          style={{ 
+            gridTemplateRows: `auto repeat(${numberOfWeeks}, 1fr)`,
+          }}
+        >
           {/* 曜日ヘッダー（グリッドの最初の行） */}
           {weekdayLabels.map((label, index) => (
-            <Box
-              key={label}
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '4px 0',
-              }}
-            >
+            <Box key={label} className="monthly-calendar-weekday">
               <Text
-                size="sm"
-                fw={600}
+                className="monthly-calendar-weekday-text"
                 c={index === 0 ? 'red' : index === 6 ? 'blue' : 'gray.6'}
               >
                 {label}
@@ -185,38 +165,24 @@ export function MonthlyActivityCalendar({
           return (
             <Box
               key={date.toISOString()}
+              className="monthly-calendar-day-cell"
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'space-between', // 日付を上部、アイコンを下部に固定
                 backgroundColor: hasRecord ? recordBackgroundColor : 'transparent',
-                borderRadius: '6px',
-                padding: '6px 4px',
                 border: today ? '2px solid #339af0' : '2px solid transparent',
-                minHeight: 0,
               }}
             >
               {/* 日付（常に上部固定） */}
               <Text
-                size="sm"
                 fw={today ? 600 : 400}
                 c={dayOfWeek === 0 ? 'red' : dayOfWeek === 6 ? 'blue' : 'gray.5'}
-                style={{
-                  lineHeight: 1,
-                }}
+                className="monthly-calendar-day-number"
               >
                 {date.getDate()}
               </Text>
 
               {/* アクティビティアイコン（記録がある場合のみ、常に下部固定） */}
               {hasRecord && (
-                <Text
-                  style={{
-                    fontSize: 'clamp(18px, 3.5vw, 28px)',
-                    lineHeight: 1,
-                  }}
-                >
+                <Text className="monthly-calendar-activity-icon">
                   {activity.icon}
                 </Text>
               )}

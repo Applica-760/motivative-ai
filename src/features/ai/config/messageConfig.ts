@@ -20,7 +20,7 @@ export interface SpeechBubbleMessage {
 export const SAMPLE_MESSAGES: SpeechBubbleMessage[] = [
   {
     id: '1',
-    text: 'こんにちは！今日も頑張りましょう！',
+    text: 'こんにちは今日も頑張りましょう',
   },
   {
     id: '2',

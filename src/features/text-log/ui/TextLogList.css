@@ -1,0 +1,247 @@
+/**
+ * TextLogList Container Query Styles
+ * 
+ * グリッドアイテムがcontainerType: 'size'を持つため、
+ * このコンポーネントはコンテナサイズに応じてスタイルを変更できます。
+ * 
+ * スタイリング方針:
+ * - レイアウト、サイズ、スペーシングなどの視覚的スタイルはCSSで管理
+ * - 表示/非表示などのロジックはJavaScriptで管理
+ */
+
+/* ===== ベースレイアウト ===== */
+
+.text-log-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem 1rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.text-log-header {
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
+  transition: all 0.3s ease;
+}
+
+.text-log-title {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.text-log-content {
+  flex: 1;
+  overflow: auto;
+  margin-left: 1.5rem;
+  transition: margin-left 0.3s ease;
+}
+
+.text-log-date-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  transition: font-size 0.3s ease;
+}
+
+.text-log-item {
+  color: #e0e0e0;
+  line-height: 1.6;
+  word-break: break-word;
+  font-size: 0.875rem;
+  transition: font-size 0.3s ease;
+}
+
+.text-log-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 120px;
+}
+
+.text-log-empty-text {
+  text-align: center;
+  font-size: 0.875rem;
+  transition: font-size 0.3s ease;
+}
+
+/* ===== Container Query レスポンシブスタイル ===== */
+
+/* 極小サイズ (xs: ~200px) */
+@container (max-width: 200px) {
+  .text-log-container {
+    padding: 0 0.25rem 0.25rem 0.125rem;
+  }
+
+  .text-log-header {
+    margin-bottom: 0.25rem;
+    margin-left: 0.25rem;
+  }
+
+  .text-log-title {
+    gap: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 500;
+  }
+
+  .text-log-content {
+    margin-left: 0.375rem;
+  }
+
+  .text-log-date-header {
+    font-size: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .text-log-item {
+    font-size: 0.5625rem;
+    line-height: 1.4;
+  }
+
+  .text-log-empty {
+    min-height: 60px;
+  }
+
+  .text-log-empty-text {
+    font-size: 0.625rem;
+  }
+}
+
+/* 小サイズ (sm: 200px~300px) */
+@container (min-width: 201px) and (max-width: 300px) {
+  .text-log-container {
+    padding: 0 0.5rem 0.5rem 0.25rem;
+  }
+
+  .text-log-header {
+    margin-bottom: 0.375rem;
+    margin-left: 0.5rem;
+  }
+
+  .text-log-title {
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .text-log-content {
+    margin-left: 0.75rem;
+  }
+
+  .text-log-date-header {
+    font-size: 0.625rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .text-log-item {
+    font-size: 0.6875rem;
+    line-height: 1.5;
+  }
+
+  .text-log-empty {
+    min-height: 80px;
+  }
+
+  .text-log-empty-text {
+    font-size: 0.75rem;
+  }
+}
+
+/* 中サイズ (md: 300px~400px) - デフォルトスタイルを使用 */
+@container (min-width: 301px) and (max-width: 400px) {
+  .text-log-container {
+    padding: 0 0.75rem 0.75rem 0.375rem;
+  }
+
+  .text-log-header {
+    margin-left: 0.75rem;
+  }
+
+  .text-log-content {
+    margin-left: 1rem;
+  }
+}
+
+/* 大サイズ (lg: 400px~600px) */
+@container (min-width: 401px) and (max-width: 600px) {
+  .text-log-container {
+    padding: 0 1.25rem 1.25rem 0.625rem;
+  }
+
+  .text-log-header {
+    margin-bottom: 0.625rem;
+    margin-left: 1.25rem;
+  }
+
+  .text-log-title {
+    gap: 0.625rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .text-log-content {
+    margin-left: 1.75rem;
+  }
+
+  .text-log-date-header {
+    font-size: 0.875rem;
+    margin-bottom: 0.625rem;
+  }
+
+  .text-log-item {
+    font-size: 1rem;
+  }
+
+  .text-log-empty {
+    min-height: 140px;
+  }
+
+  .text-log-empty-text {
+    font-size: 1rem;
+  }
+}
+
+/* 特大サイズ (xl: 600px~) */
+@container (min-width: 601px) {
+  .text-log-container {
+    padding: 0 1.5rem 1.5rem 0.75rem;
+  }
+
+  .text-log-header {
+    margin-bottom: 0.75rem;
+    margin-left: 1.5rem;
+  }
+
+  .text-log-title {
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .text-log-content {
+    margin-left: 2rem;
+  }
+
+  .text-log-date-header {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .text-log-item {
+    font-size: 1.125rem;
+  }
+
+  .text-log-empty {
+    min-height: 160px;
+  }
+
+  .text-log-empty-text {
+    font-size: 1.125rem;
+  }
+}

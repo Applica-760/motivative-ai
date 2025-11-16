@@ -81,6 +81,42 @@ function MyPage() {
 }
 ```
 
+### Container Query APIを使用したレスポンシブウィジェット
+
+各グリッドアイテムは`containerType: 'size'`が設定されており、Container Query APIを使用できます。
+
+```tsx
+import { containerQuery } from '@/features/grid-layout';
+
+function MyResponsiveWidget() {
+  return (
+    <Box
+      style={{
+        // Container Queryを使用してコンテナサイズに応じたスタイル
+        fontSize: '16px',
+        '@container': {
+          [`${containerQuery.maxXs}`]: {
+            fontSize: '12px',
+            padding: '0.5rem',
+          },
+          [`${containerQuery.sm}`]: {
+            fontSize: '14px',
+            padding: '0.75rem',
+          },
+          [`${containerQuery.minMd}`]: {
+            fontSize: '16px',
+            padding: '1rem',
+          },
+        },
+      }}
+    >
+      <h3>レスポンシブコンテンツ</h3>
+      <p>コンテナサイズに応じてスタイルが変化します</p>
+    </Box>
+  );
+}
+```
+
 ### カスタムストレージの使用
 
 ```tsx
@@ -174,6 +210,29 @@ export const GRID_CONFIG = {
   DRAG_HANDLE_ICON: '⋮⋮',    // ドラッグハンドルアイコン
   DRAGGING_OPACITY: 0.5,      // ドラッグ中の不透明度
   DRAG_OVERLAY_OPACITY: 0.8,  // オーバーレイの不透明度
+  
+  // Container Queryのブレークポイント
+  CONTAINER_BREAKPOINTS: {
+    XS: 200,   // 極小サイズ（~200px）
+    SM: 300,   // 小サイズ（~300px）
+    MD: 400,   // 中サイズ（~400px）
+    LG: 600,   // 大サイズ（~600px）
+    XL: 800,   // 特大サイズ（800px~）
+  },
+};
+
+// Container Query用のヘルパー
+export const containerQuery = {
+  maxXs: '(max-width: 200px)',
+  sm: '(min-width: 201px) and (max-width: 300px)',
+  md: '(min-width: 301px) and (max-width: 400px)',
+  lg: '(min-width: 401px) and (max-width: 600px)',
+  xl: '(min-width: 601px)',
+  minSm: '(min-width: 300px)',
+  minMd: '(min-width: 400px)',
+  minLg: '(min-width: 600px)',
+  minXl: '(min-width: 800px)',
+  // ... etc
 };
 ```
 
