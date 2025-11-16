@@ -49,20 +49,13 @@ function groupLogsByDate(logItems: TextLogItem[]): GroupedLog[] {
  * - 同じ日付の記録をグループ化
  * - 空状態の処理
  */
-export function TextLogList({ activity, records, maxItems = 5 }: TextLogListProps) {
+export function TextLogList({ records, maxItems = 5 }: TextLogListProps) {
   const logItems = toTextLogItems(records, maxItems);
   const groupedLogs = groupLogsByDate(logItems);
   const hasRecords = logItems.length > 0;
 
   return (
     <Box className="text-log-container">
-      {/* ヘッダー（6点ボタンと横並び） */}
-      <Box className="text-log-header">
-        <Text fw={600} className="text-log-title">
-          {activity.icon} {activity.title}
-        </Text>
-      </Box>
-
       {/* 記録リスト */}
       <Box className="text-log-content">
         {hasRecords ? (

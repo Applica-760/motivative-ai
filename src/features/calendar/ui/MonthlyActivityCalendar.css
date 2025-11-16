@@ -21,27 +21,6 @@
   transition: all 0.3s ease;
 }
 
-.monthly-calendar-title-group {
-  gap: 0.5rem;
-  margin-bottom: 0.25rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.monthly-calendar-icon {
-  font-size: 1.5rem;
-  line-height: 1;
-  transition: font-size 0.3s ease;
-}
-
-.monthly-calendar-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: font-size 0.3s ease;
-}
-
 .monthly-calendar-nav-group {
   margin-bottom: 0.5rem;
   padding-left: 0.5rem;
@@ -95,6 +74,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  gap: 0.25rem;
   border-radius: 0.375rem;
   padding: 0.375rem 0.25rem;
   border: 2px solid transparent;
@@ -116,26 +96,18 @@
 
 /* ===== Container Query レスポンシブスタイル ===== */
 
+/* 絵文字非表示閾値 (350px以下で絵文字を非表示、背景色のみで識別) */
+@container (max-width: 400px) {
+  .monthly-calendar-activity-icon {
+    display: none;
+  }
+}
+
 /* 極小サイズ (xs: ~200px) */
 @container (max-width: 200px) {
   .monthly-calendar-container {
     padding: 0.25rem;
     padding-top: 0;
-  }
-
-  .monthly-calendar-title-group {
-    gap: 0.25rem;
-    margin-bottom: 0.125rem;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-  }
-
-  .monthly-calendar-icon {
-    font-size: 1rem;
-  }
-
-  .monthly-calendar-title {
-    font-size: 0.75rem;
   }
 
   .monthly-calendar-nav-group {
@@ -185,21 +157,6 @@
     padding-top: 0;
   }
 
-  .monthly-calendar-title-group {
-    gap: 0.375rem;
-    margin-bottom: 0.25rem;
-    padding-left: 0.375rem;
-    padding-right: 0.375rem;
-  }
-
-  .monthly-calendar-icon {
-    font-size: 1.25rem;
-  }
-
-  .monthly-calendar-title {
-    font-size: 0.875rem;
-  }
-
   .monthly-calendar-nav-group {
     margin-bottom: 0.375rem;
     padding-left: 0.375rem;
@@ -242,13 +199,7 @@
 
 /* 中サイズ (md: 300px~400px) - デフォルトスタイルを使用 */
 @container (min-width: 301px) and (max-width: 400px) {
-  .monthly-calendar-icon {
-    font-size: 1.5rem;
-  }
-
-  .monthly-calendar-title {
-    font-size: 1rem;
-  }
+  /* デフォルトスタイルを使用 */
 }
 
 /* 大サイズ (lg: 400px~600px) */
@@ -256,22 +207,6 @@
   .monthly-calendar-container {
     padding: 0.625rem;
     padding-top: 0;
-  }
-
-  .monthly-calendar-title-group {
-    gap: 0.625rem;
-    margin-bottom: 0.375rem;
-    padding-left: 0.625rem;
-    padding-right: 0.625rem;
-  }
-
-  .monthly-calendar-icon {
-    font-size: 1.75rem;
-  }
-
-  .monthly-calendar-title {
-    font-size: 1.125rem;
-    font-weight: 700;
   }
 
   .monthly-calendar-nav-group {
@@ -319,22 +254,6 @@
   .monthly-calendar-container {
     padding: 0.75rem;
     padding-top: 0;
-  }
-
-  .monthly-calendar-title-group {
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-  }
-
-  .monthly-calendar-icon {
-    font-size: 2rem;
-  }
-
-  .monthly-calendar-title {
-    font-size: 1.25rem;
-    font-weight: 700;
   }
 
   .monthly-calendar-nav-group {

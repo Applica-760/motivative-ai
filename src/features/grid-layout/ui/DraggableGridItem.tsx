@@ -1,6 +1,6 @@
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
-import { Box, Paper } from '@mantine/core';
+import { Box, Paper, Stack } from '@mantine/core';
 import { useState, useRef } from 'react';
 import type { GridItemConfig } from '../types';
 import { GRID_CONFIG } from '../config/gridConstants';
@@ -9,6 +9,7 @@ import {
   getDragHandleStyle,
 } from '../model/styles';
 import { useContainerSize } from '../hooks/useContainerSize';
+import { GridItemHeader } from './GridItemHeader';
 
 interface DraggableGridItemProps {
   item: GridItemConfig;
@@ -78,7 +79,7 @@ export function DraggableGridItem({ item }: DraggableGridItemProps) {
           opacity: isDragging ? GRID_CONFIG.DRAGGING_OPACITY : 1,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center',
+          justifyContent: item.header ? 'flex-start' : 'center',
           ...(item.backgroundColor && { backgroundColor: item.backgroundColor }),
           ...(shadowStyles.boxShadow && { boxShadow: shadowStyles.boxShadow }),
           ...(isHovered && { transform: `translateY(${GRID_CONFIG.HOVER_TRANSLATE_Y}px)` }),
@@ -96,7 +97,23 @@ export function DraggableGridItem({ item }: DraggableGridItemProps) {
         >
           {GRID_CONFIG.DRAG_HANDLE_ICON}
         </Box>
-        {renderedContent}
+        
+        {/* ヘッダーがある場合はStackで縦に並べる */}
+        {item.header ? (
+          <Stack gap={0} style={{ height: '100%', overflow: 'hidden' }}>
+            <GridItemHeader
+              icon={item.header.icon}
+              title={item.header.title}
+              actions={item.header.actions}
+            />
+            <Box style={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
+              {renderedContent}
+            </Box>
+          </Stack>
+        ) : (
+          // ヘッダーがない場合は従来通り中央配置
+          renderedContent
+        )}
       </Paper>
     </Box>
   );

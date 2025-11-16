@@ -37,6 +37,18 @@ export interface GridItemConfig {
   /** グリッド上の配置位置（必須：明示的な位置管理） */
   position: GridPosition;
   /** 
+   * ヘッダー情報（オプション）
+   * アイコンとタイトルを統一的なスタイルで表示
+   */
+  header?: {
+    /** アイコン（絵文字） */
+    icon: string;
+    /** タイトル */
+    title: string;
+    /** 右側に配置する追加要素（チャート切り替えボタンなど） */
+    actions?: ReactNode;
+  };
+  /** 
    * 表示するコンテンツ
    * - ReactNode: 静的なコンテンツ
    * - GridItemRenderFunction: コンテナサイズに応じて動的にレンダリング

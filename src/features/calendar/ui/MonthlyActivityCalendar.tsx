@@ -93,17 +93,7 @@ export function MonthlyActivityCalendar({
 
   return (
     <Stack gap={0} className="monthly-calendar-container">
-      {/* タイトルヘッダー：アクティビティアイコンとタイトル */}
-      <Group gap="xs" wrap="nowrap" className="monthly-calendar-title-group">
-        <Text className="monthly-calendar-icon">
-          {activity.icon}
-        </Text>
-        <Text fw={700} className="monthly-calendar-title">
-          {activity.title}
-        </Text>
-      </Group>
-
-      {/* ヘッダー：月切り替え */}
+      {/* ヘッダー: 月切り替え */}
       <Group justify="space-between" wrap="nowrap" className="monthly-calendar-nav-group">
         <ActionIcon
           variant="subtle"
@@ -168,6 +158,7 @@ export function MonthlyActivityCalendar({
               className="monthly-calendar-day-cell"
               style={{
                 backgroundColor: hasRecord ? recordBackgroundColor : 'transparent',
+                // 今日のみ青いボーダー
                 border: today ? '2px solid #339af0' : '2px solid transparent',
               }}
             >

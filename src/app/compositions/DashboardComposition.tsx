@@ -75,7 +75,8 @@ export function DashboardComposition({
       activities.push({
         activityId: activity.id,
         type: activity.id, // typeとしてIDを使用
-        title: `${activity.icon} ${activity.title}`,
+        title: activity.title,
+        icon: activity.icon,
         dataLabel: `${activity.title} (${activity.unit || ''})`,
         color: activity.color || '#4ECDC4', // デフォルトカラー
         data: chartData,

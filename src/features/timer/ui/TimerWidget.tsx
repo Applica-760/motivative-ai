@@ -1,4 +1,4 @@
-import { Stack, Title, Button, Divider, Box } from '@mantine/core';
+import { Stack, Button, Divider, Box } from '@mantine/core';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { colors } from '@/shared/config';
 import type { ContainerSize } from '@/features/grid-layout';
@@ -42,11 +42,6 @@ export function TimerWidget({ containerSize: _containerSize }: TimerWidgetProps 
 
   return (
     <Stack gap="sm" className="timer-widget-container">
-      {/* ヘッダー */}
-      <Title order={3} ta="left" className="timer-widget-header">
-        ⏱️ タイマー
-      </Title>
-
       {/* タイマー表示 */}
       <TimerDisplay seconds={seconds} />
 

@@ -22,6 +22,10 @@ export function createTimerGridItems(startOrder = 0): GridItemConfig[] {
         columnSpan: 1,
         rowSpan: 2,
       },
+      header: {
+        icon: '⏱️',
+        title: 'タイマー',
+      },
       content: (containerSize) => <TimerWidget containerSize={containerSize} />,
       backgroundColor: colors.gridItem.default,
       shadow: 'md',

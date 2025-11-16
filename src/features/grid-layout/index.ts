@@ -1,5 +1,5 @@
 // UIコンポーネント
-export { DraggableGrid, DraggableGridItem } from './ui';
+export { DraggableGrid, DraggableGridItem, GridItemHeader } from './ui';
 
 // フック
 export { useGridLayout, useCellSize, useContainerSize } from './hooks';

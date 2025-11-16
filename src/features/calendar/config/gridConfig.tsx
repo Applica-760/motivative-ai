@@ -35,6 +35,10 @@ export function createCalendarGridItems(
       order: startOrder + index,
       size: 'small-vertical' as const,
       position: { column, row, columnSpan: 2, rowSpan: 2 },
+      header: {
+        icon: activity.icon,
+        title: activity.title,
+      },
       content: (containerSize) => (
         <ActivityCalendarWidget
           activity={activity}

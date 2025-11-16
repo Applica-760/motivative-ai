@@ -4,7 +4,6 @@ import type { ChartDataPoint, ChartType } from '@/shared/types';
 import type { ContainerSize } from '@/features/grid-layout';
 
 interface ActivityChartWidgetProps {
-  title: string;
   data: ChartDataPoint[];
   dataLabel: string;
   color?: string;
@@ -13,6 +12,8 @@ interface ActivityChartWidgetProps {
   onClick?: () => void;
   /** コンテナサイズ（表示/非表示制御のみに使用） */
   containerSize?: ContainerSize;
+  /** チャートタイプ変更時のコールバック */
+  onChartTypeChange?: (type: ChartType) => void;
 }
 
 /**
@@ -20,10 +21,14 @@ interface ActivityChartWidgetProps {
  * グリッドアイテムに注入できる形式でラップ
  * 
  * クリック可能な場合は、適切なスタイルとアクセシビリティ属性を追加
+ * 
+ * 注意: 
+ * - タイトル、アイコン、チャート切り替えボタンは GridItemHeader で表示されます
+ * - このコンポーネントはチャート本体のみを表示します
  */
 export function ActivityChartWidget({ 
   onClick, 
-  containerSize,
+  onChartTypeChange,
   ...chartProps 
 }: ActivityChartWidgetProps) {
   const isClickable = !!onClick;
@@ -54,9 +59,12 @@ export function ActivityChartWidget({
           onClick();
         }
       }}
-      aria-label={isClickable ? `${chartProps.title}の記録を追加` : undefined}
+      aria-label={isClickable ? 'グラフの記録を追加' : undefined}
     >
-      <ActivityChart {...chartProps} containerSize={containerSize} />
+      <ActivityChart 
+        {...chartProps} 
+        onChartTypeChange={onChartTypeChange}
+      />
     </Box>
   );
 }

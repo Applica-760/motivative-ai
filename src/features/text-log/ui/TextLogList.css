@@ -19,22 +19,6 @@
   transition: all 0.3s ease;
 }
 
-.text-log-header {
-  margin-bottom: 0.5rem;
-  margin-left: 1rem;
-  transition: all 0.3s ease;
-}
-
-.text-log-title {
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
 .text-log-content {
   flex: 1;
   overflow: auto;
@@ -79,17 +63,6 @@
     padding: 0 0.25rem 0.25rem 0.125rem;
   }
 
-  .text-log-header {
-    margin-bottom: 0.25rem;
-    margin-left: 0.25rem;
-  }
-
-  .text-log-title {
-    gap: 0.25rem;
-    font-size: 0.625rem;
-    font-weight: 500;
-  }
-
   .text-log-content {
     margin-left: 0.375rem;
   }
@@ -117,17 +90,6 @@
 @container (min-width: 201px) and (max-width: 300px) {
   .text-log-container {
     padding: 0 0.5rem 0.5rem 0.25rem;
-  }
-
-  .text-log-header {
-    margin-bottom: 0.375rem;
-    margin-left: 0.5rem;
-  }
-
-  .text-log-title {
-    gap: 0.375rem;
-    font-size: 0.75rem;
-    font-weight: 500;
   }
 
   .text-log-content {
@@ -159,10 +121,6 @@
     padding: 0 0.75rem 0.75rem 0.375rem;
   }
 
-  .text-log-header {
-    margin-left: 0.75rem;
-  }
-
   .text-log-content {
     margin-left: 1rem;
   }
@@ -172,17 +130,6 @@
 @container (min-width: 401px) and (max-width: 600px) {
   .text-log-container {
     padding: 0 1.25rem 1.25rem 0.625rem;
-  }
-
-  .text-log-header {
-    margin-bottom: 0.625rem;
-    margin-left: 1.25rem;
-  }
-
-  .text-log-title {
-    gap: 0.625rem;
-    font-size: 1.25rem;
-    font-weight: 700;
   }
 
   .text-log-content {
@@ -211,17 +158,6 @@
 @container (min-width: 601px) {
   .text-log-container {
     padding: 0 1.5rem 1.5rem 0.75rem;
-  }
-
-  .text-log-header {
-    margin-bottom: 0.75rem;
-    margin-left: 1.5rem;
-  }
-
-  .text-log-title {
-    gap: 0.75rem;
-    font-size: 1.5rem;
-    font-weight: 700;
   }
 
   .text-log-content {

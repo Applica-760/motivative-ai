@@ -1,0 +1,50 @@
+/**
+ * GridItemHeader のスタイル定義
+ * Container Queryを使用したレスポンシブ対応
+ */
+
+.grid-item-header {
+  padding: 2px 20px 8px 20px;
+}
+
+/* アイコンのスタイル */
+.grid-item-header-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* タイトルのスタイル */
+.grid-item-header-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+/* アクション要素のコンテナ */
+.grid-item-header-actions {
+  flex-shrink: 0;
+}
+
+/* 
+ * Container Query: 極小サイズ用のスタイル
+ * 将来的に細かく調整する予定（暫定実装）
+ */
+@container (max-width: 200px) {
+  .grid-item-header-title {
+    font-size: 0.75rem;
+  }
+  
+  .grid-item-header-icon {
+    font-size: 1rem;
+  }
+  
+  .grid-item-header {
+    padding: 3px 12px 6px 12px;
+  }
+}
